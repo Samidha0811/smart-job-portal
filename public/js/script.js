@@ -5,11 +5,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Level 1: Basic validation
     if (registrationForm) {
-        registrationForm.addEventListener('submit', (e) => {
-            const email = document.getElementById('email').value;
-            if (!email.includes('@')) {
-                alert('Please enter a valid email address.');
-                e.preventDefault();
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(registrationForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await window.apiService.register(data);
+                const resultText = await response.text();
+                
+                if (response.ok) {
+                    // Update the page with the success message
+                    document.body.innerHTML = `<div class="container py-5 text-center">${resultText}</div>`;
+                } else {
+                    alert('Registration failed: ' + resultText.replace(/<[^>]*>?/gm, ''));
+                }
+            } catch (err) {
+                console.error('Registration Error:', err);
+                alert('An error occurred during registration.');
             }
         });
     }
