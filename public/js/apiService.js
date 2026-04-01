@@ -50,6 +50,57 @@ const apiService = {
     async rejectRecruiter(userId) {
         const response = await this.post('/api/admin/reject', { userId });
         return response;
+    },
+    /**
+     * Get user details by ID
+     * @param {number} userId 
+     */
+    async getUser(userId) {
+        const response = await fetch(`/api/auth/user/${userId}`);
+        return await response.json();
+    },
+
+    /**
+     * Create or update company profile
+     * @param {Object} profileData { userId, bio, company_name, website }
+     */
+    async updateProfile(profileData) {
+        const response = await fetch('/api/recruiter/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(profileData)
+        });
+        return await response.json();
+    },
+
+    /**
+     * Post a new job
+     * @param {Object} jobData { recruiterId, title, description, keywords, location, salary }
+     */
+    async postJob(jobData) {
+        const response = await fetch('/api/recruiter/post-job', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jobData)
+        });
+        return await response.json();
+    },
+    /**
+     * Get jobs by recruiter ID
+     * @param {number} recruiterId 
+     */
+    async getRecruiterJobs(recruiterId) {
+        const response = await fetch(`/api/recruiter/jobs/${recruiterId}`);
+        return await response.json();
+    },
+
+    /**
+     * Get applicants for a job
+     * @param {number} jobId 
+     */
+    async getJobApplicants(jobId) {
+        const response = await fetch(`/api/recruiter/applicants/${jobId}`);
+        return await response.json();
     }
 };
 

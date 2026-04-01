@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="/">Smart Job Portal</a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+              <li class="nav-item"><a class="nav-link btn btn-outline-light btn-sm ms-3" href="/login">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar/Info -->
+            <div class="col-md-4">
+                <div class="card shadow border-0 rounded-3 mb-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user-tie fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold" id="recruiterName">Loading...</h4>
+                        <p class="text-muted" id="recruiterEmail">...</p>
+                        <hr>
+                        <div class="d-grid">
+                            <a href="/recruiter/create-profile" class="btn btn-outline-primary btn-sm">Edit Company Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">Account Status</h6>
+                        <div id="statusBadge" class="alert alert-secondary py-2 text-center fw-bold">
+                            CHECKING...
+                        </div>
+                        <p class="small text-muted mb-0" id="statusMessage">
+                            We are verifying your account details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold">Your Job Postings</h2>
+                    <button id="postJobBtn" class="btn btn-primary px-4 fw-bold" disabled>
+                        <i class="fas fa-plus me-2"></i> Post a New Job
+                    </button>
+                </div>
+
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-body p-0">
+                        <div id="jobsList" class="list-group list-group-flush">
+                            <!-- Jobs will be loaded here -->
+                            <div class="p-5 text-center text-muted">
+                                <i class="fas fa-briefcase fa-3x mb-3 opacity-25"></i>
+                                <p>You haven't posted any jobs yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/apiService.js"></script>
+    <script>
+        // Use userId from query parameters if available (used for demo after login)
+        const urlParams = new URLSearchParams(window.location.search);
+        let userId = urlParams.get('userId') || localStorage.getItem('userId');
+        
+        if (userId) {
+            localStorage.setItem('userId', userId);
+        } else {
+            window.location.href = '/login';
+        }
+
+        async function loadJobs() {
+            try {
+                const jobs = await window.apiService.getRecruiterJobs(userId);
+                const jobsList = document.getElementById('jobsList');
+                
+                if (jobs.length > 0) {
+                    jobsList.innerHTML = '';
+                    for (const job of jobs) {
+                        const applicants = await window.apiService.getJobApplicants(job.id);
+                        
+                        const item = document.createElement('div');
+                        item.className = 'list-group-item p-4';
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="fw-bold mb-1">${job.title}</h5>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-map-marker-alt me-1"></i> ${job.location || 'Not specified'} | 
+                                        <i class="fas fa-calendar-alt me-1"></i> Posted on ${new Date(job.created_at).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary rounded-pill px-3 py-2">
+                                        ${applicants.length} Applicants
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                        jobsList.appendChild(item);
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading jobs:', err);
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const user = await window.apiService.getUser(userId);
+
+                document.getElementById('recruiterName').textContent = user.fullname;
+                document.getElementById('recruiterEmail').textContent = user.email;
+
+                const statusBadge = document.getElementById('statusBadge');
+                const postJobBtn = document.getElementById('postJobBtn');
+                const statusMessage = document.getElementById('statusMessage');
+
+                if (user.status === 'approved') {
+                    statusBadge.className = 'alert alert-success py-2 text-center fw-bold';
+                    statusBadge.textContent = 'APPROVED';
+                    postJobBtn.disabled = false;
+                    statusMessage.textContent = 'Account verified! You can now post jobs and view applicants.';
+                    
+                    postJobBtn.onclick = () => window.location.href = '/recruiter/post-job';
+                    
+                    // Load jobs if approved
+                    loadJobs();
+                } else if (user.status === 'pending') {
+                    statusBadge.className = 'alert alert-warning py-2 text-center fw-bold text-dark';
+                    statusBadge.textContent = 'PENDING APPROVAL';
+                    statusMessage.textContent = 'Your account is under review by the Admin. You will be able to post jobs once approved.';
+                } else if (user.status === 'rejected') {
+                    statusBadge.className = 'alert alert-danger py-2 text-center fw-bold';
+                    statusBadge.textContent = 'REJECTED';
+                    statusMessage.textContent = 'Your account application was not approved. Contact support for details.';
+                }
+
+            } catch (err) {
+                console.error('Error loading dashboard:', err);
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

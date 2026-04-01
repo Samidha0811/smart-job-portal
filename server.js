@@ -25,6 +25,7 @@ app.set('views', path.join(__dirname, 'views'));
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const pageRoutes = require('./routes/pages');
+const recruiterRoutes = require('./routes/recruiter');
 
 // Basic Routes
 app.use('/', pageRoutes);
@@ -33,6 +34,7 @@ app.use('/admin', adminRoutes);
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/recruiter', recruiterRoutes);
 
 // Start Server
 app.listen(PORT, () => {

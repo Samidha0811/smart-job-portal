@@ -18,4 +18,17 @@ router.get('/jobs', (req, res) => {
     res.render('jobs', { title: 'Jobs - Smart Job Portal' });
 });
 
+// Recruiter Pages
+router.get('/recruiter/dashboard', (req, res) => {
+    res.render('recruiter-dashboard', { title: 'Recruiter Dashboard' });
+});
+
+router.get('/recruiter/create-profile', (req, res) => {
+    res.render('create-profile', { title: 'Create Company Profile' });
+});
+
+router.get('/recruiter/post-job', (req, res) => {
+    res.render('post-job', { title: 'Post a New Job' });
+});
+
 module.exports = router;

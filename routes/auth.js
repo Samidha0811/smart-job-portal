@@ -45,14 +45,11 @@ router.post('/login', async (req, res) => {
         const user = rows[0];
 
         if (user && await bcrypt.compare(password, user.password)) {
-            if (user.role === 'recruiter' && user.status === 'pending') {
-                return res.send('<h1>Wait for Approval</h1><p>Your recruiter account is still pending admin approval.</p><a href="/">Back to Home</a>');
-            }
-
             if (user.role === 'admin') {
                 return res.redirect('/admin');
             } else if (user.role === 'recruiter') {
-                return res.send(`<h1>Recruiter Dashboard</h1><p>Welcome, ${user.fullname}. Your account is approved!</p><a href="/">Back to Home</a>`);
+                // Redirect recruiter to their dashboard with userId for demo purposes
+                return res.redirect(`/recruiter/dashboard?userId=${user.id}`);
             } else {
                 return res.send(`<h1>Seeker Dashboard</h1><p>Welcome, ${user.fullname}. Start searching for jobs!</p><a href="/">Back to Home</a>`);
             }
@@ -62,6 +59,21 @@ router.post('/login', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
+    }
+});
+
+// Get User by ID (Simple for demo)
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT id, fullname, email, role, status FROM users WHERE id = ?', [req.params.userId]);
+        if (rows.length > 0) {
+            res.json(rows[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
