@@ -32,15 +32,16 @@
                     <thead class="table-light">
                         <tr>
                             <th>Name</th>
+                            <th>Company</th>
                             <th>Email</th>
-                            <th>Status</th>
+                            <th>Submitted At</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% if (recruiters.length===0) { %>
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">No pending recruiters found.</td>
+                                <td colspan="5" class="text-center py-4 text-muted">No pending recruiters found.</td>
                             </tr>
                             <% } %>
                                 <% recruiters.forEach(user=> { %>
@@ -49,22 +50,18 @@
                                             <%= user.fullname %>
                                         </td>
                                         <td>
+                                            <span class="badge bg-info text-dark"><%= user.company_name || 'N/A' %></span>
+                                        </td>
+                                        <td>
                                             <%= user.email %>
                                         </td>
-                                        <td><span class="badge bg-warning text-dark">
-                                                <%= user.status %>
-                                            </span></td>
+                                        <td>
+                                            <%= new Date(user.submitted_at).toLocaleDateString() %>
+                                        </td>
                                         <td class="text-end">
-                                            <form action="/api/admin/approve" method="POST" class="d-inline">
-                                                <input type="hidden" name="userId" value="<%= user.id %>">
-                                                <button type="submit"
-                                                    class="btn btn-success btn-sm px-3">Approve</button>
-                                            </form>
-                                            <form action="/api/admin/reject" method="POST" class="d-inline ms-2">
-                                                <input type="hidden" name="userId" value="<%= user.id %>">
-                                                <button type="submit"
-                                                    class="btn btn-outline-danger btn-sm px-3">Reject</button>
-                                            </form>
+                                            <a href="/admin/recruiter/<%= user.id %>" class="btn btn-primary btn-sm px-3">
+                                                <i class="fas fa-eye me-1"></i> Review
+                                            </a>
                                         </td>
                                     </tr>
                                     <% }); %>

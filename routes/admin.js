@@ -9,11 +9,38 @@ router.use(auth(['admin']));
 // Admin Dashboard Page
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT id, fullname, email, status FROM users WHERE role = "recruiter" AND status = "pending"');
+        const [rows] = await db.query(`
+            SELECT u.id, u.fullname, u.email, u.status, rd.company_name, rd.created_at as submitted_at
+            FROM users u
+            LEFT JOIN recruiter_details rd ON u.id = rd.user_id
+            WHERE u.role = "recruiter" AND u.status = "pending"
+            ORDER BY rd.created_at DESC
+        `);
         res.render('admin', { title: 'Admin Dashboard', recruiters: rows });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error loading admin panel');
+    }
+});
+
+// View Recruiter Details
+router.get('/recruiter/:id', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT u.*, rd.* 
+            FROM users u
+            JOIN recruiter_details rd ON u.id = rd.user_id
+            WHERE u.id = ?
+        `, [req.params.id]);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Recruiter not found');
+        }
+
+        res.render('admin-recruiter-review', { title: 'Review Recruiter', recruiter: rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading recruiter details');
     }
 });
 

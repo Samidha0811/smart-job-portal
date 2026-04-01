@@ -10,11 +10,15 @@ router.post('/register', async (req, res) => {
     const { username, email, password, role } = req.body;
     
     if (!username || !email || !password || !role) {
-        return res.status(400).send('All fields are required.');
+        return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
+        // Both seekers and recruiters start as pending or active?
+        // User said: "Status = PENDING" after filling company details.
+        // So maybe initial user status is 'active' but role-specific status is 'pending'?
+        // The users table has a status column. Let's keep recruiters as 'pending'.
         const status = (role === 'recruiter') ? 'pending' : 'active';
         
         const [result] = await db.query(
@@ -24,17 +28,19 @@ router.post('/register', async (req, res) => {
 
         console.log('New User Registered in DB:', { id: result.insertId, username, role, status });
         
-        const message = (role === 'recruiter') 
-            ? 'Registration Successful! Please wait for Admin approval before you can post jobs.' 
-            : 'Registration Successful! You can now login.';
-
-        res.send(`<h1>Registration Successful!</h1><p>${message}</p><a href="/login">Go to Login</a>`);
+        res.status(201).json({
+            message: 'Registration Successful!',
+            userId: result.insertId,
+            role: role,
+            status: status,
+            redirectTo: (role === 'recruiter') ? '/recruiter/register-details' : '/login'
+        });
     } catch (err) {
         console.error(err);
         if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(400).send('<h1>Error</h1><p>Email already registered.</p><a href="/register">Try again</a>');
+            return res.status(400).json({ message: 'Email already registered.' });
         }
-        res.status(500).send('<h1>Server Error</h1><p>Something went wrong with the database.</p>');
+        res.status(500).json({ message: 'Something went wrong with the database.' });
     }
 });
 

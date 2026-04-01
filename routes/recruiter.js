@@ -2,8 +2,67 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const auth = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
 
-// Protect all recruiter routes
+// Multer Config for Documents
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/documents');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({ storage: storage });
+
+// Register Details API (Step 2)
+router.post('/register-details', upload.fields([
+    { name: 'registration_cert', maxCount: 1 },
+    { name: 'gst_doc', maxCount: 1 },
+    { name: 'pan_doc', maxCount: 1 }
+]), async (req, res) => {
+    const {
+        user_id, company_name, company_email, company_website, company_description,
+        industry, address_line, city, state, country, pincode,
+        full_name, contact_number, designation, registration_cert_no,
+        gst_number, pan_number, company_size, linkedin_profile, years_in_business
+    } = req.body;
+
+    if (!user_id || !company_name || !company_email) {
+        return res.status(400).json({ message: 'User ID, Company Name and Email are required.' });
+    }
+
+    const registration_cert_url = req.files['registration_cert'] ? `/uploads/documents/${req.files['registration_cert'][0].filename}` : null;
+    const gst_doc_url = req.files['gst_doc'] ? `/uploads/documents/${req.files['gst_doc'][0].filename}` : null;
+    const pan_doc_url = req.files['pan_doc'] ? `/uploads/documents/${req.files['pan_doc'][0].filename}` : null;
+
+    try {
+        await db.query(
+            `INSERT INTO recruiter_details (
+                user_id, company_name, company_email, company_website, company_description,
+                industry, address_line, city, state, country, pincode,
+                full_name, contact_number, designation, registration_cert_no, registration_cert_url,
+                gst_number, gst_doc_url, pan_number, pan_doc_url,
+                company_size, linkedin_profile, years_in_business, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+            [
+                user_id, company_name, company_email, company_website, company_description,
+                industry, address_line, city, state, country, pincode,
+                full_name, contact_number, designation, registration_cert_no, registration_cert_url,
+                gst_number, gst_doc_url, pan_number, pan_doc_url,
+                company_size, linkedin_profile, years_in_business
+            ]
+        );
+
+        res.json({ success: true, message: 'Recruiter details submitted! Please wait for Admin approval.' });
+    } catch (err) {
+        console.error('Error saving recruiter details:', err);
+        res.status(500).json({ success: false, message: 'Database error while saving details.' });
+    }
+});
+
+// Protect all following recruiter routes
 router.use(auth(['recruiter']));
 
 // Create/Update Company Profile (Uses logged-in user ID)

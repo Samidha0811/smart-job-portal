@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="/admin">Admin Dashboard</a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item"><a class="nav-link" href="/admin">Back to Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link" href="/api/auth/logout">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0 rounded-3 mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h4 class="mb-0 fw-bold"><i class="fas fa-user-check me-2"></i>Review Recruiter Request</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <!-- Left Column: Company Info -->
+                            <div class="col-md-6 mb-4">
+                                <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">🏢 Company Information</h5>
+                                <p><strong>Name:</strong> <%= recruiter.company_name %></p>
+                                <p><strong>Email:</strong> <%= recruiter.company_email %></p>
+                                <p><strong>Website:</strong> <a href="<%= recruiter.company_website %>" target="_blank"><%= recruiter.company_website %></a></p>
+                                <p><strong>Industry:</strong> <%= recruiter.industry %></p>
+                                <p><strong>Company Size:</strong> <%= recruiter.company_size %></p>
+                                <p><strong>Description:</strong> <%= recruiter.company_description %></p>
+                                <p><strong>LinkedIn:</strong> <a href="<%= recruiter.linkedin_profile %>" target="_blank">Profile Link</a></p>
+                            </div>
+
+                            <!-- Right Column: Personal & Address -->
+                            <div class="col-md-6 mb-4">
+                                <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">👤 Contact Person</h5>
+                                <p><strong>Name:</strong> <%= recruiter.fullname %></p>
+                                <p><strong>Designation:</strong> <%= recruiter.designation %></p>
+                                <p><strong>Phone:</strong> <%= recruiter.contact_number %></p>
+
+                                <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary mt-4">📍 Address</h5>
+                                <p><%= recruiter.address_line %></p>
+                                <p><%= recruiter.city %>, <%= recruiter.state %></p>
+                                <p><%= recruiter.country %> - <%= recruiter.pincode %></p>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Documents Section -->
+                        <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-file-contract me-2"></i>Verification Documents</h5>
+                        <div class="row g-4">
+                            <!-- Registration Certificate -->
+                            <div class="col-md-4">
+                                <div class="card h-100 border shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
+                                        <h6>Reg. Certificate</h6>
+                                        <p class="small text-muted">ID: <%= recruiter.registration_cert_no %></p>
+                                        <% if (recruiter.registration_cert_url) { %>
+                                            <a href="<%= recruiter.registration_cert_url %>" class="btn btn-outline-primary btn-sm" target="_blank">View Document</a>
+                                        <% } else { %>
+                                            <span class="badge bg-danger">Missing</span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GST Document -->
+                            <div class="col-md-4">
+                                <div class="card h-100 border shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-receipt fa-3x text-info mb-3"></i>
+                                        <h6>GST Details</h6>
+                                        <p class="small text-muted">ID: <%= recruiter.gst_number || 'N/A' %></p>
+                                        <% if (recruiter.gst_doc_url) { %>
+                                            <a href="<%= recruiter.gst_doc_url %>" class="btn btn-outline-primary btn-sm" target="_blank">View Document</a>
+                                        <% } else { %>
+                                            <span class="badge bg-secondary">Not Provided</span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PAN Card -->
+                            <div class="col-md-4">
+                                <div class="card h-100 border shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-id-card fa-3x text-success mb-3"></i>
+                                        <h6>PAN Card</h6>
+                                        <p class="small text-muted">ID: <%= recruiter.pan_number %></p>
+                                        <% if (recruiter.pan_doc_url) { %>
+                                            <a href="<%= recruiter.pan_doc_url %>" class="btn btn-outline-primary btn-sm" target="_blank">View Document</a>
+                                        <% } else { %>
+                                            <span class="badge bg-danger">Missing</span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-3">
+                            <form action="/api/admin/reject" method="POST" onsubmit="return confirm('Are you sure you want to REJECT this recruiter?');">
+                                <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
+                                <button type="submit" class="btn btn-danger btn-lg px-5 fw-bold">Reject</button>
+                            </form>
+                            <form action="/api/admin/approve" method="POST" onsubmit="return confirm('Are you sure you want to APPROVE this recruiter?');">
+                                <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
+                                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold">Approve</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
