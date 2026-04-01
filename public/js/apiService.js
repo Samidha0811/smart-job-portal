@@ -108,6 +108,58 @@ const apiService = {
     async getJobApplicants(jobId) {
         const response = await fetch(`/api/recruiter/applicants/${jobId}`);
         return await response.json();
+    },
+
+    /**
+     * Update application status (Recruiter)
+     * @param {number} applicationId 
+     * @param {string} status 'shortlisted' | 'rejected' | 'pending'
+     */
+    async updateApplicationStatus(applicationId, status) {
+        const response = await fetch(`/api/recruiter/applications/${applicationId}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        return await response.json();
+    },
+
+    /**
+     * Get all applications for recruiter's jobs
+     */
+    async getRecruiterApplications() {
+        const response = await fetch('/api/recruiter/all-applications');
+        return await response.json();
+    },
+
+    /**
+     * Get all open jobs (Seeker/Public)
+     */
+    async getJobs() {
+        const response = await fetch('/api/seeker/jobs');
+        return await response.json();
+    },
+
+    /**
+     * Apply to a job (Seeker)
+     * @param {number} jobId 
+     * @param {string} resumePath 
+     */
+    async applyToJob(jobId, resumePath = 'MockResume.pdf') {
+        const response = await fetch(`/api/seeker/apply/${jobId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resume_path: resumePath })
+        });
+        return await response.json();
+    },
+
+    /**
+     * Get seeker's own applications
+     */
+    async getMyApplications() {
+        const response = await fetch('/api/seeker/my-applications');
+        return await response.json();
     }
 };
 

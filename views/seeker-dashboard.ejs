@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="/">Smart Job Portal</a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/jobs">Browse Jobs</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/seeker/dashboard">My Applications</a></li>
+                <li class="nav-item"><a class="nav-link text-white-50" href="/api/auth/logout">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="fw-bold text-primary mb-0">My Applications</h2>
+                            <span class="badge bg-primary fs-6" id="appCount">0 Applications</span>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="applicationList">
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/apiService.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/seeker/my-applications');
+                const apps = await response.json();
+                
+                const appList = document.getElementById('applicationList');
+                const appCount = document.getElementById('appCount');
+                
+                if (apps.length === 0) {
+                    appList.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">You haven\'t applied to any jobs yet. <a href="/jobs">Browse Jobs</a></td></tr>';
+                    appCount.textContent = '0 Applications';
+                    return;
+                }
+
+                appCount.textContent = `${apps.length} Application${apps.length > 1 ? 's' : ''}`;
+                appList.innerHTML = apps.map(app => `
+                    <tr>
+                        <td class="fw-bold">${app.job_title}</td>
+                        <td>${app.company_name}</td>
+                        <td class="text-muted">${new Date(app.applied_at).toLocaleDateString()}</td>
+                        <td>
+                            <span class="badge ${getStatusBadge(app.status)} px-3 py-2 rounded-pill">
+                                ${app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('applicationList').innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading applications.</td></tr>';
+            }
+        });
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'shortlisted': return 'bg-success';
+                case 'rejected': return 'bg-danger';
+                default: return 'bg-warning text-dark';
+            }
+        }
+    </script>
+</body>
+</html>

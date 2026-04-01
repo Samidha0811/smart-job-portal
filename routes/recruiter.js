@@ -97,4 +97,57 @@ router.get('/applicants/:jobId', async (req, res) => {
     }
 });
 
+// Update application status
+router.patch('/applications/:applicationId/status', async (req, res) => {
+    const { status } = req.body;
+    const applicationId = req.params.applicationId;
+
+    if (!['pending', 'shortlisted', 'rejected'].includes(status)) {
+        return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+
+    try {
+        // Verify the application belongs to a job posted by this recruiter
+        const [appRow] = await db.query(
+            `SELECT a.* FROM applications a 
+             JOIN jobs j ON a.job_id = j.id 
+             WHERE a.id = ? AND j.recruiter_id = ?`,
+            [applicationId, req.user.id]
+        );
+
+        if (appRow.length === 0) {
+            return res.status(403).json({ success: false, message: 'Unauthorized to update this application' });
+        }
+
+        await db.query(
+            'UPDATE applications SET status = ? WHERE id = ?',
+            [status, applicationId]
+        );
+
+        res.json({ success: true, message: `Application marked as ${status}!` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error updating application status' });
+    }
+});
+
+// Get all applications for jobs by this recruiter
+router.get('/all-applications', async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            `SELECT a.*, u.fullname as seeker_name, u.email as seeker_email, j.title as job_title 
+             FROM applications a 
+             JOIN users u ON a.seeker_id = u.id 
+             JOIN jobs j ON a.job_id = j.id 
+             WHERE j.recruiter_id = ? 
+             ORDER BY a.applied_at DESC`,
+            [req.user.id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching applications' });
+    }
+});
+
 module.exports = router;

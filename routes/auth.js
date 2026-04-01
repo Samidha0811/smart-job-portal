@@ -65,8 +65,11 @@ router.post('/login', async (req, res) => {
                 return res.redirect('/admin');
             } else if (user.role === 'recruiter') {
                 return res.redirect('/recruiter/dashboard');
+            } else if (user.role === 'seeker') {
+                return res.redirect('/seeker/dashboard');
             } else {
-                return res.send(`<h1>Seeker Dashboard</h1><p>Welcome, ${user.fullname}. Start searching for jobs!</p><a href="/">Back to Home</a>`);
+                // Fallback for other roles if any
+                return res.redirect('/');
             }
         } else {
             res.status(401).send('<h1>Login Failed</h1><p>Invalid email or password.</p><a href="/login">Try Again</a>');
