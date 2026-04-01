@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const auth = require('../middleware/auth');
 
 // Register API
 router.post('/register', async (req, res) => {
@@ -45,11 +47,24 @@ router.post('/login', async (req, res) => {
         const user = rows[0];
 
         if (user && await bcrypt.compare(password, user.password)) {
+            // Generate JWT
+            const token = jwt.sign(
+                { id: user.id, email: user.email, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            // Set as cookie
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            });
+
             if (user.role === 'admin') {
                 return res.redirect('/admin');
             } else if (user.role === 'recruiter') {
-                // Redirect recruiter to their dashboard with userId for demo purposes
-                return res.redirect(`/recruiter/dashboard?userId=${user.id}`);
+                return res.redirect('/recruiter/dashboard');
             } else {
                 return res.send(`<h1>Seeker Dashboard</h1><p>Welcome, ${user.fullname}. Start searching for jobs!</p><a href="/">Back to Home</a>`);
             }
@@ -62,7 +77,32 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Get User by ID (Simple for demo)
+// Logout API
+router.get('/logout', (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        expires: new Date(0),
+        path: '/'
+    });
+    res.redirect('/login');
+});
+
+// Get Current Logged-in User
+router.get('/me', auth(), async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT id, fullname, email, role, status FROM users WHERE id = ?', [req.user.id]);
+        if (rows.length > 0) {
+            res.json(rows[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Get User by ID (Simple for admin/demo)
 router.get('/user/:userId', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT id, fullname, email, role, status FROM users WHERE id = ?', [req.params.userId]);

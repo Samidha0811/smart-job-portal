@@ -16,7 +16,7 @@
           <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-              <li class="nav-item"><a class="nav-link btn btn-outline-light btn-sm ms-3" href="/login">Logout</a></li>
+              <li class="nav-item"><a class="nav-link btn btn-outline-light btn-sm ms-3" href="/api/auth/logout">Logout</a></li>
             </ul>
           </div>
         </div>
@@ -81,19 +81,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/apiService.js"></script>
     <script>
-        // Use userId from query parameters if available (used for demo after login)
-        const urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('userId') || localStorage.getItem('userId');
-        
-        if (userId) {
-            localStorage.setItem('userId', userId);
-        } else {
-            window.location.href = '/login';
-        }
-
         async function loadJobs() {
             try {
-                const jobs = await window.apiService.getRecruiterJobs(userId);
+                const jobs = await window.apiService.getMyJobs();
                 const jobsList = document.getElementById('jobsList');
                 
                 if (jobs.length > 0) {
@@ -129,7 +119,12 @@
 
         async function loadDashboard() {
             try {
-                const user = await window.apiService.getUser(userId);
+                const user = await window.apiService.getCurrentUser();
+                
+                if (user.message === 'No token provided' || user.message === 'User not found') {
+                    window.location.href = '/login';
+                    return;
+                }
 
                 document.getElementById('recruiterName').textContent = user.fullname;
                 document.getElementById('recruiterEmail').textContent = user.email;
@@ -160,6 +155,7 @@
 
             } catch (err) {
                 console.error('Error loading dashboard:', err);
+                window.location.href = '/login';
             }
         }
 

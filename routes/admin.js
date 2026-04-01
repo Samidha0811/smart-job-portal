@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const auth = require('../middleware/auth');
+
+// Protect all admin routes
+router.use(auth(['admin']));
 
 // Admin Dashboard Page
 router.get('/', async (req, res) => {
