@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const auth = require('../middleware/auth');
+
 // General Page Routes
 router.get('/', (req, res) => {
     res.render('index', { title: 'Smart Job Portal - Home' });
@@ -18,25 +20,25 @@ router.get('/jobs', (req, res) => {
     res.render('jobs', { title: 'Jobs - Smart Job Portal' });
 });
 
-// Recruiter Pages
-router.get('/recruiter/dashboard', (req, res) => {
+// Recruiter Pages (Protected)
+router.get('/recruiter/dashboard', auth(['recruiter']), (req, res) => {
     res.render('recruiter-dashboard', { title: 'Recruiter Dashboard' });
 });
 
-router.get('/recruiter/create-profile', (req, res) => {
+router.get('/recruiter/create-profile', auth(['recruiter']), (req, res) => {
     res.render('create-profile', { title: 'Create Company Profile' });
 });
 
-router.get('/recruiter/post-job', (req, res) => {
+router.get('/recruiter/post-job', auth(['recruiter']), (req, res) => {
     res.render('post-job', { title: 'Post a New Job' });
 });
 
-// Seeker Pages
-router.get('/seeker/dashboard', (req, res) => {
+// Seeker Pages (Protected)
+router.get('/seeker/dashboard', auth(['seeker']), (req, res) => {
     res.render('seeker-dashboard', { title: 'Seeker Dashboard' });
 });
 
-router.get('/seeker/my-applications', (req, res) => {
+router.get('/seeker/my-applications', auth(['seeker']), (req, res) => {
     res.render('seeker-dashboard', { title: 'My Applications' }); // Reuse same dashboard or create separate
 });
 

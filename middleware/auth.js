@@ -2,6 +2,11 @@ const jwt = require('jsonwebtoken');
 
 const auth = (roles = []) => {
     return (req, res, next) => {
+        // Prevent browser caching for protected routes
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         const token = req.cookies.token;
 
         if (!token) {

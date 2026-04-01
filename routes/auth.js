@@ -82,9 +82,11 @@ router.post('/login', async (req, res) => {
 
 // Logout API
 router.get('/logout', (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.clearCookie('token', {
         httpOnly: true,
-        expires: new Date(0),
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
         path: '/'
     });
     res.redirect('/login');
