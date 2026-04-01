@@ -28,6 +28,7 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const pageRoutes = require('./routes/pages');
 const recruiterRoutes = require('./routes/recruiter');
+const seekerRoutes = require('./routes/seeker');
 
 // Basic Routes
 app.use('/', pageRoutes);
@@ -37,6 +38,7 @@ app.use('/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/recruiter', recruiterRoutes);
+app.use('/api/seeker', seekerRoutes);
 
 // Start Server
 app.listen(PORT, () => {

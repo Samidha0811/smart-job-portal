@@ -72,6 +72,34 @@
                             </div>
                         </div>
                     </div>
+                    </div>
+                </div>
+
+                <!-- Applications Section -->
+                <div class="mt-5" id="applicationsSection" style="display:none;">
+                    <h2 class="fw-bold mb-4">Applications Received</h2>
+                    <div class="card shadow border-0 rounded-3">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Applicant</th>
+                                            <th>Job Title</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="allApplicationsList">
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">No applications received yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,6 +145,67 @@
             }
         }
 
+        async function loadApplications() {
+            try {
+                const apps = await window.apiService.getRecruiterApplications();
+                const appList = document.getElementById('allApplicationsList');
+                
+                if (apps.length > 0) {
+                    document.getElementById('applicationsSection').style.display = 'block';
+                    appList.innerHTML = apps.map(app => `
+                        <tr>
+                            <td>
+                                <div class="fw-bold">${app.seeker_name}</div>
+                                <div class="text-muted small">${app.seeker_email}</div>
+                            </td>
+                            <td>${app.job_title}</td>
+                            <td class="text-muted small">${new Date(app.applied_at).toLocaleDateString()}</td>
+                            <td>
+                                <span class="badge ${getStatusBadge(app.status)} px-3 py-2 rounded-pill">
+                                    ${app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-success" onclick="updateStatus(${app.id}, 'shortlisted')">Shortlist</button>
+                                    <button class="btn btn-outline-danger" onclick="updateStatus(${app.id}, 'rejected')">Reject</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    document.getElementById('applicationsSection').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error loading applications:', err);
+            }
+        }
+
+        async function updateStatus(appId, status) {
+            if (!confirm(`Are you sure you want to mark this applicant as ${status}?`)) return;
+            
+            try {
+                const result = await window.apiService.updateApplicationStatus(appId, status);
+                if (result.success) {
+                    alert(result.message);
+                    loadApplications(); // Reload list
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                console.error('Error updating status:', err);
+                alert('An error occurred.');
+            }
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'shortlisted': return 'bg-success';
+                case 'rejected': return 'bg-danger';
+                default: return 'bg-warning text-dark';
+            }
+        }
+
         async function loadDashboard() {
             try {
                 const user = await window.apiService.getCurrentUser();
@@ -141,8 +230,9 @@
                     
                     postJobBtn.onclick = () => window.location.href = '/recruiter/post-job';
                     
-                    // Load jobs if approved
+                    // Load data if approved
                     loadJobs();
+                    loadApplications();
                 } else if (user.status === 'pending') {
                     statusBadge.className = 'alert alert-warning py-2 text-center fw-bold text-dark';
                     statusBadge.textContent = 'PENDING APPROVAL';

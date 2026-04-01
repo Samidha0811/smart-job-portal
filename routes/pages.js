@@ -31,4 +31,13 @@ router.get('/recruiter/post-job', (req, res) => {
     res.render('post-job', { title: 'Post a New Job' });
 });
 
+// Seeker Pages
+router.get('/seeker/dashboard', (req, res) => {
+    res.render('seeker-dashboard', { title: 'Seeker Dashboard' });
+});
+
+router.get('/seeker/my-applications', (req, res) => {
+    res.render('seeker-dashboard', { title: 'My Applications' }); // Reuse same dashboard or create separate
+});
+
 module.exports = router;
