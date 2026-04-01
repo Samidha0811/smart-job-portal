@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const auth = require('../middleware/auth');
 
-// Create/Update Company Profile
+// Protect all recruiter routes
+router.use(auth(['recruiter']));
+
+// Create/Update Company Profile (Uses logged-in user ID)
 router.post('/profile', async (req, res) => {
-    const { userId, bio, company_name, website } = req.body;
+    const userId = req.user.id;
+    const { bio, company_name, website } = req.body;
     
     try {
-        // Check if profile exists
         const [existing] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [userId]);
         
         if (existing.length > 0) {
@@ -28,12 +32,12 @@ router.post('/profile', async (req, res) => {
     }
 });
 
-// Post a New Job
+// Post a New Job (Uses logged-in user ID)
 router.post('/post-job', async (req, res) => {
-    const { recruiterId, title, description, keywords, location, salary } = req.body;
+    const recruiterId = req.user.id;
+    const { title, description, keywords, location, salary } = req.body;
     
     try {
-        // Check if recruiter is approved
         const [user] = await db.query('SELECT status FROM users WHERE id = ?', [recruiterId]);
         
         if (!user[0] || user[0].status !== 'approved') {
@@ -51,27 +55,23 @@ router.post('/post-job', async (req, res) => {
     }
 });
 
-// Get Profile by User ID
-router.get('/profile/:userId', async (req, res) => {
+// Get Own Profile (Uses logged-in user ID)
+router.get('/profile', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.params.userId]);
-        if (rows.length > 0) {
-            res.json(rows[0]);
-        } else {
-            res.json(null);
-        }
+        const [rows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
+        res.json(rows[0] || null);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
-// Get Jobs by Recruiter ID
-router.get('/jobs/:recruiterId', async (req, res) => {
+// Get Own Jobs (Uses logged-in user ID)
+router.get('/my-jobs', async (req, res) => {
     try {
         const [rows] = await db.query(
             'SELECT * FROM jobs WHERE recruiter_id = ? ORDER BY created_at DESC',
-            [req.params.recruiterId]
+            [req.user.id]
         );
         res.json(rows);
     } catch (err) {

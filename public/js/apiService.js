@@ -52,17 +52,16 @@ const apiService = {
         return response;
     },
     /**
-     * Get user details by ID
-     * @param {number} userId 
+     * Get current logged-in user details
      */
-    async getUser(userId) {
-        const response = await fetch(`/api/auth/user/${userId}`);
+    async getCurrentUser() {
+        const response = await fetch('/api/auth/me');
         return await response.json();
     },
 
     /**
-     * Create or update company profile
-     * @param {Object} profileData { userId, bio, company_name, website }
+     * Create or update company profile (Auth handled by cookie)
+     * @param {Object} profileData { bio, company_name, website }
      */
     async updateProfile(profileData) {
         const response = await fetch('/api/recruiter/profile', {
@@ -74,8 +73,8 @@ const apiService = {
     },
 
     /**
-     * Post a new job
-     * @param {Object} jobData { recruiterId, title, description, keywords, location, salary }
+     * Post a new job (Auth handled by cookie)
+     * @param {Object} jobData { title, description, keywords, location, salary }
      */
     async postJob(jobData) {
         const response = await fetch('/api/recruiter/post-job', {
@@ -85,12 +84,20 @@ const apiService = {
         });
         return await response.json();
     },
+
     /**
-     * Get jobs by recruiter ID
-     * @param {number} recruiterId 
+     * Get jobs for the logged-in recruiter
      */
-    async getRecruiterJobs(recruiterId) {
-        const response = await fetch(`/api/recruiter/jobs/${recruiterId}`);
+    async getMyJobs() {
+        const response = await fetch('/api/recruiter/my-jobs');
+        return await response.json();
+    },
+
+    /**
+     * Get profile for the logged-in recruiter
+     */
+    async getMyProfile() {
+        const response = await fetch('/api/recruiter/profile');
         return await response.json();
     },
 
