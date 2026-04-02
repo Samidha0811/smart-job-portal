@@ -8,12 +8,12 @@
         <div class="collapse navbar-collapse" id="adminNavbarContent">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active fw-bold' : '' %>" href="/admin">
+                    <a class="nav-link text-white <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active fw-bold' : '' %>" href="/admin">
                         <i class="fas fa-chart-line me-1"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-outline-danger btn-sm ms-lg-3 px-3 text-white" href="#" id="adminLogoutLink">
+                    <a class="btn btn-danger btn-sm ms-lg-3 px-3 text-white fw-bold shadow-sm" href="#" id="adminLogoutLink">
                         <i class="fas fa-sign-out-alt me-1"></i> Logout
                     </a>
                 </li>

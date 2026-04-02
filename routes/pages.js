@@ -37,6 +37,10 @@ router.get('/recruiter/post-job', auth(['recruiter']), (req, res) => {
     res.render('post-job', { title: 'Post a New Job' });
 });
 
+router.get('/recruiter/applications', auth(['recruiter']), (req, res) => {
+    res.render('recruiter-applications', { title: 'Applications Received' });
+});
+
 // Seeker Pages (Protected)
 router.get('/seeker/dashboard', auth(['seeker']), (req, res) => {
     res.render('seeker-dashboard', { title: 'Seeker Dashboard' });
