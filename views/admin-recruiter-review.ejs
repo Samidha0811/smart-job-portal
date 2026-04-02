@@ -107,8 +107,8 @@
                                                 </div>
                                                 <h6 class="fw-bold mb-1">Company Registration</h6>
                                                 <p class="small text-muted mb-3">ID: <%= recruiter.registration_cert_no %></p>
-                                                <% if (recruiter.registration_cert_url) { %>
-                                                    <a href="<%= recruiter.registration_cert_url %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
+                                                <% if (recruiter.registration_cert_no) { %>
+                                                    <a href="/api/recruiter/document/registration_cert/<%= recruiter.user_id %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
                                                 <% } else { %>
                                                     <span class="badge bg-danger rounded-pill w-100 py-2">Not Uploaded</span>
                                                 <% } %>
@@ -123,8 +123,8 @@
                                                 </div>
                                                 <h6 class="fw-bold mb-1">GST/Tax Details</h6>
                                                 <p class="small text-muted mb-3">ID: <%= recruiter.gst_number || 'N/A' %></p>
-                                                <% if (recruiter.gst_doc_url) { %>
-                                                    <a href="<%= recruiter.gst_doc_url %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
+                                                <% if (recruiter.gst_number) { %>
+                                                    <a href="/api/recruiter/document/gst_doc/<%= recruiter.user_id %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
                                                 <% } else { %>
                                                     <span class="badge bg-secondary rounded-pill w-100 py-2">Not Required</span>
                                                 <% } %>
@@ -139,8 +139,8 @@
                                                 </div>
                                                 <h6 class="fw-bold mb-1">PAN Verification</h6>
                                                 <p class="small text-muted mb-3">ID: <%= recruiter.pan_number %></p>
-                                                <% if (recruiter.pan_doc_url) { %>
-                                                    <a href="<%= recruiter.pan_doc_url %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
+                                                <% if (recruiter.pan_number) { %>
+                                                    <a href="/api/recruiter/document/pan_doc/<%= recruiter.user_id %>" class="btn btn-sm btn-primary w-100 rounded-pill" target="_blank">View Docs</a>
                                                 <% } else { %>
                                                     <span class="badge bg-danger rounded-pill w-100 py-2">Not Uploaded</span>
                                                 <% } %>
