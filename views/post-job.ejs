@@ -105,10 +105,55 @@
         </div>
     </div>
 
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+                <div id="modalHeader" class="modal-header border-0 py-3 text-white">
+                    <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div id="modalIcon" class="mb-3"></div>
+                    <h4 id="modalTitle" class="fw-bold mb-2"></h4>
+                    <p id="modalMessage" class="text-muted mb-0"></p>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/apiService.js"></script>
     <script>
+        function showNotification(title, message, type = 'success', callback = null) {
+            const modalEl = document.getElementById('notificationModal');
+            const header = document.getElementById('modalHeader');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+            const okBtn = document.getElementById('modalOkBtn');
+
+            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
+            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            const modal = new bootstrap.Modal(modalEl);
+            
+            if (callback) {
+                modalEl.addEventListener('hidden.bs.modal', function handler() {
+                    callback();
+                    modalEl.removeEventListener('hidden.bs.modal', handler);
+                });
+            }
+            
+            modal.show();
+        }
+
         // Handle Logout Popup
         document.addEventListener('DOMContentLoaded', () => {
             const logoutLink = document.getElementById('logoutLink');
@@ -139,14 +184,15 @@
             try {
                 const result = await window.apiService.postJob(data);
                 if (result.success) {
-                    alert('Job posted successfully!');
-                    window.location.href = '/recruiter/dashboard';
+                    showNotification('Success', 'Job posted successfully!', 'success', () => {
+                        window.location.href = '/recruiter/dashboard';
+                    });
                 } else {
-                    alert('Error: ' + result.message);
+                    showNotification('Error', result.message, 'error');
                 }
             } catch (err) {
                 console.error('Job Posting Error:', err);
-                alert('An error occurred while posting the job.');
+                showNotification('Error', 'An error occurred while posting the job.', 'error');
             }
         });
     </script>

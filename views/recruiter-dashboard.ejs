@@ -80,6 +80,49 @@
         </div>
     </div>
 
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+                <div id="modalHeader" class="modal-header border-0 py-3 text-white">
+                    <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div id="modalIcon" class="mb-3"></div>
+                    <h4 id="modalTitle" class="fw-bold mb-2"></h4>
+                    <p id="modalMessage" class="text-muted mb-0"></p>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="confirmModalLabel">Confirm Action</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div class="mb-3 text-primary">
+                        <i class="fas fa-question-circle fa-4x"></i>
+                    </div>
+                    <h4 id="confirmTitle" class="fw-bold mb-2">Are you sure?</h4>
+                    <p id="confirmMessage" class="text-muted mb-0"></p>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                    <button type="button" class="btn btn-light px-4 fw-bold text-muted" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm rounded-pill" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Confirmation Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -111,7 +154,43 @@
     <script>
         // Handle Logout Popup
         document.addEventListener('DOMContentLoaded', () => {
-            const logoutLink = document.getElementById('logoutLink');
+            function showNotification(title, message, type = 'success', callback = null) {
+            const modalEl = document.getElementById('notificationModal');
+            const header = document.getElementById('modalHeader');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+
+            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
+            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            const modal = new bootstrap.Modal(modalEl);
+            if (callback) {
+                modalEl.addEventListener('hidden.bs.modal', function handler() {
+                    callback();
+                    modalEl.removeEventListener('hidden.bs.modal', handler);
+                });
+            }
+            modal.show();
+        }
+
+        function showConfirm(title, message, onConfirm) {
+            const modalEl = document.getElementById('confirmModal');
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            
+            const modal = new bootstrap.Modal(modalEl);
+            confirmBtn.onclick = () => {
+                onConfirm();
+                modal.hide();
+            };
+            modal.show();
+        }
+
+        const logoutLink = document.getElementById('logoutLink');
             if (logoutLink) {
                 logoutLink.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -168,20 +247,20 @@
 
 
         async function updateStatus(appId, status) {
-            if (!confirm(`Are you sure you want to mark this applicant as ${status}?`)) return;
-            
-            try {
-                const result = await window.apiService.updateApplicationStatus(appId, status);
-                if (result.success) {
-                    alert(result.message);
-                    loadApplications(); // Reload list
-                } else {
-                    alert(result.message);
+            showConfirm('Confirmation', `Are you sure you want to mark this applicant as ${status}?`, async () => {
+                try {
+                    const result = await window.apiService.updateApplicationStatus(appId, status);
+                    if (result.success) {
+                        showNotification('Success', result.message, 'success');
+                        loadApplications(); // Reload list
+                    } else {
+                        showNotification('Error', result.message, 'error');
+                    }
+                } catch (err) {
+                    console.error('Error updating status:', err);
+                    showNotification('Error', 'An error occurred.', 'error');
                 }
-            } catch (err) {
-                console.error('Error updating status:', err);
-                alert('An error occurred.');
-            }
+            });
         }
 
         function getStatusBadge(status) {
