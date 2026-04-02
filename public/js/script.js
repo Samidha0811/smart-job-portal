@@ -13,13 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const response = await window.apiService.register(data);
-                const resultText = await response.text();
+                const result = await response.json();
                 
                 if (response.ok) {
-                    // Update the page with the success message
-                    document.body.innerHTML = `<div class="container py-5 text-center">${resultText}</div>`;
+                    if (result.redirectTo) {
+                        // For recruiters, we might want to pass the user ID in the session or URL
+                        if (result.role === 'recruiter') {
+                            // Store userId in sessionStorage for the next step
+                            sessionStorage.setItem('pendingRecruiterId', result.userId);
+                            window.location.href = result.redirectTo;
+                        } else {
+                            alert(result.message);
+                            window.location.href = result.redirectTo;
+                        }
+                    } else {
+                        document.body.innerHTML = `<div class="container py-5 text-center"><h1>Success!</h1><p>${result.message}</p><a href="/login" class="btn btn-primary">Go to Login</a></div>`;
+                    }
                 } else {
-                    alert('Registration failed: ' + resultText.replace(/<[^>]*>?/gm, ''));
+                    alert('Registration failed: ' + (result.message || 'Unknown error'));
                 }
             } catch (err) {
                 console.error('Registration Error:', err);

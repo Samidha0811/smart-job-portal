@@ -1,44 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
+const adminController = require('../controllers/adminController');
 const auth = require('../middleware/auth');
 
 // Protect all admin routes
 router.use(auth(['admin']));
 
 // Admin Dashboard Page
-router.get('/', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT id, fullname, email, status FROM users WHERE role = "recruiter" AND status = "pending"');
-        res.render('admin', { title: 'Admin Dashboard', recruiters: rows });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error loading admin panel');
-    }
-});
+router.get('/', adminController.getDashboard);
+
+// View Recruiter Details
+router.get('/recruiter/:id', adminController.getRecruiterDetails);
 
 // Admin Approve API
-router.post('/approve', async (req, res) => {
-    const { userId } = req.body;
-    try {
-        await db.query('UPDATE users SET status = "approved" WHERE id = ?', [userId]);
-        res.redirect('/admin');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error approving user');
-    }
-});
+router.post('/approve', adminController.approveRecruiter);
 
 // Admin Reject API
-router.post('/reject', async (req, res) => {
-    const { userId } = req.body;
-    try {
-        await db.query('UPDATE users SET status = "rejected" WHERE id = ?', [userId]);
-        res.redirect('/admin');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error rejecting user');
-    }
-});
+router.post('/reject', adminController.rejectRecruiter);
 
 module.exports = router;
