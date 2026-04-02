@@ -32,6 +32,9 @@ const recruiterController = {
                 gst_number, gst_doc_url, pan_number, pan_doc_url,
                 company_size, linkedin_profile, years_in_business
             });
+            
+            // Explicitly set user status to 'pending' for admin review
+            await User.updateStatus(user_id, 'pending');
 
             res.json({ success: true, message: 'Recruiter details submitted! Please wait for Admin approval.' });
         } catch (err) {
