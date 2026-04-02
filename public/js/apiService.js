@@ -141,15 +141,26 @@ const apiService = {
     },
 
     /**
+     * Complete seeker profile (Multer POST)
+     * @param {FormData} formData 
+     */
+    async submitSeekerProfile(formData) {
+        const response = await fetch('/api/seeker/complete-profile', {
+            method: 'POST',
+            body: formData
+        });
+        return await response.json();
+    },
+
+    /**
      * Apply to a job (Seeker)
      * @param {number} jobId 
-     * @param {string} resumePath 
      */
-    async applyToJob(jobId, resumePath = 'MockResume.pdf') {
+    async applyToJob(jobId) {
         const response = await fetch(`/api/seeker/apply/${jobId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ resume_path: resumePath })
+            body: JSON.stringify({}) // Backend uses the profile resume
         });
         return await response.json();
     },

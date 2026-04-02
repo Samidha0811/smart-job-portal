@@ -25,14 +25,51 @@
 
     <div class="container py-5">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card shadow border-0 rounded-3">
+            <!-- Profile Summary Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-primary text-white p-3 border-0">
+                        <h5 class="fw-bold mb-0 text-center"><i class="fas fa-user-circle me-2"></i>My Profile</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <div class="avatar bg-light text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-1"><%= user.fullname %></h4>
+                            <p class="text-muted small mb-0"><%= user.email %></p>
+                            <span class="badge bg-success rounded-pill mt-2">Verified Seeker</span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-2 small uppercase">About Me</h6>
+                            <p class="text-secondary small mb-0"><%= profile.bio %></p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-2 small uppercase">Professional Details</h6>
+                            <div class="small mb-1"><strong><i class="fas fa-graduation-cap me-1"></i> Education:</strong> <%= profile.education %></div>
+                            <div class="small mb-1"><strong><i class="fas fa-history me-1"></i> Experience:</strong> <%= profile.experience_years %> Years</div>
+                            <div class="small"><strong><i class="fas fa-tools me-1"></i> Skills:</strong> <%= profile.skills %></div>
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <a href="#" class="btn btn-outline-primary btn-sm fw-bold rounded-pill">
+                                <i class="fas fa-file-pdf me-1"></i> View Resume
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Section -->
+            <div class="col-md-8">
+                <div class="card shadow border-0 rounded-4">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h2 class="fw-bold text-primary mb-0">My Applications</h2>
                             <span class="badge bg-primary fs-6" id="appCount">0 Applications</span>
                         </div>
-                        
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
