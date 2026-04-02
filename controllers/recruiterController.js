@@ -98,8 +98,37 @@ const recruiterController = {
      */
     async getMyProfile(req, res) {
         try {
-            const [rows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
-            res.json(rows[0] || null);
+            // First check profiles table
+            const [profileRows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
+            
+            if (profileRows.length > 0) {
+                return res.json(profileRows[0]);
+            }
+
+            // If not in profiles, get from recruiter_details
+            // We map recruiter_details fields to profile fields
+            const [recruiterRows] = await db.query(
+                `SELECT 
+                    company_name, 
+                    company_website as website, 
+                    company_description as bio,
+                    industry,
+                    address_line,
+                    city,
+                    state,
+                    country,
+                    pincode,
+                    contact_number,
+                    designation,
+                    company_size,
+                    linkedin_profile,
+                    years_in_business
+                FROM recruiter_details 
+                WHERE user_id = ?`, 
+                [req.user.id]
+            );
+            
+            res.json(recruiterRows[0] || null);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal Server Error' });
