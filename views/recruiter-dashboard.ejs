@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-light">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
-          <a class="navbar-brand fw-bold" href="/recruiter/dashboard">Smart Job Portal</a>
-          <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto align-items-center">
-              <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/applications">Applications Received</a></li>
-              <li class="nav-item"><a class="btn btn-danger btn-sm ms-3 text-white fw-bold shadow-sm" href="#" id="logoutLink">Logout</a></li>
-            </ul>
-          </div>
+            <a class="navbar-brand fw-bold" href="/recruiter/dashboard">Smart Job Portal</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white"
+                            href="/recruiter/applications">Applications Received</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/my-jobs">Posted
+                            Jobs</a></li>
+                    <li class="nav-item"><a class="btn btn-danger btn-sm ms-3 text-white fw-bold shadow-sm" href="#"
+                            id="logoutLink">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -28,14 +36,16 @@
             <div class="col-md-4">
                 <div class="card shadow border-0 rounded-3 mb-4">
                     <div class="card-body p-4 text-center">
-                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 80px; height: 80px;">
                             <i class="fas fa-user-tie fa-2x"></i>
                         </div>
                         <h4 class="fw-bold" id="recruiterName">Loading...</h4>
                         <p class="text-muted" id="recruiterEmail">...</p>
                         <hr>
                         <div class="d-grid">
-                            <a href="/recruiter/create-profile" class="btn btn-outline-primary btn-sm">Edit Company Profile</a>
+                            <a href="/recruiter/create-profile" class="btn btn-outline-primary btn-sm">Edit Company
+                                Profile</a>
                         </div>
                     </div>
                 </div>
@@ -56,37 +66,48 @@
             <!-- Main Content -->
             <div class="col-md-8">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fw-bold">Your Job Postings</h2>
-                    <button id="postJobBtn" class="btn btn-primary px-4 fw-bold" disabled>
-                        <i class="fas fa-plus me-2"></i> Post a New Job
-                    </button>
+                    <h2 class="fw-bold mb-0">Your Job Postings</h2>
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="input-group shadow-sm" style="width: 250px;">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="dashboardSearch" class="form-control border-start-0 ps-0" placeholder="Search title or ID...">
+                        </div>
+                        <button id="postJobBtn" class="btn btn-primary px-4 fw-bold shadow-sm" disabled>
+                            <i class="fas fa-plus me-2"></i> Post a New Job
+                        </button>
+                    </div>
                 </div>
 
                 <div class="card shadow border-0 rounded-3">
                     <div class="card-body p-0">
                         <div id="jobsList" class="list-group list-group-flush">
                             <!-- Jobs will be loaded here -->
-                            <div class="p-5 text-center text-muted">
-                                <i class="fas fa-briefcase fa-3x mb-3 opacity-25"></i>
-                                <p>You haven't posted any jobs yet.</p>
-                            </div>
+                        </div>
+                        <div id="viewAllJobsContainer" class="p-4 text-center border-top" style="display:none;">
+                            <a href="/recruiter/my-jobs"
+                                class="btn btn-outline-primary btn-sm px-4 fw-bold rounded-pill">View All Posted
+                                Jobs</a>
                         </div>
                     </div>
-                    </div>
                 </div>
-
-
             </div>
+
+
         </div>
+    </div>
     </div>
 
     <!-- Notification Modal -->
-    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
                 <div id="modalHeader" class="modal-header border-0 py-3 text-white">
                     <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5 text-center">
                     <div id="modalIcon" class="mb-3"></div>
@@ -94,7 +115,8 @@
                     <p id="modalMessage" class="text-muted mb-0"></p>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill"
+                        data-bs-dismiss="modal" id="modalOkBtn">OK</button>
                 </div>
             </div>
         </div>
@@ -106,7 +128,8 @@
             <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
                 <div class="modal-header bg-primary text-white border-0 py-3">
                     <h5 class="modal-title fw-bold" id="confirmModalLabel">Confirm Action</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5 text-center">
                     <div class="mb-3 text-primary">
@@ -116,8 +139,10 @@
                     <p id="confirmMessage" class="text-muted mb-0"></p>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-light px-4 fw-bold text-muted" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm rounded-pill" id="confirmActionBtn">Confirm</button>
+                    <button type="button" class="btn btn-light px-4 fw-bold text-muted"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm rounded-pill"
+                        id="confirmActionBtn">Confirm</button>
                 </div>
             </div>
         </div>
@@ -131,7 +156,8 @@
                     <h5 class="modal-title fw-bold" id="logoutModalLabel">
                         <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5 text-center">
                     <div class="mb-3 text-danger">
@@ -141,7 +167,8 @@
                     <p class="text-muted mb-0">You will be signed out of your session.</p>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-light px-4 fw-bold text-muted" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light px-4 fw-bold text-muted"
+                        data-bs-dismiss="modal">Cancel</button>
                     <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold shadow-sm">Logout Now</a>
                 </div>
             </div>
@@ -155,44 +182,44 @@
         // Handle Logout Popup
         document.addEventListener('DOMContentLoaded', () => {
             function showNotification(title, message, type = 'success', callback = null) {
-            const modalEl = document.getElementById('notificationModal');
-            const header = document.getElementById('modalHeader');
-            const icon = document.getElementById('modalIcon');
-            const titleEl = document.getElementById('modalTitle');
-            const msgEl = document.getElementById('modalMessage');
+                const modalEl = document.getElementById('notificationModal');
+                const header = document.getElementById('modalHeader');
+                const icon = document.getElementById('modalIcon');
+                const titleEl = document.getElementById('modalTitle');
+                const msgEl = document.getElementById('modalMessage');
 
-            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
-            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
-            titleEl.textContent = title;
-            msgEl.textContent = message;
+                header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
+                icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
+                titleEl.textContent = title;
+                msgEl.textContent = message;
 
-            const modal = new bootstrap.Modal(modalEl);
-            if (callback) {
-                modalEl.addEventListener('hidden.bs.modal', function handler() {
-                    callback();
-                    modalEl.removeEventListener('hidden.bs.modal', handler);
-                });
+                const modal = new bootstrap.Modal(modalEl);
+                if (callback) {
+                    modalEl.addEventListener('hidden.bs.modal', function handler() {
+                        callback();
+                        modalEl.removeEventListener('hidden.bs.modal', handler);
+                    });
+                }
+                modal.show();
             }
-            modal.show();
-        }
 
-        function showConfirm(title, message, onConfirm) {
-            const modalEl = document.getElementById('confirmModal');
-            document.getElementById('confirmTitle').textContent = title;
-            document.getElementById('confirmMessage').textContent = message;
-            const confirmBtn = document.getElementById('confirmActionBtn');
-            
-            const modal = new bootstrap.Modal(modalEl);
-            confirmBtn.onclick = () => {
-                onConfirm();
-                modal.hide();
-            };
-            modal.show();
-        }
+            function showConfirm(title, message, onConfirm) {
+                const modalEl = document.getElementById('confirmModal');
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                const confirmBtn = document.getElementById('confirmActionBtn');
 
-        const logoutLink = document.getElementById('logoutLink');
+                const modal = new bootstrap.Modal(modalEl);
+                confirmBtn.onclick = () => {
+                    onConfirm();
+                    modal.hide();
+                };
+                modal.show();
+            }
+
+            const logoutLink = document.getElementById('logoutLink');
             if (logoutLink) {
-                logoutLink.addEventListener('click', function(e) {
+                logoutLink.addEventListener('click', function (e) {
                     e.preventDefault();
                     const modalEl = document.getElementById('logoutModal');
                     const logoutModal = new bootstrap.Modal(modalEl);
@@ -208,44 +235,82 @@
             }
         });
 
+        let allJobs = [];
+
         async function loadJobs() {
             try {
-                const jobs = await window.apiService.getMyJobs();
-                const jobsList = document.getElementById('jobsList');
-                
-                if (jobs.length > 0) {
-                    jobsList.innerHTML = '';
-                    for (const job of jobs) {
-                        const applicants = await window.apiService.getJobApplicants(job.id);
-                        
-                        const item = document.createElement('div');
-                        item.className = 'list-group-item p-4';
-                        item.innerHTML = `
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="fw-bold mb-1">${job.title}</h5>
-                                    <p class="text-primary small fw-bold mb-1">
-                                        <i class="fas fa-fingerprint me-1"></i> ID: ${job.job_id || 'N/A'}
-                                    </p>
-                                    <p class="text-muted small mb-0">
-                                        <i class="fas fa-map-marker-alt me-1"></i> ${job.location || 'Not specified'} | 
-                                        <i class="fas fa-calendar-alt me-1"></i> Posted on ${new Date(job.created_at).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                <div class="text-end">
-                                    <span class="badge bg-primary rounded-pill px-3 py-2">
-                                        ${applicants.length} Applicants
-                                    </span>
-                                </div>
-                            </div>
-                        `;
-                        jobsList.appendChild(item);
-                    }
-                }
+                allJobs = await window.apiService.getMyJobs();
+                renderJobs(allJobs, true); // initial render: limited to 3
             } catch (err) {
                 console.error('Error loading jobs:', err);
             }
         }
+
+        async function renderJobs(jobs, limited = false) {
+            const jobsList = document.getElementById('jobsList');
+            const viewAllContainer = document.getElementById('viewAllJobsContainer');
+
+            if (jobs.length === 0) {
+                jobsList.innerHTML = `
+                    <div class="p-5 text-center text-muted">
+                        <i class="fas fa-briefcase fa-3x mb-3 opacity-25"></i>
+                        <p>No jobs found.</p>
+                    </div>
+                `;
+                viewAllContainer.style.display = 'none';
+                return;
+            }
+
+            jobsList.innerHTML = '';
+
+            const displayJobs = limited ? jobs.slice(0, 3) : jobs;
+
+            if (limited && jobs.length > 3) {
+                viewAllContainer.style.display = 'block';
+            } else {
+                viewAllContainer.style.display = 'none';
+            }
+
+            for (const job of displayJobs) {
+                const applicants = await window.apiService.getJobApplicants(job.id);
+
+                const item = document.createElement('div');
+                item.className = 'list-group-item p-4';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">${job.title}</h5>
+                            <p class="text-primary small fw-bold mb-1">
+                                <i class="fas fa-fingerprint me-1"></i> ID: ${job.job_id || 'N/A'}
+                            </p>
+                            <p class="text-muted small mb-0">
+                                <i class="fas fa-map-marker-alt me-1"></i> ${job.location || 'Not specified'} | 
+                                <i class="fas fa-calendar-alt me-1"></i> Posted on ${new Date(job.created_at).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                ${applicants.length} Applicants
+                            </span>
+                        </div>
+                    </div>
+                `;
+                jobsList.appendChild(item);
+            }
+        }
+
+        document.getElementById('dashboardSearch').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase().trim();
+            if (q === '') {
+                renderJobs(allJobs, true);
+            } else {
+                const filtered = allJobs.filter(job =>
+                    job.title.toLowerCase().includes(q) ||
+                    (job.job_id && job.job_id.toLowerCase().includes(q))
+                );
+                renderJobs(filtered, false); // search: show all matches
+            }
+        });
 
 
 
@@ -267,7 +332,7 @@
         }
 
         function getStatusBadge(status) {
-            switch(status) {
+            switch (status) {
                 case 'shortlisted': return 'bg-success';
                 case 'rejected': return 'bg-danger';
                 default: return 'bg-warning text-dark';
@@ -277,7 +342,7 @@
         async function loadDashboard() {
             try {
                 const user = await window.apiService.getCurrentUser();
-                
+
                 if (user.message === 'No token provided' || user.message === 'User not found') {
                     window.location.href = '/login';
                     return;
@@ -295,9 +360,9 @@
                     statusBadge.textContent = 'APPROVED';
                     postJobBtn.disabled = false;
                     statusMessage.textContent = 'Account verified! You can now post jobs and view applicants.';
-                    
+
                     postJobBtn.onclick = () => window.location.href = '/recruiter/post-job';
-                    
+
                     // Load data if approved
                     loadJobs();
                 } else if (user.status === 'pending') {
@@ -319,4 +384,5 @@
         loadDashboard();
     </script>
 </body>
+
 </html>
