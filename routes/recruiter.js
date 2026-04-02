@@ -5,15 +5,8 @@ const recruiterController = require('../controllers/recruiterController');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 
-// Multer Config for Documents
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads/documents');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+// Multer Config for Documents (In-Memory Storage)
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Register Details API (Step 2)
@@ -24,7 +17,10 @@ router.post('/register-details', upload.fields([
 ]), recruiterController.registerDetails);
 
 // Protect all following recruiter routes
-router.use(auth(['recruiter']));
+router.use(auth(['recruiter', 'admin'])); // Allow admin to access documents too
+
+// Document Serving Route (New)
+router.get('/document/:type/:userId', recruiterController.serveDocument);
 
 // Profile Routes
 router.post('/profile', recruiterController.updateProfile);

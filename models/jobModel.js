@@ -6,9 +6,13 @@ const Job = {
      */
     async create(jobData) {
         const { recruiter_id, title, description, keywords, location, salary } = jobData;
+        
+        // Generate a unique human-readable job ID (e.g., JOB-1A2B3C)
+        const jobId = 'JOB-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
         return await db.query(
-            'INSERT INTO jobs (recruiter_id, title, description, keywords, location, salary) VALUES (?, ?, ?, ?, ?, ?)',
-            [recruiter_id, title, description, keywords, location, salary]
+            'INSERT INTO jobs (job_id, recruiter_id, title, description, keywords, location, salary) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [jobId, recruiter_id, title, description, keywords, location, salary]
         );
     },
 

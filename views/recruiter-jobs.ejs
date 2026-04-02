@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sticky-header {
+            position: sticky;
+            top: 56px;
+            z-index: 1020;
+            background: rgba(248, 249, 250, 0.8) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .job-item {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .job-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+            background-color: #f8fbff;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/recruiter/dashboard">Smart Job Portal</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white"
+                            href="/recruiter/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white"
+                            href="/recruiter/applications">Applications Received</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white active"
+                            href="/recruiter/my-jobs">Posted Jobs</a></li>
+                    <li class="nav-item"><a class="btn btn-danger btn-sm ms-3 text-white fw-bold shadow-sm" href="#"
+                            id="logoutLink">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sticky Header Area -->
+    <div class="sticky-header border-bottom shadow-sm" style="margin-top: 56px;">
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold mb-0">Your Job Postings</h2>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="input-group shadow-sm" style="width: 250px;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Search title or ID...">
+                    </div>
+                    <button id="postJobBtn" class="btn btn-primary px-4 fw-bold shadow-sm" disabled>
+                        <i class="fas fa-plus me-2"></i> Post a New Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="mb-3 text-end">
+            <span class="text-muted small fw-bold" id="jobCountIndicator">Loading jobs...</span>
+        </div>
+
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-0">
+                <div id="fullJobsList" class="list-group list-group-flush">
+                    <!-- Jobs will be loaded here -->
+                    <div class="p-5 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel"
+        aria-hidden="true">
+        <!-- Same as dashboard -->
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+                <div id="modalHeader" class="modal-header border-0 py-3 text-white">
+                    <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div id="modalIcon" class="mb-3"></div>
+                    <h4 id="modalTitle" class="fw-bold mb-2"></h4>
+                    <p id="modalMessage" class="text-muted mb-0"></p>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill"
+                        data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+                <div class="modal-header bg-danger text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="logoutModalLabel">
+                        <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div class="mb-3 text-danger">
+                        <i class="fas fa-exclamation-circle fa-4x"></i>
+                    </div>
+                    <h4 class="fw-bold">Are you sure?</h4>
+                    <p class="text-muted mb-0">You will be signed out of your session.</p>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                    <button type="button" class="btn btn-light px-4 fw-bold text-muted"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold shadow-sm">Logout Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/apiService.js"></script>
+    <script>
+        let allJobs = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutLink = document.getElementById('logoutLink');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    new bootstrap.Modal(document.getElementById('logoutModal')).show();
+                });
+            }
+
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                filterJobs(e.target.value);
+            });
+
+            checkStatusAndLoad();
+        });
+
+        async function checkStatusAndLoad() {
+            try {
+                const user = await window.apiService.getCurrentUser();
+                const postJobBtn = document.getElementById('postJobBtn');
+                
+                if (user.status === 'approved') {
+                    postJobBtn.disabled = false;
+                    postJobBtn.onclick = () => window.location.href = '/recruiter/post-job';
+                    loadAllJobs();
+                } else {
+                    document.getElementById('fullJobsList').innerHTML = `
+                        <div class="p-5 text-center text-muted">
+                            <i class="fas fa-lock fa-3x mb-3 opacity-25"></i>
+                            <p>You will be able to view and manage jobs once your account is approved.</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('Error checking status:', err);
+            }
+        }
+
+        async function loadAllJobs() {
+            try {
+                allJobs = await window.apiService.getMyJobs();
+                displayJobs(allJobs);
+            } catch (err) {
+                console.error('Error loading jobs:', err);
+                document.getElementById('fullJobsList').innerHTML = '<div class="p-5 text-center text-danger">Error loading jobs.</div>';
+            }
+        }
+
+        async function displayJobs(jobs) {
+            const jobsList = document.getElementById('fullJobsList');
+            const jobCountIndicator = document.getElementById('jobCountIndicator');
+
+            jobCountIndicator.textContent = `Showing ${jobs.length} jobs`;
+
+            if (jobs.length === 0) {
+                jobsList.innerHTML = `
+                    <div class="p-5 text-center text-muted">
+                        <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
+                        <p>No matching jobs found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            jobsList.innerHTML = '';
+            for (const job of jobs) {
+                // We could optimize this by fetching applicant counts in one go if API supported it
+                // For now, let's just show the job details. Applicant count can be shown if needed.
+                const applicants = await window.apiService.getJobApplicants(job.id);
+
+                const item = document.createElement('div');
+                item.className = 'list-group-item p-4 job-item';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">${job.title}</h5>
+                            <p class="text-primary small fw-bold mb-1">
+                                <i class="fas fa-fingerprint me-1"></i> ID: ${job.job_id || 'N/A'}
+                            </p>
+                            <div class="d-flex align-items-center text-muted small">
+                                <span class="me-3"><i class="fas fa-map-marker-alt me-1"></i> ${job.location || 'Not specified'}</span>
+                                <span class="me-3"><i class="fas fa-calendar-alt me-1"></i> Posted: ${new Date(job.created_at).toLocaleDateString()}</span>
+                                <span><i class="fas fa-money-bill-wave me-1"></i> ${job.salary || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="mb-2">
+                                <span class="badge bg-primary rounded-pill px-3 py-2">
+                                    ${applicants.length} Applicants
+                                </span>
+                            </div>
+                            <a href="/recruiter/applications" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                View Applicants
+                            </a>
+                        </div>
+                    </div>
+                `;
+                jobsList.appendChild(item);
+            }
+        }
+
+        function filterJobs(query) {
+            const q = query.toLowerCase();
+            const filtered = allJobs.filter(job =>
+                job.title.toLowerCase().includes(q) ||
+                (job.job_id && job.job_id.toLowerCase().includes(q))
+            );
+            displayJobs(filtered);
+        }
+    </script>
+</body>
+
+</html>

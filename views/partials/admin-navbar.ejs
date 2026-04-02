@@ -1,0 +1,63 @@
+<!-- Common Admin Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/admin">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNavbarContent">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link text-white <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active fw-bold' : '' %>" href="/admin">
+                        <i class="fas fa-chart-line me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-danger btn-sm ms-lg-3 px-3 text-white fw-bold shadow-sm" href="#" id="adminLogoutLink">
+                        <i class="fas fa-sign-out-alt me-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Logout Confirmation Modal (Integrated in Navbar Partial for ease of use) -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
+            <div class="modal-header bg-danger text-white border-0 py-3">
+                <h5 class="modal-title fw-bold" id="logoutModalLabel">
+                    <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 text-center">
+                <div class="mb-3 text-danger">
+                    <i class="fas fa-exclamation-circle fa-4x"></i>
+                </div>
+                <h4 class="fw-bold">Are you sure?</h4>
+                <p class="text-muted mb-0">You will be signed out of the admin session.</p>
+            </div>
+            <div class="modal-footer border-0 p-3 bg-light justify-content-center">
+                <button type="button" class="btn btn-light px-4 fw-bold text-muted" data-bs-dismiss="modal">Cancel</button>
+                <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold shadow-sm">Logout Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle Logout Modal Trigger
+    document.addEventListener('DOMContentLoaded', () => {
+        const adminLogoutLink = document.getElementById('adminLogoutLink');
+        if (adminLogoutLink) {
+            adminLogoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const modalEl = document.getElementById('logoutModal');
+                const logoutModal = new bootstrap.Modal(modalEl);
+                logoutModal.show();
+            });
+        }
+    });
+</script>

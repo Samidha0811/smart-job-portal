@@ -15,7 +15,7 @@ const authController = {
 
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const status = (role === 'recruiter') ? 'pending' : 'active';
+            const status = (role === 'recruiter') ? 'guest' : 'active';
             
             const userId = await User.create({
                 fullname: username,

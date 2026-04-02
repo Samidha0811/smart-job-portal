@@ -8,8 +8,10 @@ const Recruiter = {
         const {
             user_id, company_name, company_email, company_website, company_description,
             industry, address_line, city, state, country, pincode,
-            full_name, contact_number, designation, registration_cert_no, registration_cert_url,
-            gst_number, gst_doc_url, pan_number, pan_doc_url,
+            full_name, contact_number, designation, registration_cert_no,
+            registration_cert_data, registration_cert_mimetype, registration_cert_filename,
+            gst_number, gst_doc_data, gst_doc_mimetype, gst_doc_filename,
+            pan_number, pan_doc_data, pan_doc_mimetype, pan_doc_filename,
             company_size, linkedin_profile, years_in_business
         } = detailsData;
 
@@ -17,15 +19,19 @@ const Recruiter = {
             `INSERT INTO recruiter_details (
                 user_id, company_name, company_email, company_website, company_description,
                 industry, address_line, city, state, country, pincode,
-                full_name, contact_number, designation, registration_cert_no, registration_cert_url,
-                gst_number, gst_doc_url, pan_number, pan_doc_url,
+                full_name, contact_number, designation, registration_cert_no,
+                registration_cert_data, registration_cert_mimetype, registration_cert_filename,
+                gst_number, gst_doc_data, gst_doc_mimetype, gst_doc_filename,
+                pan_number, pan_doc_data, pan_doc_mimetype, pan_doc_filename,
                 company_size, linkedin_profile, years_in_business, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
             [
                 user_id, company_name, company_email, company_website, company_description,
                 industry, address_line, city, state, country, pincode,
-                full_name, contact_number, designation, registration_cert_no, registration_cert_url,
-                gst_number, gst_doc_url, pan_number, pan_doc_url,
+                full_name, contact_number, designation, registration_cert_no,
+                registration_cert_data, registration_cert_mimetype, registration_cert_filename,
+                gst_number, gst_doc_data, gst_doc_mimetype, gst_doc_filename,
+                pan_number, pan_doc_data, pan_doc_mimetype, pan_doc_filename,
                 company_size, linkedin_profile, years_in_business
             ]
         );

@@ -20,23 +20,69 @@ const recruiterController = {
             return res.status(400).json({ message: 'User ID, Company Name and Email are required.' });
         }
 
-        const registration_cert_url = req.files['registration_cert'] ? `/uploads/documents/${req.files['registration_cert'][0].filename}` : null;
-        const gst_doc_url = req.files['gst_doc'] ? `/uploads/documents/${req.files['gst_doc'][0].filename}` : null;
-        const pan_doc_url = req.files['pan_doc'] ? `/uploads/documents/${req.files['pan_doc'][0].filename}` : null;
+        // Handle uploaded files from memory
+        const regCert = req.files['registration_cert'] ? req.files['registration_cert'][0] : null;
+        const gstDoc = req.files['gst_doc'] ? req.files['gst_doc'][0] : null;
+        const panDoc = req.files['pan_doc'] ? req.files['pan_doc'][0] : null;
 
         try {
             await Recruiter.createDetails({
                 user_id, company_name, company_email, company_website, company_description,
                 industry, address_line, city, state, country, pincode,
-                full_name, contact_number, designation, registration_cert_no, registration_cert_url,
-                gst_number, gst_doc_url, pan_number, pan_doc_url,
+                full_name, contact_number, designation, registration_cert_no,
+                registration_cert_data: regCert ? regCert.buffer : null,
+                registration_cert_mimetype: regCert ? regCert.mimetype : null,
+                registration_cert_filename: regCert ? regCert.originalname : null,
+                gst_number,
+                gst_doc_data: gstDoc ? gstDoc.buffer : null,
+                gst_doc_mimetype: gstDoc ? gstDoc.mimetype : null,
+                gst_doc_filename: gstDoc ? gstDoc.originalname : null,
+                pan_number,
+                pan_doc_data: panDoc ? panDoc.buffer : null,
+                pan_doc_mimetype: panDoc ? panDoc.mimetype : null,
+                pan_doc_filename: panDoc ? panDoc.originalname : null,
                 company_size, linkedin_profile, years_in_business
             });
+            
+            // Explicitly set user status to 'pending' for admin review
+            await User.updateStatus(user_id, 'pending');
 
             res.json({ success: true, message: 'Recruiter details submitted! Please wait for Admin approval.' });
         } catch (err) {
             console.error('Error saving recruiter details:', err);
             res.status(500).json({ success: false, message: 'Database error while saving details.' });
+        }
+    },
+
+    /**
+     * Serve document from database
+     */
+    async serveDocument(req, res) {
+        const { type, userId } = req.params;
+        const allowedTypes = ['registration_cert', 'gst_doc', 'pan_doc'];
+
+        if (!allowedTypes.includes(type)) {
+            return res.status(400).send('Invalid document type');
+        }
+
+        try {
+            const [rows] = await db.query(
+                `SELECT ${type}_data as data, ${type}_mimetype as mimetype, ${type}_filename as filename 
+                 FROM recruiter_details WHERE user_id = ?`, 
+                [userId]
+            );
+
+            if (rows.length === 0 || !rows[0].data) {
+                return res.status(404).send('Document not found');
+            }
+
+            const doc = rows[0];
+            res.setHeader('Content-Type', doc.mimetype || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `inline; filename="${doc.filename || 'document'}"`);
+            res.send(doc.data);
+        } catch (err) {
+            console.error('Error serving document:', err);
+            res.status(500).send('Internal Server Error');
         }
     },
 
@@ -98,8 +144,37 @@ const recruiterController = {
      */
     async getMyProfile(req, res) {
         try {
-            const [rows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
-            res.json(rows[0] || null);
+            // First check profiles table
+            const [profileRows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
+            
+            if (profileRows.length > 0) {
+                return res.json(profileRows[0]);
+            }
+
+            // If not in profiles, get from recruiter_details
+            // We map recruiter_details fields to profile fields
+            const [recruiterRows] = await db.query(
+                `SELECT 
+                    company_name, 
+                    company_website as website, 
+                    company_description as bio,
+                    industry,
+                    address_line,
+                    city,
+                    state,
+                    country,
+                    pincode,
+                    contact_number,
+                    designation,
+                    company_size,
+                    linkedin_profile,
+                    years_in_business
+                FROM recruiter_details 
+                WHERE user_id = ?`, 
+                [req.user.id]
+            );
+            
+            res.json(recruiterRows[0] || null);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal Server Error' });
