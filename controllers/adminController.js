@@ -7,8 +7,8 @@ const adminController = {
      */
     async getDashboard(req, res) {
         try {
-            const pendingRecruiters = await Recruiter.getPending();
-            res.render('admin', { title: 'Admin Dashboard', recruiters: pendingRecruiters });
+            const allRecruiters = await Recruiter.getAll();
+            res.render('admin', { title: 'Admin Dashboard', recruiters: allRecruiters });
         } catch (err) {
             console.error(err);
             res.status(500).send('Error loading admin panel');
@@ -39,7 +39,13 @@ const adminController = {
     async approveRecruiter(req, res) {
         const { userId } = req.body;
         try {
+            const user = await User.findById(userId);
+            if (!user || user.status !== 'pending') {
+                return res.status(400).send('Invalid request: Recruiter is not in pending status');
+            }
+
             await User.updateStatus(userId, 'approved');
+            await Recruiter.updateStatus(userId, 'approved');
             res.redirect('/admin');
         } catch (err) {
             console.error(err);
@@ -53,7 +59,13 @@ const adminController = {
     async rejectRecruiter(req, res) {
         const { userId } = req.body;
         try {
+            const user = await User.findById(userId);
+            if (!user || user.status !== 'pending') {
+                return res.status(400).send('Invalid request: Recruiter is not in pending status');
+            }
+
             await User.updateStatus(userId, 'rejected');
+            await Recruiter.updateStatus(userId, 'rejected');
             res.redirect('/admin');
         } catch (err) {
             console.error(err);

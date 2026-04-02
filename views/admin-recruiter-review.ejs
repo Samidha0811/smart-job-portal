@@ -10,7 +10,7 @@
 </head>
 <body class="bg-light">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
         <div class="container">
           <a class="navbar-brand fw-bold" href="/admin">Admin Dashboard</a>
           <div class="collapse navbar-collapse">
@@ -22,12 +22,19 @@
         </div>
     </nav>
 
-    <div class="container py-5">
+    <div class="container py-5 mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow border-0 rounded-3 mb-4">
-                    <div class="card-header bg-primary text-white py-3">
+                    <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
                         <h4 class="mb-0 fw-bold"><i class="fas fa-user-check me-2"></i>Review Recruiter Request</h4>
+                        <% if (recruiter.status === 'pending') { %>
+                            <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> Pending Review</span>
+                        <% } else if (recruiter.status === 'approved' || recruiter.status === 'active') { %>
+                            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Approved</span>
+                        <% } else if (recruiter.status === 'rejected') { %>
+                            <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Rejected</span>
+                        <% } %>
                     </div>
                     <div class="card-body p-4">
                         <div class="row">
@@ -112,6 +119,7 @@
                         </div>
 
                         <!-- Action Buttons -->
+                        <% if (recruiter.status === 'pending') { %>
                         <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-3">
                             <form action="/api/admin/reject" method="POST" onsubmit="return confirm('Are you sure you want to REJECT this recruiter?');">
                                 <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
@@ -122,6 +130,11 @@
                                 <button type="submit" class="btn btn-success btn-lg px-5 fw-bold">Approve</button>
                             </form>
                         </div>
+                        <% } else { %>
+                        <div class="mt-5 pt-3 border-top d-flex justify-content-end">
+                            <a href="/admin" class="btn btn-secondary btn-lg px-5 fw-bold">Back to Dashboard</a>
+                        </div>
+                        <% } %>
                     </div>
                 </div>
             </div>

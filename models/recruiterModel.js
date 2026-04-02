@@ -54,16 +54,36 @@ const Recruiter = {
     },
 
     /**
+     * Get all recruiters for admin
+     */
+    async getAll() {
+        const [rows] = await db.query(`
+            SELECT u.id, u.fullname, u.email, u.status, rd.company_name, rd.created_at as submitted_at
+            FROM users u
+            LEFT JOIN recruiter_details rd ON u.id = rd.user_id
+            WHERE u.role = "recruiter"
+            ORDER BY rd.created_at DESC
+        `);
+        return rows;
+    },
+
+    /**
      * Get full recruiter profile for admin review
      */
     async getFullProfile(userId) {
         const [rows] = await db.query(`
-            SELECT u.*, rd.* 
+            SELECT u.*, rd.*, u.status as status 
             FROM users u
             JOIN recruiter_details rd ON u.id = rd.user_id
             WHERE u.id = ?
         `, [userId]);
         return rows[0];
+    },
+    /**
+     * Update recruiter details status
+     */
+    async updateStatus(userId, status) {
+        return await db.query('UPDATE recruiter_details SET status = ? WHERE user_id = ?', [status, userId]);
     }
 };
 

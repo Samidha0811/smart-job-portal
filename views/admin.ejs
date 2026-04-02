@@ -11,7 +11,7 @@
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Admin Panel</a>
             <div class="collapse navbar-collapse">
@@ -24,8 +24,24 @@
         </div>
     </nav>
 
-    <div class="container py-5">
-        <h2 class="fw-bold mb-4">Manage Recruiters</h2>
+    <div class="container py-5 mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center">
+                <h2 class="fw-bold mb-0 me-4">Manage Recruiters</h2>
+                <div class="input-group shadow-sm" style="width: 300px;">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" id="recruiterSearch" class="form-control border-start-0 ps-0" placeholder="Search name or company...">
+                </div>
+            </div>
+            <div class="btn-group shadow-sm" role="group" aria-label="Recruiter filters">
+                <button type="button" class="btn btn-outline-dark filter-btn" data-filter="all">All</button>
+                <button type="button" class="btn btn-outline-dark active filter-btn" data-filter="pending">Pending</button>
+                <button type="button" class="btn btn-outline-dark filter-btn" data-filter="approved">Approved</button>
+                <button type="button" class="btn btn-outline-dark filter-btn" data-filter="rejected">Rejected</button>
+            </div>
+        </div>
         <div class="card shadow border-0">
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
@@ -34,6 +50,7 @@
                             <th>Name</th>
                             <th>Company</th>
                             <th>Email</th>
+                            <th>Status</th>
                             <th>Submitted At</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -41,11 +58,16 @@
                     <tbody>
                         <% if (recruiters.length===0) { %>
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">No pending recruiters found.</td>
+                                <td colspan="7" class="text-center py-4 text-muted">No recruiters found.</td>
                             </tr>
                             <% } %>
-                                <% recruiters.forEach(user=> { %>
-                                    <tr>
+                                <% recruiters.forEach(user=> { 
+                                    const displayStatus = (user.status === 'active') ? 'approved' : user.status;
+                                %>
+                                    <tr class="recruiter-row" 
+                                        data-status="<%= displayStatus %>"
+                                        data-name="<%= user.fullname.toLowerCase() %>"
+                                        data-company="<%= (user.company_name || '').toLowerCase() %>">
                                         <td>
                                             <%= user.fullname %>
                                         </td>
@@ -56,7 +78,18 @@
                                             <%= user.email %>
                                         </td>
                                         <td>
-                                            <%= new Date(user.submitted_at).toLocaleDateString() %>
+                                            <% if (user.status === 'pending') { %>
+                                                <span class="badge bg-warning text-dark px-3 mt-1"><i class="fas fa-clock me-1"></i> Pending</span>
+                                            <% } else if (user.status === 'approved' || user.status === 'active') { %>
+                                                <span class="badge bg-success px-3 mt-1"><i class="fas fa-check-circle me-1"></i> Approved</span>
+                                            <% } else if (user.status === 'rejected') { %>
+                                                <span class="badge bg-danger px-3 mt-1"><i class="fas fa-times-circle me-1"></i> Rejected</span>
+                                            <% } else { %>
+                                                <span class="badge bg-secondary px-3 mt-1"><%= user.status %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <%= user.submitted_at ? new Date(user.submitted_at).toLocaleDateString() : 'N/A' %>
                                         </td>
                                         <td class="text-end">
                                             <a href="/admin/recruiter/<%= user.id %>" class="btn btn-primary btn-sm px-3">
@@ -120,6 +153,46 @@
                     logoutModal.show();
                 });
             }
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const searchInput = document.getElementById('recruiterSearch');
+            const tableRows = document.querySelectorAll('.recruiter-row');
+
+            let currentFilter = 'pending';
+            let currentSearch = '';
+
+            const applyFilters = () => {
+                tableRows.forEach(row => {
+                    const status = row.getAttribute('data-status');
+                    const name = row.getAttribute('data-name');
+                    const company = row.getAttribute('data-company');
+
+                    const matchesFilter = currentFilter === 'all' || status === currentFilter;
+                    const matchesSearch = name.includes(currentSearch) || company.includes(currentSearch);
+
+                    if (matchesFilter && matchesSearch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            };
+
+            // Call once to apply default filter (pending)
+            applyFilters();
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.getAttribute('data-filter');
+                    applyFilters();
+                });
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase().trim();
+                applyFilters();
+            });
         });
     </script>
 </body>
