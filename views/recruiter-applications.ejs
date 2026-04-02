@@ -45,14 +45,42 @@
     <!-- Sticky Header Area -->
     <div class="sticky-header border-bottom shadow-sm" style="margin-top: 56px;">
         <div class="container py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="fw-bold mb-0">Applications Received</h2>
-                <div class="input-group shadow-sm" style="width: 250px;">
-                    <span class="input-group-text bg-white border-end-0">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
-                        placeholder="Search applicant or job...">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h2 class="fw-bold mb-0 text-dark">Applications Received</h2>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-md-end align-items-center gap-3">
+                        <!-- Status Filter -->
+                        <div class="btn-group shadow-sm" role="group" aria-label="Status filter">
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterAll" value="all" checked>
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterAll">All</label>
+
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterPending" value="pending">
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterPending">Pending</label>
+
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterShortlisted" value="shortlisted">
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterShortlisted">Shortlisted</label>
+
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterProcess" value="under process">
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterProcess">Processing</label>
+                            
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterHold" value="hold">
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterHold">Hold</label>
+
+                            <input type="radio" class="btn-check" name="statusFilter" id="filterRejected" value="rejected">
+                            <label class="btn btn-outline-primary px-3 fw-bold" for="filterRejected">Rejected</label>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="input-group shadow-sm" style="width: 250px;">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
+                                placeholder="Search applicant...">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,6 +164,65 @@
         </div>
     </div>
 
+    <!-- Applicant Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-primary text-white p-4 border-0">
+                    <h5 class="modal-title fw-bold" id="profileModalLabel">
+                        <i class="fas fa-id-card me-2"></i>Applicant Profile
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center border-end">
+                            <div class="avatar bg-light text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
+                                style="width: 100px; height: 100px; font-size: 3rem;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-0" id="profName"></h5>
+                            <p class="text-muted small" id="profEmail"></p>
+                        </div>
+                        <div class="col-md-9 ps-md-4">
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary mb-2 small text-uppercase">About the Applicant</h6>
+                                <p class="text-secondary" id="profBio"></p>
+                            </div>
+                            <div class="row g-4">
+                                <div class="col-sm-6">
+                                    <h6 class="fw-bold text-primary mb-2 small text-uppercase">Education</h6>
+                                    <p class="text-dark mb-0"><i class="fas fa-graduation-cap me-2 text-muted"></i><span
+                                            id="profEdu"></span></p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h6 class="fw-bold text-primary mb-2 small text-uppercase">Experience</h6>
+                                    <p class="text-dark mb-0"><i class="fas fa-briefcase me-2 text-muted"></i><span
+                                            id="profExp"></span> Years</p>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <h6 class="fw-bold text-primary mb-2 small text-uppercase">Skills</h6>
+                                    <div id="profSkills" class="d-flex flex-wrap gap-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 bg-light">
+                    <div class="w-100 d-flex justify-content-between align-items-center">
+                        <a id="profResumeLink" href="#" target="_blank"
+                            class="btn btn-primary px-4 fw-bold shadow-sm rounded-pill">
+                            <i class="fas fa-file-pdf me-2"></i>View Resume
+                        </a>
+                        <button type="button" class="btn btn-secondary px-4 fw-bold rounded-pill"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -185,49 +272,70 @@
                 }
             });
 
-            function showNotification(title, message, type = 'success', callback = null) {
-                const modalEl = document.getElementById('notificationModal');
-                const header = document.getElementById('modalHeader');
-                const icon = document.getElementById('modalIcon');
-                const titleEl = document.getElementById('modalTitle');
-                const msgEl = document.getElementById('modalMessage');
-
-                header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
-                icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
-                titleEl.textContent = title;
-                msgEl.textContent = message;
-
-                const modal = new bootstrap.Modal(modalEl);
-                if (callback) {
-                    modalEl.addEventListener('hidden.bs.modal', function handler() {
-                        callback();
-                        modalEl.removeEventListener('hidden.bs.modal', handler);
-                    });
-                }
-                modal.show();
-            }
-
-            function showConfirm(title, message, onConfirm) {
-                const modalEl = document.getElementById('confirmModal');
-                document.getElementById('confirmTitle').textContent = title;
-                document.getElementById('confirmMessage').textContent = message;
-                const confirmBtn = document.getElementById('confirmActionBtn');
-
-                const modal = new bootstrap.Modal(modalEl);
-                confirmBtn.onclick = () => {
-                    onConfirm();
-                    modal.hide();
-                };
-                modal.show();
-            }
-
             const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                filterApplications(e.target.value);
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    applyFilters();
+                });
+            }
+
+            document.querySelectorAll('input[name="statusFilter"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    applyFilters();
+                });
             });
 
             loadApplications();
-        });
+        }); // End of DOMContentLoaded
+
+        // Global Helper Functions
+        function showNotification(title, message, type = 'success', callback = null) {
+            console.log(`Showing notification: ${title} - ${message}`);
+            const modalEl = document.getElementById('notificationModal');
+            const header = document.getElementById('modalHeader');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+
+            if (!modalEl) {
+                console.error('Notification modal not found!');
+                return;
+            }
+
+            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
+            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            const modal = new bootstrap.Modal(modalEl);
+            if (callback) {
+                modalEl.addEventListener('hidden.bs.modal', function handler() {
+                    callback();
+                    modalEl.removeEventListener('hidden.bs.modal', handler);
+                });
+            }
+            modal.show();
+        }
+
+        function showConfirm(title, message, onConfirm) {
+            console.log(`Showing confirm: ${title} - ${message}`);
+            const modalEl = document.getElementById('confirmModal');
+            if (!modalEl) {
+                console.error('Confirm modal not found!');
+                return;
+            }
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            const confirmBtn = document.getElementById('confirmActionBtn');
+
+            const modal = new bootstrap.Modal(modalEl);
+            confirmBtn.onclick = () => {
+                console.log('Confirm button clicked');
+                onConfirm();
+                modal.hide();
+            };
+            modal.show();
+        }
 
         let allApplications = [];
 
@@ -248,12 +356,18 @@
                 appList.innerHTML = apps.map(app => `
                     <tr>
                         <td>
-                            <div class="fw-bold text-dark">${app.seeker_name}</div>
-                            <div class="text-muted small">${app.seeker_email}</div>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-light text-primary rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark">${app.seeker_name}</div>
+                                    <div class="text-muted small">${app.seeker_email}</div>
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <div class="fw-medium">${app.job_title}</div>
-                            <div class="text-primary small fw-bold">ID: ${app.job_id || 'N/A'}</div>
                         </td>
                         <td class="text-muted small">${new Date(app.applied_at).toLocaleDateString()}</td>
                         <td>
@@ -262,9 +376,22 @@
                             </span>
                         </td>
                         <td>
-                            <div class="btn-group btn-group-sm mb-0">
-                                <button class="btn btn-outline-success" onclick="updateStatus(${app.id}, 'shortlisted')">Shortlist</button>
-                                <button class="btn btn-outline-danger" onclick="updateStatus(${app.id}, 'rejected')">Reject</button>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm" onclick="viewProfile(${app.id})">
+                                    <i class="fas fa-eye me-1"></i> Profile
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 fw-bold shadow-sm" type="button" data-bs-toggle="dropdown">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu shadow border-0 mt-2">
+                                        <li><a class="dropdown-item fw-bold text-success" href="#" onclick="updateStatus(${app.id}, 'shortlisted')"><i class="fas fa-check me-2"></i>Shortlist</a></li>
+                                        <li><a class="dropdown-item fw-bold text-info" href="#" onclick="updateStatus(${app.id}, 'under process')"><i class="fas fa-spinner fa-spin-hover me-2"></i>Under Process</a></li>
+                                        <li><a class="dropdown-item fw-bold text-secondary" href="#" onclick="updateStatus(${app.id}, 'hold')"><i class="fas fa-pause me-2"></i>On Hold</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item fw-bold text-danger" href="#" onclick="updateStatus(${app.id}, 'rejected')"><i class="fas fa-times me-2"></i>Reject</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -274,21 +401,64 @@
             }
         }
 
-        function filterApplications(query) {
-            const q = query.toLowerCase().trim();
-            const filtered = allApplications.filter(app =>
-                app.seeker_name.toLowerCase().includes(q) ||
-                app.seeker_email.toLowerCase().includes(q) ||
-                app.job_title.toLowerCase().includes(q) ||
-                (app.job_id && app.job_id.toLowerCase().includes(q))
-            );
+        function viewProfile(appId) {
+            const app = allApplications.find(a => a.id === appId);
+            if (!app) return;
+
+            document.getElementById('profName').textContent = app.seeker_name;
+            document.getElementById('profEmail').textContent = app.seeker_email;
+            document.getElementById('profBio').textContent = app.bio || 'No bio provided.';
+            document.getElementById('profEdu').textContent = app.education || 'N/A';
+            document.getElementById('profExp').textContent = app.experience_years || '0';
+
+            const skillsContainer = document.getElementById('profSkills');
+            skillsContainer.innerHTML = '';
+            if (app.skills) {
+                app.skills.split(',').forEach(skill => {
+                    const span = document.createElement('span');
+                    span.className = 'badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill small';
+                    span.textContent = skill.trim();
+                    skillsContainer.appendChild(span);
+                });
+            } else {
+                skillsContainer.innerHTML = '<span class="text-muted small">No skills listed.</span>';
+            }
+
+            const resumeLink = document.getElementById('profResumeLink');
+            if (app.resume_filename) {
+                resumeLink.style.display = 'inline-block';
+                resumeLink.href = `/api/recruiter/resume/${app.seeker_id}`;
+                resumeLink.innerHTML = `<i class="fas fa-file-pdf me-2"></i>Download Resume (${app.resume_filename})`;
+            } else {
+                resumeLink.style.display = 'none';
+            }
+
+            new bootstrap.Modal(document.getElementById('profileModal')).show();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.querySelector('input[name="statusFilter"]:checked').value;
+
+            const filtered = allApplications.filter(app => {
+                const matchesSearch = app.seeker_name.toLowerCase().includes(query) ||
+                                    app.seeker_email.toLowerCase().includes(query) ||
+                                    app.job_title.toLowerCase().includes(query);
+                
+                const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+
             renderApplications(filtered);
         }
 
         async function updateStatus(appId, status) {
+            console.log(`Updating application ${appId} status to ${status}`);
             showConfirm('Confirmation', `Are you sure you want to mark this applicant as ${status}?`, async () => {
                 try {
                     const result = await window.apiService.updateApplicationStatus(appId, status);
+                    console.log('Update result:', result);
                     if (result.success) {
                         showNotification('Success', result.message, 'success');
                         loadApplications(); // Reload list
@@ -306,6 +476,8 @@
             switch (status) {
                 case 'shortlisted': return 'bg-success';
                 case 'rejected': return 'bg-danger';
+                case 'hold': return 'bg-secondary text-white';
+                case 'under process': return 'bg-info text-dark';
                 default: return 'bg-warning text-dark';
             }
         }

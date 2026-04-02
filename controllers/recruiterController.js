@@ -87,6 +87,33 @@ const recruiterController = {
     },
 
     /**
+     * Serve Seeker Resume from database
+     */
+    async serveResume(req, res) {
+        const { seekerId } = req.params;
+        
+        try {
+            const [rows] = await db.query(
+                `SELECT resume_data as data, resume_mimetype as mimetype, resume_filename as filename 
+                 FROM seeker_details WHERE user_id = ?`, 
+                [seekerId]
+            );
+
+            if (rows.length === 0 || !rows[0].data) {
+                return res.status(404).send('Resume not found');
+            }
+
+            const doc = rows[0];
+            res.setHeader('Content-Type', doc.mimetype || 'application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename="${doc.filename || 'resume.pdf'}"`);
+            res.send(doc.data);
+        } catch (err) {
+            console.error('Error serving resume:', err);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+
+    /**
      * Create/Update Company Profile
      */
     async updateProfile(req, res) {
@@ -214,7 +241,8 @@ const recruiterController = {
         const { status } = req.body;
         const applicationId = req.params.applicationId;
 
-        if (!['pending', 'shortlisted', 'rejected'].includes(status)) {
+        const allowedStatuses = ['pending', 'shortlisted', 'rejected', 'hold', 'under process'];
+        if (!allowedStatuses.includes(status)) {
             return res.status(400).json({ success: false, message: 'Invalid status' });
         }
 

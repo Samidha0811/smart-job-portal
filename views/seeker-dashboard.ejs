@@ -184,6 +184,8 @@
             switch(status) {
                 case 'shortlisted': return 'bg-success';
                 case 'rejected': return 'bg-danger';
+                case 'hold': return 'bg-secondary text-white';
+                case 'under process': return 'bg-info text-dark';
                 default: return 'bg-warning text-dark';
             }
         }
