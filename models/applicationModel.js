@@ -47,9 +47,11 @@ const Application = {
      */
     async getBySeeker(seekerId) {
         const [rows] = await db.query(
-            `SELECT a.*, j.title as job_title 
+            `SELECT a.*, j.title as job_title, j.description as job_description, 
+                    j.location, j.salary, j.keywords, rd.company_name 
              FROM applications a 
              JOIN jobs j ON a.job_id = j.id 
+             JOIN recruiter_details rd ON j.recruiter_id = rd.user_id
              WHERE a.seeker_id = ? 
              ORDER BY a.applied_at DESC`,
             [seekerId]

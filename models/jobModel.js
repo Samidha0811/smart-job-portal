@@ -20,7 +20,13 @@ const Job = {
      * Get all open jobs
      */
     async getAllOpen() {
-        const [rows] = await db.query('SELECT * FROM jobs WHERE status = "open" ORDER BY created_at DESC');
+        const [rows] = await db.query(`
+            SELECT j.*, rd.company_name, rd.company_description 
+            FROM jobs j
+            JOIN recruiter_details rd ON j.recruiter_id = rd.user_id
+            WHERE j.status = "open" 
+            ORDER BY j.created_at DESC
+        `);
         return rows;
     },
 
