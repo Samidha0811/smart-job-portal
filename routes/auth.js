@@ -1,131 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../config/db');
+const authController = require('../controllers/authController');
 const auth = require('../middleware/auth');
 
 // Register API
-router.post('/register', async (req, res) => {
-    const { username, email, password, role } = req.body;
-    
-    if (!username || !email || !password || !role) {
-        return res.status(400).json({ message: 'All fields are required.' });
-    }
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        // Both seekers and recruiters start as pending or active?
-        // User said: "Status = PENDING" after filling company details.
-        // So maybe initial user status is 'active' but role-specific status is 'pending'?
-        // The users table has a status column. Let's keep recruiters as 'pending'.
-        const status = (role === 'recruiter') ? 'pending' : 'active';
-        
-        const [result] = await db.query(
-            'INSERT INTO users (fullname, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
-            [username, email, hashedPassword, role, status]
-        );
-
-        console.log('New User Registered in DB:', { id: result.insertId, username, role, status });
-        
-        res.status(201).json({
-            message: 'Registration Successful!',
-            userId: result.insertId,
-            role: role,
-            status: status,
-            redirectTo: (role === 'recruiter') ? '/recruiter/register-details' : '/login'
-        });
-    } catch (err) {
-        console.error(err);
-        if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(400).json({ message: 'Email already registered.' });
-        }
-        res.status(500).json({ message: 'Something went wrong with the database.' });
-    }
-});
+router.post('/register', authController.register);
 
 // Login API
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    
-    try {
-        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-        const user = rows[0];
-
-        if (user && await bcrypt.compare(password, user.password)) {
-            // Generate JWT
-            const token = jwt.sign(
-                { id: user.id, email: user.email, role: user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: '24h' }
-            );
-
-            // Set as cookie
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                maxAge: 24 * 60 * 60 * 1000 // 24 hours
-            });
-
-            if (user.role === 'admin') {
-                return res.redirect('/admin');
-            } else if (user.role === 'recruiter') {
-                return res.redirect('/recruiter/dashboard');
-            } else if (user.role === 'seeker') {
-                return res.redirect('/seeker/dashboard');
-            } else {
-                // Fallback for other roles if any
-                return res.redirect('/');
-            }
-        } else {
-            res.status(401).send('<h1>Login Failed</h1><p>Invalid email or password.</p><a href="/login">Try Again</a>');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
-    }
-});
+router.post('/login', authController.login);
 
 // Logout API
-router.get('/logout', (req, res) => {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/'
-    });
-    res.redirect('/login');
-});
+router.get('/logout', authController.logout);
 
 // Get Current Logged-in User
-router.get('/me', auth(), async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT id, fullname, email, role, status FROM users WHERE id = ?', [req.user.id]);
-        if (rows.length > 0) {
-            res.json(rows[0]);
-        } else {
-            res.status(404).json({ message: 'User not found' });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
+router.get('/me', auth(), authController.getMe);
 
 // Get User by ID (Simple for admin/demo)
-router.get('/user/:userId', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT id, fullname, email, role, status FROM users WHERE id = ?', [req.params.userId]);
-        if (rows.length > 0) {
-            res.json(rows[0]);
-        } else {
-            res.status(404).json({ message: 'User not found' });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
+router.get('/user/:userId', authController.getUserById);
 
 module.exports = router;
