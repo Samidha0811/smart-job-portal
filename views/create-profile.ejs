@@ -2,205 +2,213 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %> — Smart Job Portal
+  </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="bg-light">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/recruiter/dashboard">Smart Job Portal</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/applications">Applications Received</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/my-jobs">Posted Jobs</a></li>
-                    <li class="nav-item"><a class="btn btn-danger btn-sm ms-3 text-white fw-bold shadow-sm" href="#" id="logoutLink">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body class="dashboard-page">
 
-    <div class="container py-5 mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow border-0 rounded-3">
-                    <div class="card-body p-5">
-                        <h2 class="fw-bold mb-4">Company Profile</h2>
-                        <p class="text-muted mb-4">Tell us more about your company to get your account verified.</p>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-premium">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/recruiter/dashboard">
+        <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="/recruiter/dashboard"><i
+                class="fas fa-th-large me-1"></i>Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recruiter/applications"><i
+                class="fas fa-users me-1"></i>Applications</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recruiter/my-jobs"><i class="fas fa-list me-1"></i>Posted
+              Jobs</a></li>
+          <li class="nav-item ms-2">
+            <a class="btn-nav-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-                        <form id="profileForm">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="company_name" class="form-label">Company Name</label>
-                                    <input type="text" class="form-control" id="company_name" name="company_name"
-                                        required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="website" class="form-label">Company Website</label>
-                                    <input type="url" class="form-control" id="website" name="website"
-                                        placeholder="https://example.com">
-                                </div>
-                                <div class="col-12">
-                                    <label for="bio" class="form-label">Company Bio / Description</label>
-                                    <textarea class="form-control" id="bio" name="bio" rows="4" required
-                                        placeholder="Describe your company and what you do..."></textarea>
-                                </div>
-                            </div>
+  <div class="dashboard-container" style="max-width:680px; margin: 0 auto;">
+    <!-- Header -->
+    <div class="text-center">
 
-                            <hr class="my-4">
-
-                            <div class="d-flex justify-content-between">
-                                <a href="/recruiter/dashboard" class="btn btn-outline-secondary px-4">Cancel</a>
-                                <button type="submit" class="btn btn-primary px-5 fw-bold">Save Profile</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <h1 class="page-title text-center" style="font-size:2.25rem;">Company Profile</h1>
     </div>
 
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
-                <div class="modal-header bg-danger text-white border-0 py-3">
-                    <h5 class="modal-title fw-bold" id="logoutModalLabel">
-                        <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-5 text-center">
-                    <div class="mb-3 text-danger">
-                        <i class="fas fa-exclamation-circle fa-4x"></i>
-                    </div>
-                    <h4 class="fw-bold">Are you sure?</h4>
-                    <p class="text-muted mb-0">You will be signed out of your session.</p>
-                </div>
-                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-light px-4 fw-bold text-muted" data-bs-dismiss="modal">Cancel</button>
-                    <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold shadow-sm">Logout Now</a>
-                </div>
+    <div class="main-card shadow-lg" style="border:none; border-radius: 20px;">
+      <div class="main-card-body p-4 p-md-5">
+        <form id="profileForm">
+          <div class="row">
+            <!-- Company Name -->
+            <div class="col-12">
+              <label for="company_name" class="form-label-premium">
+                Company Name <span class="text-danger">*</span>
+              </label>
+              <div class="input-group-premium">
+                <i class="fas fa-building input-icon"></i>
+                <input type="text" class="form-control-premium" id="company_name" name="company_name" required
+                  placeholder="Enter your official company name">
+              </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Notification Modal -->
-    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
-                <div id="modalHeader" class="modal-header border-0 py-3 text-white">
-                    <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-5 text-center">
-                    <div id="modalIcon" class="mb-3"></div>
-                    <h4 id="modalTitle" class="fw-bold mb-2"></h4>
-                    <p id="modalMessage" class="text-muted mb-0"></p>
-                </div>
-                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
-                </div>
+            <!-- Website -->
+            <div class="col-12 mb-4">
+              <label for="website" class="form-label-premium">
+                Company Website
+              </label>
+              <div class="input-group-premium">
+                <i class="fas fa-link input-icon"></i>
+                <input type="url" class="form-control-premium" id="website" name="website"
+                  placeholder="https://www.yourcompany.com">
+              </div>
             </div>
-        </div>
+
+            <!-- Company Description -->
+            <div class="col-12 mb-4">
+              <label for="bio" class="form-label-premium">
+                Company Description <span class="text-danger">*</span>
+              </label>
+              <textarea class="form-control-premium" id="bio" name="bio" rows="3" required
+                placeholder="Share your company's mission, values, and what makes it a great place to work..."
+                style="padding-left:1rem;"></textarea>
+            </div>
+          </div>
+
+          <div class="d-flex flex-column flex-md-row">
+            <button type="submit" class="btn-primary-premium flex-grow-1 justify-content-center" id="saveBtn">
+              <i class="fas fa-check-circle"></i> Save Profile Details
+            </button>
+            <a href="/recruiter/dashboard"
+              class="btn btn-outline-secondary px-5 fw-bold d-flex align-items-center justify-content-center"
+              style="border-radius:10px; font-size:0.95rem; border:2px solid #e2e8f0; color:var(--dark-4);">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+  </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/apiService.js"></script>
-    <script>
-        // Handle Logout Popup
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutLink = document.getElementById('logoutLink');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const modalEl = document.getElementById('logoutModal');
-                    const logoutModal = new bootstrap.Modal(modalEl);
-                    logoutModal.show();
-                });
-            }
-        });
+  <!-- Notification Modal -->
+  <div class="modal fade modal-premium" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div id="modalHeader" class="modal-header header-success border-0">
+          <h5 class="modal-title fw-bold text-white">Notification</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div id="modalIcon" class="mb-3"></div>
+          <h5 id="modalTitle" class="fw-bold mb-2"></h5>
+          <p id="modalMessage" class="text-muted mb-0" style="font-size:0.9rem;"></p>
+        </div>
+        <div class="modal-footer justify-content-center border-0 bg-white pb-4">
+          <button class="btn btn-primary px-5 fw-bold" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Prevent Back-Forward Cache (bfcache)
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
+  <!-- Logout Modal -->
+  <div class="modal fade modal-premium" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header header-danger border-0">
+          <h5 class="modal-title fw-bold text-white"><i class="fas fa-sign-out-alt me-2"></i>Confirm Logout</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div
+            style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Are you sure?</h5>
+          <p class="text-muted mb-0" style="font-size:0.9rem;">You will be signed out of your session.</p>
+        </div>
+        <div class="modal-footer justify-content-center border-0 bg-white pb-4">
+          <button class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">Cancel</button>
+          <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold"><i
+              class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function showNotification(title, message, type = 'success', callback = null) {
-            const modalEl = document.getElementById('notificationModal');
-            const header = document.getElementById('modalHeader');
-            const icon = document.getElementById('modalIcon');
-            const titleEl = document.getElementById('modalTitle');
-            const msgEl = document.getElementById('modalMessage');
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/apiService.js"></script>
+  <script>
+    document.getElementById('logoutLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      new bootstrap.Modal(document.getElementById('logoutModal')).show();
+    });
 
-            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
-            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
-            titleEl.textContent = title;
-            msgEl.textContent = message;
+    window.addEventListener('pageshow', (e) => { if (e.persisted) window.location.reload(); });
 
-            const modal = new bootstrap.Modal(modalEl);
-            if (callback) {
-                modalEl.addEventListener('hidden.bs.modal', function handler() {
-                    callback();
-                    modalEl.removeEventListener('hidden.bs.modal', handler);
-                });
-            }
-            modal.show();
+    function showNotification(title, message, type = 'success', callback = null) {
+      const modalEl = document.getElementById('notificationModal');
+      const header = document.getElementById('modalHeader');
+      const icon = document.getElementById('modalIcon');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMessage').textContent = message;
+      header.className = 'modal-header border-0 ' + (type === 'success' ? 'header-success' : 'header-danger');
+      icon.innerHTML = type === 'success'
+        ? '<div style="width:66px;height:66px;background:rgba(16,185,129,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.75rem;color:#10b981;"><i class="fas fa-check-circle"></i></div>'
+        : '<div style="width:66px;height:66px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.75rem;color:#ef4444;"><i class="fas fa-times-circle"></i></div>';
+      const modal = new bootstrap.Modal(modalEl);
+      if (callback) { modalEl.addEventListener('hidden.bs.modal', function h() { callback(); modalEl.removeEventListener('hidden.bs.modal', h); }); }
+      modal.show();
+    }
+
+    // Pre-load existing profile
+    async function loadProfile() {
+      try {
+        const profile = await window.apiService.getMyProfile();
+        if (profile) {
+          if (document.getElementById('company_name')) document.getElementById('company_name').value = profile.company_name || '';
+          if (document.getElementById('website')) document.getElementById('website').value = profile.website || '';
+          if (document.getElementById('bio')) document.getElementById('bio').value = profile.bio || '';
         }
+      } catch (err) { console.error('Error preloading profile:', err); }
+    }
 
-        const profileForm = document.getElementById('profileForm');
-
-        // Pre-load existing profile if it exists
-        async function loadProfile() {
-            try {
-                const profile = await window.apiService.getMyProfile();
-                if (profile) {
-                    document.getElementById('company_name').value = profile.company_name || '';
-                    document.getElementById('website').value = profile.website || '';
-                    document.getElementById('bio').value = profile.bio || '';
-
-                    // Populate additional fields if they exist
-                    if (document.getElementById('industry')) document.getElementById('industry').value = profile.industry || '';
-                    if (document.getElementById('company_size')) document.getElementById('company_size').value = profile.company_size || '';
-                    if (document.getElementById('years_in_business')) document.getElementById('years_in_business').value = profile.years_in_business || '';
-                }
-            } catch (err) {
-                console.error('Error loading profile:', err);
-            }
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+      const formData = new FormData(document.getElementById('profileForm'));
+      const data = Object.fromEntries(formData.entries());
+      try {
+        const result = await window.apiService.updateProfile(data);
+        if (result.success) {
+          showNotification('Saved!', 'Company profile updated successfully.', 'success', () => {
+            window.location.href = '/recruiter/dashboard';
+          });
+        } else {
+          showNotification('Error', result.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-check-circle"></i> Save Profile Details';
         }
+      } catch (err) {
+        showNotification('Error', 'An error occurred while saving.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Save Profile Details';
+      }
+    });
 
-        profileForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(profileForm);
-            const data = Object.fromEntries(formData.entries());
-
-            try {
-                const result = await window.apiService.updateProfile(data);
-                if (result.success) {
-                    showNotification('Success', 'Profile updated successfully!', 'success', () => {
-                        window.location.href = '/recruiter/dashboard';
-                    });
-                } else {
-                    showNotification('Error', result.message, 'error');
-                }
-            } catch (err) {
-                console.error('Profile Update Error:', err);
-                showNotification('Error', 'An error occurred while saving your profile.', 'error');
-            }
-        });
-
-        loadProfile();
-    </script>
+    loadProfile();
+  </script>
 </body>
 
 </html>

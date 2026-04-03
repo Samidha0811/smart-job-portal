@@ -75,7 +75,7 @@ const authController = {
                     return res.redirect('/');
                 }
             } else {
-                res.status(401).send('<h1>Login Failed</h1><p>Invalid email or password.</p><a href="/login">Try Again</a>');
+                res.redirect('/login?error=invalid_credentials');
             }
         } catch (err) {
             console.error(err);

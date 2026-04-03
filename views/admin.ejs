@@ -2,151 +2,268 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Smart Job Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Smart Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="bg-light">
-    <%- include('partials/admin-navbar', { activePage: 'dashboard' }) %>
+<body class="dashboard-page">
 
-    <div class="container py-5 mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Manage Recruiters</h2>
-            <div class="d-flex gap-3 align-items-center">
-                <div class="input-group shadow-sm" style="width: 300px;">
-                    <span class="input-group-text bg-white border-end-0">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text" id="recruiterSearch" class="form-control border-start-0 ps-0" placeholder="Search name or company...">
-                </div>
-                <div class="btn-group shadow-sm" role="group" aria-label="Recruiter filters">
-                    <button type="button" class="btn btn-outline-dark filter-btn" data-filter="all">All</button>
-                    <button type="button" class="btn btn-outline-dark active filter-btn" data-filter="pending">Pending</button>
-                    <button type="button" class="btn btn-outline-dark filter-btn" data-filter="approved">Approved</button>
-                    <button type="button" class="btn btn-outline-dark filter-btn" data-filter="rejected">Rejected</button>
-                </div>
+  <%- include('partials/admin-navbar', { activePage: 'dashboard' }) %>
+
+    <div class="dashboard-container">
+      <!-- Stats Row -->
+      <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-lg-3">
+          <div
+            style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+            <div
+              style="width:52px;height:52px;background:rgba(245,158,11,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#f59e0b;flex-shrink:0;">
+              <i class="fas fa-hourglass-half"></i>
             </div>
+            <div>
+              <div style="font-size:1.75rem;font-weight:800;color:var(--dark);">
+                <%= recruiters.filter(r=> r.status === 'pending').length %>
+              </div>
+              <div
+                style="font-size:0.78rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Pending Review</div>
+            </div>
+          </div>
         </div>
-        <div class="card shadow border-0">
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Company</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Submitted At</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (recruiters.length===0) { %>
-                            <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">No recruiters found.</td>
-                            </tr>
+        <div class="col-sm-6 col-lg-3">
+          <div
+            style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+            <div
+              style="width:52px;height:52px;background:rgba(16,185,129,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#10b981;flex-shrink:0;">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+              <div style="font-size:1.75rem;font-weight:800;color:var(--dark);">
+                <%= recruiters.filter(r=> r.status === 'approved' || r.status === 'active').length %>
+              </div>
+              <div
+                style="font-size:0.78rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Approved</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div
+            style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+            <div
+              style="width:52px;height:52px;background:rgba(239,68,68,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#ef4444;flex-shrink:0;">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <div>
+              <div style="font-size:1.75rem;font-weight:800;color:var(--dark);">
+                <%= recruiters.filter(r=> r.status === 'rejected').length %>
+              </div>
+              <div
+                style="font-size:0.78rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Rejected</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div
+            style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius-lg);padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+            <div
+              style="width:52px;height:52px;background:rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#fff;flex-shrink:0;">
+              <i class="fas fa-users"></i>
+            </div>
+            <div>
+              <div style="font-size:1.75rem;font-weight:800;color:#fff;">
+                <%= recruiters.length %>
+              </div>
+              <div
+                style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Total Recruiters</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recruiters Table -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+          <h1 class="page-title" style="font-size:1.4rem;">Manage Recruiters</h1>
+          <p style="color:var(--gray);font-size:0.85rem;margin:0;">Review and approve recruiter applications</p>
+        </div>
+        <div class="d-flex gap-3 flex-wrap align-items-center">
+          <!-- Search -->
+          <div class="search-bar" style="width:270px;">
+            <i class="fas fa-search search-bar-icon"></i>
+            <input type="text" id="recruiterSearch" placeholder="Search name or company...">
+          </div>
+          <!-- Filters -->
+          <div class="d-flex gap-2">
+            <button class="filter-btn" data-filter="all">All</button>
+            <button class="filter-btn active" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="approved">Approved</button>
+            <button class="filter-btn" data-filter="rejected">Rejected</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-card">
+        <div class="table-responsive">
+          <table class="app-table w-100">
+            <thead>
+              <tr>
+                <th>Recruiter</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (recruiters.length===0) { %>
+                <tr>
+                  <td colspan="5">
+                    <div class="empty-state">
+                      <div class="empty-state-icon"><i class="fas fa-users"></i></div>
+                      <div class="empty-state-title">No Recruiters Found</div>
+                      <div class="empty-state-text">Recruiter applications will appear here once submitted.</div>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+                  <% recruiters.forEach(user=> {
+                    const displayStatus = (user.status === 'active') ? 'approved' : user.status;
+                    %>
+                    <tr class="recruiter-row" data-status="<%= displayStatus %>"
+                      data-name="<%= user.fullname.toLowerCase() %>"
+                      data-company="<%= (user.company_name || '').toLowerCase() %>">
+                      <td>
+                        <div class="d-flex align-items-center gap-3">
+                          <div
+                            style="width:38px;height:38px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0;">
+                            <i class="fas fa-user-tie" style="font-size:0.85rem;"></i>
+                          </div>
+                          <div>
+                            <div class="fw-bold" style="font-size:0.875rem;color:var(--dark);">
+                              <%= user.fullname %>
+                            </div>
+                            <div style="font-size:0.78rem;color:var(--gray);">
+                              <%= user.email %>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <% if (user.company_name) { %>
+                          <span
+                            style="background:rgba(6,182,212,0.08);color:#0891b2;border:1px solid rgba(6,182,212,0.2);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.8rem;font-weight:600;">
+                            <%= user.company_name %>
+                          </span>
+                          <% } else { %>
+                            <span style="color:var(--gray-light);font-size:0.85rem;">—</span>
                             <% } %>
-                                <% recruiters.forEach(user=> { 
-                                    const displayStatus = (user.status === 'active') ? 'approved' : user.status;
-                                %>
-                                    <tr class="recruiter-row" 
-                                        data-status="<%= displayStatus %>"
-                                        data-name="<%= user.fullname.toLowerCase() %>"
-                                        data-company="<%= (user.company_name || '').toLowerCase() %>">
-                                        <td>
-                                            <%= user.fullname %>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info text-dark"><%= user.company_name || 'N/A' %></span>
-                                        </td>
-                                        <td>
-                                            <%= user.email %>
-                                        </td>
-                                        <td>
-                                            <% if (user.status === 'pending') { %>
-                                                <span class="badge bg-warning text-dark px-3 mt-1"><i class="fas fa-clock me-1"></i> Pending</span>
-                                            <% } else if (user.status === 'approved' || user.status === 'active') { %>
-                                                <span class="badge bg-success px-3 mt-1"><i class="fas fa-check-circle me-1"></i> Approved</span>
-                                            <% } else if (user.status === 'rejected') { %>
-                                                <span class="badge bg-danger px-3 mt-1"><i class="fas fa-times-circle me-1"></i> Rejected</span>
-                                            <% } else { %>
-                                                <span class="badge bg-secondary px-3 mt-1"><%= user.status %></span>
-                                            <% } %>
-                                        </td>
-                                        <td>
-                                            <%= user.submitted_at ? new Date(user.submitted_at).toLocaleDateString() : 'N/A' %>
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="/admin/recruiter/<%= user.id %>" class="btn btn-primary btn-sm px-3">
-                                                <i class="fas fa-eye me-1"></i> Review
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <% }); %>
-                    </tbody>
-                </table>
-            </div>
+                      </td>
+                      <td>
+                        <% if (displayStatus==='pending' ) { %>
+                          <span class="pill pill-warning"><span class="pill-dot"></span>Pending</span>
+                          <% } else if (displayStatus==='approved' ) { %>
+                            <span class="pill pill-success"><span class="pill-dot"></span>Approved</span>
+                            <% } else if (displayStatus==='rejected' ) { %>
+                              <span class="pill pill-danger"><span class="pill-dot"></span>Rejected</span>
+                              <% } else { %>
+                                <span class="pill pill-secondary"><span class="pill-dot"></span>
+                                  <%= user.status %>
+                                </span>
+                                <% } %>
+                      </td>
+                      <td style="font-size:0.82rem;color:var(--gray);">
+                        <%= user.submitted_at ? new Date(user.submitted_at).toLocaleDateString('en-IN',
+                          {day:'numeric',month:'short',year:'numeric'}) : 'N/A' %>
+                      </td>
+                      <td class="text-end">
+                        <a href="/admin/recruiter/<%= user.id %>" class="btn btn-sm fw-bold"
+                          style="background:rgba(79,70,229,0.08);color:var(--primary);border:1px solid rgba(79,70,229,0.2);border-radius:8px;font-size:0.8rem;padding:0.35rem 0.85rem;">
+                          <i class="fas fa-eye me-1"></i>Review
+                        </a>
+                      </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <style>
+      .filter-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1.5px solid var(--border);
+        color: var(--gray);
+        background: var(--white);
+        transition: var(--transition);
+        user-select: none;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .filter-btn.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+      }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/apiService.js"></script>
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Prevent Back-Forward Cache (bfcache)
-            window.addEventListener('pageshow', (event) => {
-                if (event.persisted) {
-                    window.location.reload();
-                }
-            });
+      window.addEventListener('pageshow', (e) => { if (e.persisted) window.location.reload(); });
 
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const searchInput = document.getElementById('recruiterSearch');
-            const tableRows = document.querySelectorAll('.recruiter-row');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const searchInput = document.getElementById('recruiterSearch');
+      const tableRows = document.querySelectorAll('.recruiter-row');
 
-            let currentFilter = 'pending';
-            let currentSearch = '';
+      let currentFilter = 'pending';
+      let currentSearch = '';
 
-            const applyFilters = () => {
-                tableRows.forEach(row => {
-                    const status = row.getAttribute('data-status');
-                    const name = row.getAttribute('data-name');
-                    const company = row.getAttribute('data-company');
-
-                    const matchesFilter = currentFilter === 'all' || status === currentFilter;
-                    const matchesSearch = name.includes(currentSearch) || company.includes(currentSearch);
-
-                    if (matchesFilter && matchesSearch) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            };
-
-            // Call once to apply default filter (pending)
-            applyFilters();
-
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.getAttribute('data-filter');
-                    applyFilters();
-                });
-            });
-
-            searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value.toLowerCase().trim();
-                applyFilters();
-            });
+      function applyFilters() {
+        tableRows.forEach(row => {
+          const status = row.getAttribute('data-status');
+          const name = row.getAttribute('data-name');
+          const company = row.getAttribute('data-company');
+          const matchesFilter = currentFilter === 'all' || status === currentFilter;
+          const matchesSearch = name.includes(currentSearch) || company.includes(currentSearch);
+          row.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
         });
+      }
+
+      applyFilters(); // Apply default filter
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.toLowerCase().trim();
+        applyFilters();
+      });
     </script>
 </body>
 

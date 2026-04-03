@@ -17,10 +17,12 @@ const Application = {
      */
     async getByRecruiter(recruiterId) {
         const [rows] = await db.query(
-            `SELECT a.*, u.fullname as seeker_name, u.email as seeker_email, j.title as job_title 
+            `SELECT a.*, u.fullname as seeker_name, u.email as seeker_email, j.title as job_title, 
+                    sd.phone_number, sd.bio, sd.education, sd.experience_years, sd.skills, sd.resume_filename 
              FROM applications a 
              JOIN users u ON a.seeker_id = u.id 
              JOIN jobs j ON a.job_id = j.id 
+             LEFT JOIN seeker_details sd ON u.id = sd.user_id
              WHERE j.recruiter_id = ? 
              ORDER BY a.applied_at DESC`,
             [recruiterId]
@@ -33,9 +35,11 @@ const Application = {
      */
     async getByJob(jobId) {
         const [rows] = await db.query(
-            `SELECT a.*, u.fullname as seeker_name, u.email as seeker_email 
+            `SELECT a.*, u.fullname as seeker_name, u.email as seeker_email, 
+                    sd.phone_number, sd.bio, sd.education, sd.experience_years, sd.skills, sd.resume_filename 
              FROM applications a 
              JOIN users u ON a.seeker_id = u.id 
+             LEFT JOIN seeker_details sd ON u.id = sd.user_id
              WHERE a.job_id = ?`,
             [jobId]
         );
@@ -47,9 +51,11 @@ const Application = {
      */
     async getBySeeker(seekerId) {
         const [rows] = await db.query(
-            `SELECT a.*, j.title as job_title 
+            `SELECT a.*, j.title as job_title, j.description as job_description, 
+                    j.location, j.salary, j.keywords, rd.company_name 
              FROM applications a 
              JOIN jobs j ON a.job_id = j.id 
+             JOIN recruiter_details rd ON j.recruiter_id = rd.user_id
              WHERE a.seeker_id = ? 
              ORDER BY a.applied_at DESC`,
             [seekerId]

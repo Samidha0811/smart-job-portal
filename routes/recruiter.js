@@ -19,8 +19,9 @@ router.post('/register-details', upload.fields([
 // Protect all following recruiter routes
 router.use(auth(['recruiter', 'admin'])); // Allow admin to access documents too
 
-// Document Serving Route (New)
+// Document Serving Routes
 router.get('/document/:type/:userId', recruiterController.serveDocument);
+router.get('/resume/:seekerId', recruiterController.serveResume);
 
 // Profile Routes
 router.post('/profile', recruiterController.updateProfile);

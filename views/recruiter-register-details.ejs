@@ -1,274 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .form-section {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            margin-bottom: 2rem;
-        }
-        .section-title {
-            border-bottom: 2px solid #0d6efd;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: #0d6efd;
-            font-weight: 700;
-        }
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-        .step-indicator::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #dee2e6;
-            z-index: 1;
-        }
-        .step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            border: 2px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            z-index: 2;
-            position: relative;
-        }
-        .step.active {
-            border-color: #0d6efd;
-            background: #0d6efd;
-            color: #fff;
-        }
-        .step.completed {
-            border-color: #198754;
-            background: #198754;
-            color: #fff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> — Smart Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .setup-container {
+      max-width: 850px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .setup-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 2rem 0 3.5rem;
+      flex-wrap: wrap;
+    }
+    .progress-step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 90px;
+    }
+    .step-dot-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--white);
+      color: var(--gray-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .step-dot-circle::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background: var(--border);
+      right: -48px;
+      top: 18px;
+    }
+    .progress-step-item:last-child .step-dot-circle::after {
+      display: none;
+    }
+    .progress-step-item.active .step-dot-circle {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+    .progress-step-item.active .step-name {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .step-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-light);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .form-section {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+    .form-section:hover {
+      border-color: rgba(79, 70, 229, 0.2);
+      box-shadow: var(--shadow);
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon-box {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .doc-upload-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+    }
+    .doc-upload-card:hover {
+      border-color: var(--primary-light);
+      background: var(--white);
+    }
+    .doc-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .doc-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+  </style>
 </head>
-<body class="bg-light">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
-        <div class="container">
-          <span class="navbar-brand fw-bold">Smart Job Portal</span>
-        </div>
-    </nav>
+<body class="dashboard-page">
 
-    <div class="container py-5 mt-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold">Recruiter Verification</h2>
-                    <p class="text-muted">Please provide your company details to get verified by our admin team.</p>
-                </div>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-premium">
+    <div class="container">
+      <span class="navbar-brand">
+        <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
+      </span>
+      <div class="ms-auto">
+        <a href="/api/auth/logout" class="btn-nav-danger">
+          <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </a>
+      </div>
+    </div>
+  </nav>
 
-                <form id="recruiterDetailsForm" enctype="multipart/form-data">
-                    <!-- Section 1: Company Information -->
-                    <div class="form-section">
-                        <h4 class="section-title"><i class="fas fa-building me-2"></i>1. Company Information</h4>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Company Name</label>
-                                <input type="text" class="form-control" name="company_name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Company Email (Official)</label>
-                                <input type="email" class="form-control" name="company_email" placeholder="hr@company.com" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Company Website</label>
-                                <input type="url" class="form-control" name="company_website" placeholder="https://">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Industry</label>
-                                <select class="form-select" name="industry" required>
-                                    <option value="">Select Industry</option>
-                                    <option value="IT">Information Technology</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Healthcare">Healthcare</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Manufacturing">Manufacturing</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Company Description</label>
-                                <textarea class="form-control" name="company_description" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 2: Company Address -->
-                    <div class="form-section">
-                        <h4 class="section-title"><i class="fas fa-map-marker-alt me-2"></i>2. Company Address</h4>
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Address Line</label>
-                                <input type="text" class="form-control" name="address_line" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">City</label>
-                                <input type="text" class="form-control" name="city" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">State</label>
-                                <input type="text" class="form-control" name="state" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Country</label>
-                                <input type="text" class="form-control" name="country" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Pincode</label>
-                                <input type="text" class="form-control" name="pincode" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Recruiter Personal Info -->
-                    <div class="form-section">
-                        <h4 class="section-title"><i class="fas fa-user-tie me-2"></i>3. Recruiter Personal Info</h4>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-control" name="full_name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Contact Number</label>
-                                <input type="tel" class="form-control" name="contact_number" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Designation</label>
-                                <input type="text" class="form-control" name="designation" placeholder="e.g. HR Manager, Talent Acquisition" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 4: Verification Documents -->
-                    <div class="form-section">
-                        <h4 class="section-title"><i class="fas fa-file-invoice me-2"></i>4. Verification Documents</h4>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Company Registration Certificate</label>
-                            <input type="text" class="form-control mb-2" name="registration_cert_no" placeholder="Certificate Number" required>
-                            <input type="file" class="form-control" name="registration_cert" accept=".pdf,.jpg,.jpeg,.png" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">GST Number (Optional)</label>
-                            <input type="text" class="form-control mb-2" name="gst_number" placeholder="GSTN">
-                            <input type="file" class="form-control" name="gst_doc" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">PAN Number</label>
-                            <input type="text" class="form-control mb-2" name="pan_number" placeholder="PAN" required>
-                            <input type="file" class="form-control" name="pan_doc" accept=".pdf,.jpg,.jpeg,.png" required>
-                        </div>
-                    </div>
-
-                    <!-- Section 5: Additional Info -->
-                    <div class="form-section">
-                        <h4 class="section-title"><i class="fas fa-chart-pie me-2"></i>5. Additional Info</h4>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Company Size</label>
-                                <select class="form-select" name="company_size">
-                                    <option value="1-10">1-10 Employees</option>
-                                    <option value="10-50">10-50 Employees</option>
-                                    <option value="50-200">50-200 Employees</option>
-                                    <option value="200-500">200-500 Employees</option>
-                                    <option value="500+">500+ Employees</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Years in Business</label>
-                                <input type="number" class="form-control" name="years_in_business">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">LinkedIn Company Profile</label>
-                                <input type="url" class="form-control" name="linkedin_profile" placeholder="https://linkedin.com/company/...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2 mb-5">
-                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow">Submit for Verification</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <div class="setup-container">
+    <!-- Header -->
+    <div class="setup-header">
+      <div class="section-label mx-auto">
+        <i class="fas fa-shield-check me-1 text-success"></i> Verification
+      </div>
+      <h1 class="page-title mt-3" style="font-size: 2.5rem;">Complete Company Profile</h1>
+      <p class="text-muted mt-2" style="font-size: 1.1rem;">
+        Provide your official details for admin verification to start hiring.
+      </p>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('recruiterDetailsForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const userId = sessionStorage.getItem('pendingRecruiterId');
-            if (!userId) {
-                alert('Session expired or invalid registration. Please register again.');
-                window.location.href = '/register';
-                return;
-            }
+    <!-- Progress Steps -->
+    <div class="progress-steps text-center">
+      <div class="progress-step-item active">
+        <div class="step-dot-circle">1</div>
+        <span class="step-name">Company</span>
+      </div>
+      <div class="progress-step-item">
+        <div class="step-dot-circle">2</div>
+        <span class="step-name">Address</span>
+      </div>
+      <div class="progress-step-item">
+        <div class="step-dot-circle">3</div>
+        <span class="step-name">Contact</span>
+      </div>
+      <div class="progress-step-item">
+        <div class="step-dot-circle">4</div>
+        <span class="step-name">Docs</span>
+      </div>
+    </div>
 
-            const formData = new FormData(e.target);
-            formData.append('user_id', userId);
+    <form id="recruiterDetailsForm" enctype="multipart/form-data">
+      
+      <!-- Section 1: Company Info -->
+      <div class="form-section">
+        <div class="section-head">
+          <div class="section-icon-box" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">
+            <i class="fas fa-building"></i>
+          </div>
+          <div>
+            <h4 class="mb-0 fw-bold" style="font-size: 1.1rem;">Company Information</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Basic details about your organization</p>
+          </div>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label-premium">Company Name <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-id-card-alt input-icon"></i>
+              <input type="text" class="form-control-premium" name="company_name" required placeholder="e.g. Acme Corp Inc.">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Official Company Email <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-envelope-open input-icon"></i>
+              <input type="email" class="form-control-premium" name="company_email" placeholder="hr@company.com" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Company Website</label>
+            <div class="input-group-premium">
+              <i class="fas fa-globe input-icon"></i>
+              <input type="url" class="form-control-premium" name="company_website" placeholder="https://company.com">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Industry <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-industry input-icon"></i>
+              <select class="form-control-premium" name="industry" required style="appearance: none;">
+                <option value="">Select Industry</option>
+                <option value="IT">Information Technology</option>
+                <option value="Finance">Finance & Banking</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Education">Education</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Retail">Retail & E-commerce</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label-premium">Company Description</label>
+            <textarea class="form-control-premium" name="company_description" rows="3" 
+              placeholder="Brief overview of your company, culture, and mission..."></textarea>
+          </div>
+        </div>
+      </div>
 
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+      <!-- Section 2: Address -->
+      <div class="form-section">
+        <div class="section-head">
+          <div class="section-icon-box" style="background: rgba(6, 182, 212, 0.1); color: var(--secondary);">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <div>
+            <h4 class="mb-0 fw-bold" style="font-size: 1.1rem;">Registered Address</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Official headquarters location</p>
+          </div>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-12">
+            <label class="form-label-premium">Address Line <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              <input type="text" class="form-control-premium" name="address_line" required placeholder="Building, Street, Area">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">City <span class="text-danger">*</span></label>
+            <input type="text" class="form-control-premium" name="city" required placeholder="Mumbai">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">State <span class="text-danger">*</span></label>
+            <input type="text" class="form-control-premium" name="state" required placeholder="Maharashtra">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Country <span class="text-danger">*</span></label>
+            <input type="text" class="form-control-premium" name="country" required placeholder="India">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Pincode <span class="text-danger">*</span></label>
+            <input type="text" class="form-control-premium" name="pincode" required placeholder="400001">
+          </div>
+        </div>
+      </div>
 
-            try {
-                const response = await fetch('/api/recruiter/register-details', {
-                    method: 'POST',
-                    body: formData
-                });
+      <!-- Section 3: Personal Info -->
+      <div class="form-section">
+        <div class="section-head">
+          <div class="section-icon-box" style="background: rgba(245, 158, 11, 0.1); color: var(--accent);">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div>
+            <h4 class="mb-0 fw-bold" style="font-size: 1.1rem;">Representative Details</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Your personal professional info</p>
+          </div>
+        </div>
 
-                const result = await response.json();
-                
-                if (response.ok) {
-                    sessionStorage.removeItem('pendingRecruiterId');
-                    document.body.innerHTML = `
-                        <div class="container py-5 text-center">
-                            <div class="card shadow-lg p-5 border-0 rounded-4">
-                                <div class="mb-4">
-                                    <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-                                </div>
-                                <h1 class="fw-bold mb-3">Submission Successful!</h1>
-                                <p class="lead text-muted mb-4">${result.message}</p>
-                                <div class="d-grid gap-2 col-md-6 mx-auto">
-                                    <a href="/login" class="btn btn-primary btn-lg fw-bold">Back to Login</a>
-                                </div>
-                            </div>
-                        </div>`;
-                } else {
-                    alert('Submission failed: ' + (result.message || 'Unknown error'));
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Submit for Verification';
-                }
-            } catch (err) {
-                console.error('Error:', err);
-                alert('An error occurred during submission.');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Submit for Verification';
-            }
-        });
-    </script>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label-premium">Full Name <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" class="form-control-premium" name="full_name" required placeholder="John Doe">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Contact Number <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" class="form-control-premium" name="contact_number" required placeholder="+91 9876543210">
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label-premium">Your Designation <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-briefcase input-icon"></i>
+              <input type="text" class="form-control-premium" name="designation" required placeholder="e.g. HR Manager, Talent Acquisition Lead">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Documents -->
+      <div class="form-section">
+        <div class="section-head">
+          <div class="section-icon-box" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+            <i class="fas fa-file-shield"></i>
+          </div>
+          <div>
+            <h4 class="mb-0 fw-bold" style="font-size: 1.1rem;">Verification Documents</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Secure document upload for verification</p>
+          </div>
+        </div>
+
+        <!-- Registration Cert -->
+        <div class="doc-upload-card">
+          <div class="doc-header">
+            <div class="doc-icon" style="background:rgba(79,70,229,0.1); color:var(--primary);"><i class="fas fa-certificate"></i></div>
+            <span class="fw-bold" style="font-size:0.95rem;">Company Registration Certificate <span class="text-danger">*</span></span>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input type="text" class="form-control-premium" name="registration_cert_no" placeholder="Certificate Number" required>
+            </div>
+            <div class="col-md-6">
+              <input type="file" class="form-control" name="registration_cert" accept=".pdf,.jpg,.jpeg,.png" required style="font-size:0.85rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- GST -->
+        <div class="doc-upload-card">
+          <div class="doc-header">
+            <div class="doc-icon" style="background:rgba(6,182,212,0.1); color:#06b6d4;"><i class="fas fa-receipt"></i></div>
+            <span class="fw-bold" style="font-size:0.95rem;">GST Number <span class="text-muted fw-normal" style="font-size: 0.85rem;">(Optional)</span></span>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input type="text" class="form-control-premium" name="gst_number" placeholder="GSTN Number">
+            </div>
+            <div class="col-md-6">
+              <input type="file" class="form-control" name="gst_doc" accept=".pdf,.jpg,.jpeg,.png" style="font-size:0.85rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- PAN -->
+        <div class="doc-upload-card">
+          <div class="doc-header">
+            <div class="doc-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b;"><i class="fas fa-id-card"></i></div>
+            <span class="fw-bold" style="font-size:0.95rem;">PAN Card <span class="text-danger">*</span></span>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input type="text" class="form-control-premium" name="pan_number" placeholder="PAN Number" required>
+            </div>
+            <div class="col-md-6">
+              <input type="file" class="form-control" name="pan_doc" accept=".pdf,.jpg,.jpeg,.png" required style="font-size:0.85rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="row g-4 mt-2">
+          <div class="col-md-6">
+            <label class="form-label-premium">Company Size</label>
+            <select class="form-control-premium" name="company_size" style="appearance: none;">
+              <option value="1-10">1–10 Employees</option>
+              <option value="10-50">10–50 Employees</option>
+              <option value="50-200">50–200 Employees</option>
+              <option value="200-500">200–500 Employees</option>
+              <option value="500+">500+ Employees</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-premium">Years in Business</label>
+            <input type="number" class="form-control-premium" name="years_in_business" placeholder="e.g. 5" min="0">
+          </div>
+          <div class="col-12">
+            <label class="form-label-premium">LinkedIn Company Page</label>
+            <div class="input-group-premium">
+              <i class="fab fa-linkedin input-icon"></i>
+              <input type="url" class="form-control-premium" name="linkedin_profile" placeholder="https://linkedin.com/company/...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center mt-5 mb-5">
+        <button type="submit" class="btn-submit-premium" id="submitBtn" style="padding: 1.1rem 3rem; font-size: 1.1rem; width: auto;">
+          Submit for Hub Verification <i class="fas fa-paper-plane ms-2"></i>
+        </button>
+        <p class="text-muted mt-3" style="font-size: 0.85rem;">
+          <i class="fas fa-lock me-1"></i> Your documents are encrypted and securely stored.
+        </p>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('recruiterDetailsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = sessionStorage.getItem('pendingRecruiterId');
+      if (!userId) {
+        alert('Session expired or invalid. Please register again.');
+        window.location.href = '/register';
+        return;
+      }
+      const formData = new FormData(e.target);
+      formData.append('user_id', userId);
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Reviewing Submission...';
+
+      try {
+        const res = await fetch('/api/recruiter/register-details', { method: 'POST', body: formData });
+        const result = await res.json();
+        if (res.ok) {
+          sessionStorage.removeItem('pendingRecruiterId');
+          document.body.innerHTML = `
+            <div style="min-height:100vh;background:linear-gradient(135deg,#0f172a,#232158);display:flex;align-items:center;justify-content:center;padding:2rem;">
+              <div style="background:#fff;border-radius:24px;padding:4rem;max-width:520px;width:100%;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,0.35);">
+                <div style="width:100px;height:100px;background:rgba(16,185,129,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:2.75rem;color:#10b981;">
+                  <i class="fas fa-check-double"></i>
+                </div>
+                <h2 style="font-family:Inter,sans-serif;font-weight:900;font-size:2rem;color:#0f172a;margin-bottom:1rem;letter-spacing:-0.5px;">Application Received</h2>
+                <p style="color:#64748b;font-size:1.1rem;margin-bottom:2.5rem;line-height:1.6;">${result.message}</p>
+                <a href="/login" style="display:inline-flex;align-items:center;justify-content:center;gap:0.75rem;background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;padding:1rem 2.5rem;border-radius:12px;font-family:Inter,sans-serif;font-weight:700;text-decoration:none;transition:all 0.3s;box-shadow:0 10px 25px rgba(79,70,229,0.3);">
+                  <i class="fas fa-home" style="font-size: 0.9rem;"></i> Back to Home
+                </a>
+              </div>
+            </div>`;
+        } else {
+          alert('Submission failed: ' + (result.message || 'Unknown error'));
+          btn.disabled = false;
+          btn.innerHTML = 'Submit for Hub Verification <i class="fas fa-paper-plane ms-2"></i>';
+        }
+      } catch (err) {
+        alert('An error occurred. Please refresh and try again.');
+        btn.disabled = false;
+        btn.innerHTML = 'Submit for Hub Verification <i class="fas fa-paper-plane ms-2"></i>';
+      }
+    });
+  </script>
 </body>
 </html>

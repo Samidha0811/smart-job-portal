@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middleware/auth');
+const Seeker = require('../models/seekerModel');
 
 // General Page Routes
 router.get('/', (req, res) => {
@@ -17,7 +18,7 @@ router.get('/recruiter/register-details', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-    res.render('login', { title: 'Login - Smart Job Portal' });
+    res.render('login', { title: 'Login - Smart Job Portal', error: req.query.error });
 });
 
 router.get('/jobs', (req, res) => {
@@ -46,12 +47,29 @@ router.get('/recruiter/my-jobs', auth(['recruiter']), (req, res) => {
 });
 
 // Seeker Pages (Protected)
-router.get('/seeker/dashboard', auth(['seeker']), (req, res) => {
-    res.render('seeker-dashboard', { title: 'Seeker Dashboard' });
+router.get('/seeker/dashboard', auth(['seeker']), async (req, res) => {
+    try {
+        const profile = await Seeker.getDetailsByUserId(req.user.id);
+        if (!profile) {
+            return res.redirect('/seeker/complete-profile');
+        }
+        res.render('seeker-dashboard', { 
+            title: 'Seeker Dashboard', 
+            user: { ...req.user, fullname: profile.fullname || req.user.fullname }, 
+            profile 
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/seeker/complete-profile', auth(['seeker']), (req, res) => {
+    res.render('seeker-complete-profile', { title: 'Complete Your Profile' });
 });
 
 router.get('/seeker/my-applications', auth(['seeker']), (req, res) => {
-    res.render('seeker-dashboard', { title: 'My Applications' }); // Reuse same dashboard or create separate
+    res.render('seeker-dashboard', { title: 'My Applications' }); 
 });
 
 module.exports = router;
