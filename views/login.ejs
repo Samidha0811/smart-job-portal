@@ -1,66 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %> — Smart Job Portal
+  </title>
+  <meta name="description" content="Login to Smart Job Portal to access your dashboard.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ---- Left decorative panel ---- */
+    .auth-left {
+      background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3.5rem 1.5rem;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+      top: -80px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .auth-left::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+      bottom: -60px;
+      left: -60px;
+      border-radius: 50%;
+    }
+
+    .auth-left-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.15rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-left-brand i {
+      color: #818cf8;
+      font-size: 1.1rem;
+    }
+
+    .auth-left-heading {
+      color: #fff;
+      font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-left-heading span {
+      background: linear-gradient(135deg, #a5b4fc, #67e8f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-left-sub {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.95rem;
+      max-width: 340px;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .auth-feature-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .auth-feature-item span {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* ---- Right panel ---- */
+    .auth-right {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .auth-form-box {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .auth-form-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -1.5px;
+      margin-bottom: 0.4rem;
+    }
+
+    .auth-form-sub {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .auth-form-sub a {
+      color: #4f46e5;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .auth-form-sub a:hover {
+      text-decoration: underline;
+    }
+
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: #0f172a;
+      background: #fff;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .field-input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .field-input::placeholder {
+      color: #cbd5e1;
+    }
+
+    .field-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .pwd-wrap {
+      position: relative;
+    }
+
+    .pwd-wrap .field-input {
+      padding-right: 2.75rem;
+    }
+
+    .pwd-toggle {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+
+    .btn-auth-submit {
+      width: 100%;
+      padding: 0.95rem;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-auth-submit:hover {
+      background: #4338ca;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-auth-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: #b91c1c;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #cbd5e1;
+      font-size: 0.8rem;
+      margin: 1.5rem 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+      .auth-left {
+        display: none !important;
+      }
+
+      .auth-form-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-light">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-          <a class="navbar-brand fw-bold" href="/">Smart Job Portal</a>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0" style="min-height:100vh;">
+
+      <!-- ===== LEFT PANEL ===== -->
+      <div class="col-lg-6 auth-left d-none d-lg-flex flex-column">
+        <div class="auth-left-brand">
+          <i class="fas fa-briefcase"></i> SmartJobPortal
         </div>
-    </nav>
-
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card shadow border-0 rounded-3">
-                    <div class="card-body p-5 text-center">
-                        <h2 class="mb-4 fw-bold text-primary">Login</h2>
-                        
-                        <% if (typeof error !== 'undefined' && error) { %>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <% if (error === 'invalid_credentials') { %>
-                                    <strong>Error!</strong> Invalid email or password.
-                                <% } else { %>
-                                    <strong>Error!</strong> An error occurred. Please try again.
-                                <% } %>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <% } %>
-
-                        <form action="/api/auth/login" method="POST" autocomplete="off">
-                            <div class="mb-3 text-start">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" name="email" id="email" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
-                            </div>
-                            <div class="mb-4 text-start">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" name="password" id="password" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
-                                    <button class="btn btn-outline-secondary toggle-password" type="button">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Login</button>
-                        </form>
-                        <p class="mt-3 text-muted">Don't have an account? <a href="/register" class="text-primary text-decoration-none">Sign up</a></p>
-                    </div>
-                </div>
+        <h2 class="auth-left-heading">
+          Welcome back to<br>your <span>Career Hub</span>
+        </h2>
+        <p class="auth-left-sub">
+          Sign in to browse new opportunities, track your applications, and connect with top employers.
+        </p>
+        <div class="auth-feature-list">
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" style="background:rgba(129,140,248,0.15);color:#818cf8;">
+              <i class="fas fa-robot"></i>
             </div>
+            <span>AI-powered resume &amp; skill matching</span>
+          </div>
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <span>Verified recruiter profiles only</span>
+          </div>
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <span>One-click apply with stored resume</span>
+          </div>
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <span>Real-time application status tracking</span>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- apiService JS -->
-    <script src="/js/apiService.js"></script>
-    <script src="/js/script.js"></script>
+      <!-- ===== RIGHT FORM ===== -->
+      <div class="col-lg-6 auth-right">
+        <div class="auth-form-box">
+
+          <!-- Back link -->
+          <a href="/" class="mb-4 d-inline-flex align-items-center gap-2"
+            style="color:#64748b;font-size:0.85rem;font-weight:600;text-decoration:none;">
+            <i class="fas fa-arrow-left" style="font-size:0.8rem;"></i> Back to Home
+          </a>
+
+          <h1 class="auth-form-title">Sign in</h1>
+          <p class="auth-form-sub">
+            Don't have an account? <a href="/register">Create one free</a>
+          </p>
+
+          <!-- Error -->
+          <% if (typeof error !=='undefined' && error) { %>
+            <div class="error-box" role="alert">
+              <i class="fas fa-exclamation-circle" style="flex-shrink:0;"></i>
+              <span>
+                <% if (error==='invalid_credentials' ) { %>
+                  Invalid email or password. Please try again.
+                  <% } else { %>
+                    An error occurred. Please try again.
+                    <% } %>
+              </span>
+            </div>
+            <% } %>
+
+              <form action="/api/auth/login" method="POST" autocomplete="off" id="loginForm">
+                <!-- Email -->
+                <div class="field-group">
+                  <label for="email" class="field-label">Email address</label>
+                  <input type="email" class="field-input" name="email" id="email" placeholder="rahul@email.com" required
+                    autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+
+                <!-- Password -->
+                <div class="field-group">
+                  <label for="password" class="field-label">Password</label>
+                  <div class="pwd-wrap">
+                    <input type="password" class="field-input" name="password" id="password"
+                      placeholder="Enter your password" required autocomplete="off" readonly
+                      onfocus="this.removeAttribute('readonly');">
+                    <button type="button" class="pwd-toggle" onclick="togglePassword()">
+                      <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-auth-submit" id="loginBtn">
+                  Sign in <i class="fas fa-arrow-right"></i>
+                </button>
+              </form>
+
+              <!-- Divider -->
+              <div class="divider">or</div>
+
+              <a href="/register"
+                style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem;border:1.5px solid #e2e8f0;border-radius:12px;color:#334155;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.2s;"
+                onmouseover="this.style.borderColor='#4f46e5';this.style.color='#4f46e5'"
+                onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#334155'">
+                <i class="fas fa-user-plus" style="color:#4f46e5;"></i> Create a new account
+              </a>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/apiService.js"></script>
+  <script src="/js/script.js"></script>
+  <script>
+    function togglePassword() {
+      const pwd = document.getElementById('password');
+      const icon = document.getElementById('eyeIcon');
+      pwd.type = pwd.type === 'password' ? 'text' : 'password';
+      icon.className = pwd.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function () {
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;"></span> Signing in...';
+    });
+  </script>
 </body>
+
 </html>

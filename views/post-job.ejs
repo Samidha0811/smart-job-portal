@@ -1,199 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> — Smart Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+<body class="dashboard-page">
 
-<body class="bg-light">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/recruiter/dashboard">Smart Job Portal</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/applications">Applications Received</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold me-3 text-white" href="/recruiter/my-jobs">Posted Jobs</a></li>
-                    <li class="nav-item"><a class="btn btn-danger btn-sm ms-3 text-white fw-bold shadow-sm" href="#" id="logoutLink">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-premium">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/recruiter/dashboard">
+        <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="/recruiter/dashboard"><i class="fas fa-th-large me-1"></i>Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recruiter/applications"><i class="fas fa-users me-1"></i>Applications</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recruiter/my-jobs"><i class="fas fa-list me-1"></i>Posted Jobs</a></li>
+          <li class="nav-item ms-2">
+            <a class="btn-nav-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <div class="container py-5 mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow border-0 rounded-3">
-                    <div class="card-body ">
-                        <h2 class="fw-bold mb-4">Post a New Job</h2>
-                        <form id="jobForm">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Job Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required
-                                    placeholder="e.g. Senior Software Engineer">
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="location" class="form-label">Location</label>
-                                    <input type="text" class="form-control" id="location" name="location"
-                                        placeholder="e.g. New York, NY (or Remote)">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="salary" class="form-label">Salary Range</label>
-                                    <input type="text" class="form-control" id="salary" name="salary"
-                                        placeholder="e.g. $80k - $120k">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="keywords" class="form-label">Keywords (Skills)</label>
-                                <input type="text" class="form-control" id="keywords" name="keywords"
-                                    placeholder="e.g. nodejs, react, mysql, javascript">
-                                <small class="text-muted">Separate with commas</small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Job Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required
-                                    placeholder="Describe the role, responsibilities, and requirements..."></textarea>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="d-flex justify-content-between">
-                                <a href="/recruiter/dashboard" class="btn btn-outline-secondary px-4">Cancel</a>
-                                <button type="submit" class="btn btn-primary px-5 fw-bold">Post Job</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="dashboard-container" style="max-width:900px;">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <div class="section-label mx-auto" style="display:inline-flex;"><i class="fas fa-pen me-1"></i> Job Posting</div>
+      <h1 class="page-title mt-2" style="font-size:2rem;">Post a New Job</h1>
+      <p style="color:var(--gray);font-size:0.9rem;margin-top:0.5rem;">Fill in the details below to attract the best candidates for your role.</p>
     </div>
 
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
-                <div class="modal-header bg-danger text-white border-0 py-3">
-                    <h5 class="modal-title fw-bold" id="logoutModalLabel">
-                        <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-5 text-center">
-                    <div class="mb-3 text-danger">
-                        <i class="fas fa-exclamation-circle fa-4x"></i>
-                    </div>
-                    <h4 class="fw-bold">Are you sure?</h4>
-                    <p class="text-muted mb-0">You will be signed out of your session.</p>
-                </div>
-                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-light px-4 fw-bold text-muted"
-                        data-bs-dismiss="modal">Cancel</button>
-                    <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold shadow-sm">Logout Now</a>
-                </div>
+    <div class="main-card">
+      <div class="main-card-body">
+        <form id="jobForm">
+          <div class="row g-4">
+            <!-- Job Title -->
+            <div class="col-12">
+              <label class="form-label fw-bold" style="font-size:0.85rem;color:var(--dark-3);">
+                <i class="fas fa-briefcase me-2" style="color:var(--primary);"></i>Job Title <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="title" name="title" required
+                placeholder="e.g. Senior Software Engineer" style="padding:0.8rem 1rem;">
             </div>
-        </div>
-    </div>
 
-    <!-- Notification Modal -->
-    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 1rem;">
-                <div id="modalHeader" class="modal-header border-0 py-3 text-white">
-                    <h5 class="modal-title fw-bold" id="notificationModalLabel">Notification</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-5 text-center">
-                    <div id="modalIcon" class="mb-3"></div>
-                    <h4 id="modalTitle" class="fw-bold mb-2"></h4>
-                    <p id="modalMessage" class="text-muted mb-0"></p>
-                </div>
-                <div class="modal-footer border-0 p-3 bg-light justify-content-center">
-                    <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm rounded-pill" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
-                </div>
+            <!-- Location + Salary -->
+            <div class="col-md-6">
+              <label class="form-label fw-bold" style="font-size:0.85rem;color:var(--dark-3);">
+                <i class="fas fa-map-marker-alt me-2" style="color:var(--primary);"></i>Location
+              </label>
+              <input type="text" class="form-control" id="location" name="location"
+                placeholder="e.g. Mumbai, MH (or Remote)" style="padding:0.8rem 1rem;">
             </div>
-        </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold" style="font-size:0.85rem;color:var(--dark-3);">
+                <i class="fas fa-rupee-sign me-2" style="color:var(--primary);"></i>Salary Range
+              </label>
+              <input type="text" class="form-control" id="salary" name="salary"
+                placeholder="e.g. ₹8L – ₹15L per annum" style="padding:0.8rem 1rem;">
+            </div>
+
+            <!-- Keywords -->
+            <div class="col-12">
+              <label class="form-label fw-bold" style="font-size:0.85rem;color:var(--dark-3);">
+                <i class="fas fa-tags me-2" style="color:var(--primary);"></i>Required Skills / Keywords
+              </label>
+              <input type="text" class="form-control" id="keywords" name="keywords"
+                placeholder="e.g. Node.js, React, MySQL, Docker" style="padding:0.8rem 1rem;">
+              <div style="font-size:0.78rem;color:var(--gray);margin-top:0.4rem;">
+                Separate skills with commas. This helps AI match relevant candidates.
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="col-12">
+              <label class="form-label fw-bold" style="font-size:0.85rem;color:var(--dark-3);">
+                <i class="fas fa-align-left me-2" style="color:var(--primary);"></i>Job Description <span class="text-danger">*</span>
+              </label>
+              <textarea class="form-control" id="description" name="description" rows="6" required
+                placeholder="Describe the role, responsibilities, requirements and perks..." style="padding:0.8rem 1rem;"></textarea>
+            </div>
+          </div>
+
+          <hr style="margin:2rem 0;border-color:var(--border);">
+
+          <div class="d-flex justify-content-between align-items-center gap-3">
+            <a href="/recruiter/dashboard" class="btn btn-light fw-bold px-4" style="border-radius:10px;border:1.5px solid var(--border);">
+              <i class="fas fa-arrow-left me-2"></i>Cancel
+            </a>
+            <button type="submit" class="btn-primary-premium" id="submitBtn">
+              <i class="fas fa-paper-plane"></i> Post Job
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/apiService.js"></script>
-    <script>
-        function showNotification(title, message, type = 'success', callback = null) {
-            const modalEl = document.getElementById('notificationModal');
-            const header = document.getElementById('modalHeader');
-            const icon = document.getElementById('modalIcon');
-            const titleEl = document.getElementById('modalTitle');
-            const msgEl = document.getElementById('modalMessage');
-            const okBtn = document.getElementById('modalOkBtn');
+  <!-- Notification Modal -->
+  <div class="modal fade modal-premium" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div id="modalHeader" class="modal-header header-success border-0">
+          <h5 class="modal-title fw-bold text-white">Notification</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div id="modalIcon" class="mb-3"></div>
+          <h5 id="modalTitle" class="fw-bold mb-2"></h5>
+          <p id="modalMessage" class="text-muted mb-0" style="font-size:0.9rem;"></p>
+        </div>
+        <div class="modal-footer justify-content-center border-0 bg-white pb-4">
+          <button class="btn btn-primary px-5 fw-bold" data-bs-dismiss="modal" id="modalOkBtn">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            header.className = 'modal-header border-0 py-3 text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger');
-            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle fa-4x text-success"></i>' : '<i class="fas fa-times-circle fa-4x text-danger"></i>';
-            titleEl.textContent = title;
-            msgEl.textContent = message;
+  <!-- Logout Modal -->
+  <div class="modal fade modal-premium" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header header-danger border-0">
+          <h5 class="modal-title fw-bold text-white"><i class="fas fa-sign-out-alt me-2"></i>Confirm Logout</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Are you sure?</h5>
+          <p class="text-muted mb-0" style="font-size:0.9rem;">You will be signed out of your session.</p>
+        </div>
+        <div class="modal-footer justify-content-center border-0 bg-white pb-4">
+          <button class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">Cancel</button>
+          <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            const modal = new bootstrap.Modal(modalEl);
-            
-            if (callback) {
-                modalEl.addEventListener('hidden.bs.modal', function handler() {
-                    callback();
-                    modalEl.removeEventListener('hidden.bs.modal', handler);
-                });
-            }
-            
-            modal.show();
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/apiService.js"></script>
+  <script>
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      new bootstrap.Modal(document.getElementById('logoutModal')).show();
+    });
+    window.addEventListener('pageshow', (e) => { if (e.persisted) window.location.reload(); });
+
+    function showNotification(title, message, type = 'success', callback = null) {
+      const modalEl = document.getElementById('notificationModal');
+      const header = document.getElementById('modalHeader');
+      const icon = document.getElementById('modalIcon');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMessage').textContent = message;
+      header.className = 'modal-header border-0 ' + (type === 'success' ? 'header-success' : 'header-danger');
+      icon.innerHTML = type === 'success'
+        ? '<div style="width:66px;height:66px;background:rgba(16,185,129,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.75rem;color:#10b981;"><i class="fas fa-check-circle"></i></div>'
+        : '<div style="width:66px;height:66px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.75rem;color:#ef4444;"><i class="fas fa-times-circle"></i></div>';
+      const modal = new bootstrap.Modal(modalEl);
+      if (callback) { modalEl.addEventListener('hidden.bs.modal', function h() { callback(); modalEl.removeEventListener('hidden.bs.modal', h); }); }
+      modal.show();
+    }
+
+    document.getElementById('jobForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Posting...';
+      const formData = new FormData(document.getElementById('jobForm'));
+      const data = Object.fromEntries(formData.entries());
+      try {
+        const result = await window.apiService.postJob(data);
+        if (result.success) {
+          showNotification('Job Posted!', 'Your job listing is now live and visible to seekers.', 'success', () => {
+            window.location.href = '/recruiter/dashboard';
+          });
+        } else {
+          showNotification('Error', result.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Job';
         }
-
-        // Handle Logout Popup
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutLink = document.getElementById('logoutLink');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const modalEl = document.getElementById('logoutModal');
-                    const logoutModal = new bootstrap.Modal(modalEl);
-                    logoutModal.show();
-                });
-            }
-        });
-
-        // Prevent Back-Forward Cache (bfcache)
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
-
-        const jobForm = document.getElementById('jobForm');
-
-        jobForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(jobForm);
-            const data = Object.fromEntries(formData.entries());
-
-            try {
-                const result = await window.apiService.postJob(data);
-                if (result.success) {
-                    showNotification('Success', 'Job posted successfully!', 'success', () => {
-                        window.location.href = '/recruiter/dashboard';
-                    });
-                } else {
-                    showNotification('Error', result.message, 'error');
-                }
-            } catch (err) {
-                console.error('Job Posting Error:', err);
-                showNotification('Error', 'An error occurred while posting the job.', 'error');
-            }
-        });
-    </script>
+      } catch (err) {
+        showNotification('Error', 'An error occurred while posting.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Job';
+      }
+    });
+  </script>
 </body>
-
 </html>
