@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %> — Find Your Dream Job</title>
-  <meta name="description" content="Smart Job Portal connects talented job seekers with top recruiters using AI-powered keyword screening.">
+  <title>
+    <%= title %> — Find Your Dream Job
+  </title>
+  <meta name="description"
+    content="Smart Job Portal connects talented job seekers with top recruiters using AI-powered keyword screening.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
   <!-- ===== NAVBAR ===== -->
@@ -20,7 +26,8 @@
       <a class="navbar-brand" href="/">
         <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
       </a>
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" style="color:rgba(255,255,255,0.7);">
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        style="color:rgba(255,255,255,0.7);">
         <i class="fas fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
@@ -29,12 +36,14 @@
           <li class="nav-item"><a class="nav-link" href="/jobs">Browse Jobs</a></li>
           <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
           <li class="nav-item ms-2">
-            <a class="btn-nav-cta" href="/register">Get Started <i class="fas fa-arrow-right ms-1" style="font-size:0.8rem;"></i></a>
+            <a class="btn-nav-cta" href="/register">Get Started <i class="fas fa-arrow-right ms-1"
+                style="font-size:0.8rem;"></i></a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
+
 
   <!-- ===== HERO SECTION ===== -->
   <header class="hero-section">
@@ -52,7 +61,8 @@
               &amp; Reach Out Direct
             </h1>
             <p class="hero-subtitle">
-              Connect with verified recruiters, get AI-screened matches, and land your next role — faster than ever before.
+              Connect with verified recruiters, get AI-screened matches, and land your next role — faster than ever
+              before.
             </p>
             <div class="d-flex flex-wrap gap-3 mb-4">
               <a href="/register" class="btn-primary-premium" id="seekerCta">
@@ -80,45 +90,76 @@
         </div>
 
         <div class="col-lg-5 mt-5 mt-lg-0">
+          <div class="animate-fade-in delay-1 mb-4">
+            <!-- ===== CREATE RESUME CARD ===== -->
+            <div class="hero-card"
+              style="background: linear-gradient(135deg, rgba(129,140,248,0.15) 0%, rgba(99,102,241,0.05) 100%); border: 1px solid rgba(129,140,248,0.3); padding: 1.5rem;">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="section-label mb-2" style="background: rgba(129,140,248,0.2); color: #a5b4fc;">
+                  <i class="fas fa-file-invoice me-1"></i> New Feature
+                </div>
+                <h3 class="fw-bold mb-3" style="font-size: 1.15rem; color: #fff; line-height: 1.4;">Build a Professional
+                  Resume in Minutes</h3>
+                <div class="d-flex flex-column gap-2 w-100">
+                  <a href="/resume-builder" class="btn-primary-premium d-inline-flex align-items-center justify-content-center gap-2"
+                    style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
+                    <i class="fas fa-magic"></i> Create My Resume (Free)
+                  </a>
+                  <a href="/ats-checker" class="btn-outline-premium d-inline-flex align-items-center justify-content-center gap-2"
+                    style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: rgba(129,140,248,0.1); border-color: rgba(129,140,248,0.4); color: #fff;">
+                    <i class="fas fa-rocket"></i> Check ATS Score 🚀
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="animate-fade-in delay-2">
             <div class="row g-3">
               <div class="col-6">
                 <div class="hero-card">
                   <div class="d-flex align-items-center gap-2 mb-3">
-                    <div style="width:36px;height:36px;background:rgba(129,140,248,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#818cf8;">
+                    <div
+                      style="width:36px;height:36px;background:rgba(129,140,248,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#818cf8;">
                       <i class="fas fa-robot" style="font-size:0.9rem;"></i>
                     </div>
                     <span style="color:rgba(255,255,255,0.8);font-weight:600;font-size:0.85rem;">AI Screening</span>
                   </div>
-                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">Keyword-matched resume scoring in seconds.</p>
+                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">Keyword-matched resume scoring in
+                    seconds.</p>
                 </div>
               </div>
               <div class="col-6">
                 <div class="hero-card">
                   <div class="d-flex align-items-center gap-2 mb-3">
-                    <div style="width:36px;height:36px;background:rgba(6,182,212,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#06b6d4;">
+                    <div
+                      style="width:36px;height:36px;background:rgba(6,182,212,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#06b6d4;">
                       <i class="fas fa-shield-alt" style="font-size:0.9rem;"></i>
                     </div>
                     <span style="color:rgba(255,255,255,0.8);font-weight:600;font-size:0.85rem;">Verified Only</span>
                   </div>
-                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">All recruiters verified by our admin team.</p>
+                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">All recruiters verified by our admin
+                    team.</p>
                 </div>
               </div>
               <div class="col-6">
                 <div class="hero-card">
                   <div class="d-flex align-items-center gap-2 mb-3">
-                    <div style="width:36px;height:36px;background:rgba(245,158,11,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#f59e0b;">
+                    <div
+                      style="width:36px;height:36px;background:rgba(245,158,11,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#f59e0b;">
                       <i class="fas fa-bolt" style="font-size:0.9rem;"></i>
                     </div>
                     <span style="color:rgba(255,255,255,0.8);font-weight:600;font-size:0.85rem;">Fast Apply</span>
                   </div>
-                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">One-click apply with stored resume.</p>
+                  <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin:0;">One-click apply with stored resume.
+                  </p>
                 </div>
               </div>
               <div class="col-6">
                 <div class="hero-card">
                   <div class="d-flex align-items-center gap-2 mb-3">
-                    <div style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#10b981;">
+                    <div
+                      style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#10b981;">
                       <i class="fas fa-comments" style="font-size:0.9rem;"></i>
                     </div>
                     <span style="color:rgba(255,255,255,0.8);font-weight:600;font-size:0.85rem;">Direct Reach</span>
@@ -146,9 +187,13 @@
             <div class="feature-icon icon-purple mx-auto">
               <i class="fas fa-user-plus"></i>
             </div>
-            <div style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Step 01</div>
-            <h4 style="font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:0.75rem;">Create Your Profile</h4>
-            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Sign up, upload your resume, and fill in your skills, education, and experience.</p>
+            <div
+              style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">
+              Step 01</div>
+            <h4 style="font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:0.75rem;">Create Your Profile
+            </h4>
+            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Sign up, upload your resume, and fill in your
+              skills, education, and experience.</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -156,9 +201,12 @@
             <div class="feature-icon icon-cyan mx-auto">
               <i class="fas fa-search"></i>
             </div>
-            <div style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Step 02</div>
+            <div
+              style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">
+              Step 02</div>
             <h4 style="font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:0.75rem;">Browse & Apply</h4>
-            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Browse curated jobs from verified companies and apply with a single click.</p>
+            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Browse curated jobs from verified companies and
+              apply with a single click.</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -166,14 +214,18 @@
             <div class="feature-icon icon-amber mx-auto">
               <i class="fas fa-handshake"></i>
             </div>
-            <div style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Step 03</div>
+            <div
+              style="font-size:0.75rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">
+              Step 03</div>
             <h4 style="font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:0.75rem;">Get Hired</h4>
-            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Recruiters review your score, contact you directly, and you land the job!</p>
+            <p style="font-size:0.875rem;color:var(--gray);margin:0;">Recruiters review your score, contact you
+              directly, and you land the job!</p>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 
   <!-- ===== FEATURES SECTION ===== -->
   <section class="features-section" style="background:var(--bg);">
@@ -181,8 +233,10 @@
       <div class="row align-items-center mb-5">
         <div class="col-lg-5">
           <div class="section-label"><i class="fas fa-star me-1"></i> Platform Features</div>
-          <h2 class="section-title mt-2">Everything You Need to<br><span style="color:var(--primary);">Succeed</span></h2>
-          <p style="color:var(--gray);margin-top:1rem;font-size:0.95rem;">Built for both recruiters and job seekers with powerful tools to streamline the entire hiring process.</p>
+          <h2 class="section-title mt-2">Everything You Need to<br><span style="color:var(--primary);">Succeed</span>
+          </h2>
+          <p style="color:var(--gray);margin-top:1rem;font-size:0.95rem;">Built for both recruiters and job seekers with
+            powerful tools to streamline the entire hiring process.</p>
         </div>
       </div>
       <div class="row g-4">
@@ -192,7 +246,8 @@
               <i class="fas fa-file-alt"></i>
             </div>
             <h5 style="font-weight:700;font-size:0.95rem;margin-bottom:0.5rem;">Fast Resume Upload</h5>
-            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Upload once, apply everywhere. Your resume is securely stored and ready to go.</p>
+            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Upload once, apply everywhere. Your resume is
+              securely stored and ready to go.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
@@ -201,7 +256,8 @@
               <i class="fas fa-brain"></i>
             </div>
             <h5 style="font-weight:700;font-size:0.95rem;margin-bottom:0.5rem;">Smart AI Screening</h5>
-            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Our algorithm matches your resume keywords with job requirements automatically.</p>
+            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Our algorithm matches your resume keywords with job
+              requirements automatically.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
@@ -210,7 +266,8 @@
               <i class="fas fa-check-circle"></i>
             </div>
             <h5 style="font-weight:700;font-size:0.95rem;margin-bottom:0.5rem;">Verified Recruiters</h5>
-            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Every recruiter is verified with company documents before they can post jobs.</p>
+            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Every recruiter is verified with company documents
+              before they can post jobs.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
@@ -219,7 +276,8 @@
               <i class="fas fa-chart-line"></i>
             </div>
             <h5 style="font-weight:700;font-size:0.95rem;margin-bottom:0.5rem;">Track Applications</h5>
-            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Real-time status updates — know exactly where you stand in the hiring pipeline.</p>
+            <p style="font-size:0.85rem;color:var(--gray);margin:0;">Real-time status updates — know exactly where you
+              stand in the hiring pipeline.</p>
           </div>
         </div>
       </div>
@@ -229,11 +287,17 @@
   <!-- ===== CTA SECTION ===== -->
   <section style="background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);padding:5rem 0;">
     <div class="container text-center">
-      <h2 style="color:#fff;font-weight:800;font-size:2rem;letter-spacing:-0.5px;margin-bottom:1rem;">Ready to Take the Next Step?</h2>
-      <p style="color:rgba(255,255,255,0.7);font-size:1rem;max-width:480px;margin:0 auto 2rem;">Join thousands of professionals already using Smart Job Portal to advance their careers.</p>
+      <h2 style="color:#fff;font-weight:800;font-size:2rem;letter-spacing:-0.5px;margin-bottom:1rem;">Ready to Take the
+        Next Step?</h2>
+      <p style="color:rgba(255,255,255,0.7);font-size:1rem;max-width:480px;margin:0 auto 2rem;">Join thousands of
+        professionals already using Smart Job Portal to advance their careers.</p>
       <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="/register" class="btn-outline-premium" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:#fff;">Start as Job Seeker</a>
-        <a href="/register?role=recruiter" class="btn-outline-premium" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);">Register as Recruiter</a>
+        <a href="/register" class="btn-outline-premium"
+          style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:#fff;">Start as Job
+          Seeker</a>
+        <a href="/register?role=recruiter" class="btn-outline-premium"
+          style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);">Register
+          as Recruiter</a>
       </div>
     </div>
   </section>
@@ -259,4 +323,5 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
