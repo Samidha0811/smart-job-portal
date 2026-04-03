@@ -1,0 +1,377 @@
+/* 
+   =================================================
+   SMART JOB PORTAL - PROFESSIONAL PROFILE SETUP
+   Enhanced UI matching the core design system
+   ================================================= 
+*/
+
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --primary-light: #818cf8;
+    --primary-glow: rgba(79, 70, 229, 0.15);
+    --secondary: #06b6d4;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+
+    --dark: #0f172a;
+    --dark-2: #1e293b;
+    --dark-3: #334155;
+    --dark-4: #475569;
+    --gray: #64748b;
+    --gray-light: #94a3b8;
+    --border: #e2e8f0;
+    --bg-light: #f8fafc;
+    --white: #ffffff;
+
+    --radius: 12px;
+    --radius-lg: 18px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.bg-dark-premium {
+    background-color: var(--bg-light) !important;
+    background-image:
+        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.03) 0px, transparent 50%);
+    color: var(--dark-2) !important;
+}
+
+.profile-setup-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+}
+
+/* --- STEPPER REFINED --- */
+.stepper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    position: relative;
+    padding: 0;
+}
+
+.stepper::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.step {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 0; /* Allow labels to wrap correctly in flex-box */
+}
+
+.step-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 3px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-light);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    margin-bottom: 0.7rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.step.active .step-icon {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--white);
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px var(--primary-glow);
+}
+
+.step.completed .step-icon {
+    border-color: var(--success);
+    background: var(--success);
+    color: var(--white);
+}
+
+.step-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-align: center;
+    line-height: 1.3;
+    width: 90%;
+    margin: 0 auto;
+    word-break: break-word;
+    display: block;
+}
+
+.step.active .step-label {
+    color: var(--primary);
+}
+
+
+/* --- SECTION CARDS --- */
+.section-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+
+
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+.form-section {
+    display: none;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-section.active {
+    display: block;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- PREMIUM INPUTS (Light Theme) --- */
+.premium-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--dark-3);
+    margin-bottom: 0.5rem;
+}
+
+.premium-input,
+.premium-select,
+.premium-textarea {
+    width: 100%;
+    background: var(--bg-light) !important;
+    border: 1.5px solid var(--border) !important;
+    color: var(--dark-2) !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+    font-family: inherit;
+    transition: var(--transition) !important;
+}
+
+.premium-input:focus,
+.premium-select:focus,
+.premium-textarea:focus {
+    background: var(--white) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px var(--primary-glow) !important;
+    outline: none;
+}
+
+.premium-input::placeholder {
+    color: var(--gray-light);
+}
+
+/* --- DYNAMIC ENTRIES (Integrated Look) --- */
+.dynamic-entry {
+    background: #fcfdfe;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.remove-entry {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--danger);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.remove-entry:hover {
+    background: var(--danger);
+    color: var(--white);
+    transform: rotate(90deg);
+}
+
+.add-entry-btn {
+    background: rgba(79, 70, 229, 0.05);
+    border: 1px dashed var(--primary-light);
+    color: var(--primary);
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+}
+
+.add-entry-btn:hover {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary-dark);
+}
+
+/* --- NAVIGATION BUTTONS --- */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    padding: 0 0.5rem;
+}
+
+.btn-prev {
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    padding: 0.75rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-prev:hover {
+    background: var(--bg-light);
+    color: var(--dark-2);
+    border-color: var(--gray-light);
+}
+
+.btn-next,
+.btn-submit {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border: none;
+    color: var(--white);
+    padding: 0.75rem 2.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-next:hover,
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--primary-glow);
+    filter: brightness(1.05);
+}
+
+/* --- CUSTOM SWITCH REFINED --- */
+.premium-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.premium-switch:hover {
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.premium-switch input {
+    display: none;
+}
+
+.switch-slider {
+    width: 48px;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.switch-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: var(--white);
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.premium-switch input:checked+.switch-slider {
+    background: var(--success);
+}
+
+.premium-switch input:checked+.switch-slider::before {
+    left: 27px;
+}
+
+/* --- UTILS --- */
+.is-invalid {
+    border-color: var(--danger) !important;
+}
+
+.btn-nav-light {
+    color: var(--gray);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-nav-light:hover {
+    color: var(--dark);
+}

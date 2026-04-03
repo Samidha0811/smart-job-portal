@@ -49,13 +49,13 @@ router.get('/recruiter/my-jobs', auth(['recruiter']), (req, res) => {
 // Seeker Pages (Protected)
 router.get('/seeker/dashboard', auth(['seeker']), async (req, res) => {
     try {
-        const profile = await Seeker.getDetailsByUserId(req.user.id);
+        const profile = await Seeker.getFullProfile(req.user.id);
         if (!profile) {
-            return res.redirect('/seeker/complete-profile');
+            return res.redirect('/seeker/profile-setup');
         }
         res.render('seeker-dashboard', { 
             title: 'Seeker Dashboard', 
-            user: { ...req.user, fullname: profile.fullname || req.user.fullname }, 
+            user: { ...req.user, fullname: profile.full_name || req.user.fullname }, 
             profile 
         });
     } catch (err) {
@@ -64,12 +64,23 @@ router.get('/seeker/dashboard', auth(['seeker']), async (req, res) => {
     }
 });
 
-router.get('/seeker/complete-profile', auth(['seeker']), (req, res) => {
-    res.render('seeker-complete-profile', { title: 'Complete Your Profile' });
+router.get('/seeker/profile-setup', auth(['seeker']), async (req, res) => {
+    try {
+        const profile = await Seeker.getFullProfile(req.user.id);
+        res.render('seeker-profile-setup', { 
+            title: 'Professional Profile Setup',
+            user: req.user,
+            profile: profile || {}
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading profile setup page');
+    }
 });
 
-router.get('/seeker/my-applications', auth(['seeker']), (req, res) => {
-    res.render('seeker-dashboard', { title: 'My Applications' }); 
+router.get('/seeker/complete-profile', auth(['seeker']), (req, res) => {
+    res.redirect('/seeker/profile-setup');
 });
+
 
 module.exports = router;
