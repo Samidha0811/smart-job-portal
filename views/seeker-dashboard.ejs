@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %> — Smart Job Portal</title>
+  <title>
+    <%= title %> — Smart Job Portal
+  </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body class="dashboard-page">
 
   <!-- ===== NAVBAR ===== -->
@@ -21,7 +25,8 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto align-items-center gap-1">
           <li class="nav-item"><a class="nav-link" href="/jobs"><i class="fas fa-search me-1"></i>Browse Jobs</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/seeker/dashboard"><i class="fas fa-th-large me-1"></i>My Applications</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/seeker/dashboard"><i
+                class="fas fa-th-large me-1"></i>My Applications</a></li>
           <li class="nav-item ms-2">
             <a class="btn-nav-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
           </li>
@@ -33,10 +38,6 @@
   <div class="dashboard-container">
     <!-- Page Header -->
     <div class="d-flex align-items-center gap-3 mb-4">
-      <div>
-        <h1 class="page-title" style="font-size:1.6rem;">My Dashboard</h1>
-        <p style="color:var(--gray);font-size:0.85rem;margin:0;">Welcome back, <%= user.fullname %>!</p>
-      </div>
     </div>
 
     <div class="row g-4">
@@ -47,8 +48,12 @@
             <div class="avatar-circle">
               <i class="fas fa-user"></i>
             </div>
-            <div class="sidebar-name"><%= user.fullname %></div>
-            <div class="sidebar-email"><%= user.email %></div>
+            <div class="sidebar-name">
+              <%= user.fullname %>
+            </div>
+            <div class="sidebar-email">
+              <%= user.email %>
+            </div>
             <div class="mt-2">
               <span class="status-badge status-approved">
                 <i class="fas fa-check-circle" style="font-size:0.7rem;"></i> Verified Seeker
@@ -62,8 +67,12 @@
                   <i class="fas fa-graduation-cap"></i>
                 </div>
                 <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Education</div>
-                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;"><%= profile.education || 'Not set' %></div>
+                  <div
+                    style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                    Education</div>
+                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;">
+                    <%= profile.education || 'Not set' %>
+                  </div>
                 </div>
               </div>
               <div class="sidebar-info-item">
@@ -71,8 +80,12 @@
                   <i class="fas fa-history"></i>
                 </div>
                 <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Experience</div>
-                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;"><%= profile.experience_years || '0' %> Years</div>
+                  <div
+                    style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                    Experience</div>
+                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;">
+                    <%= profile.experience_years || '0' %> Years
+                  </div>
                 </div>
               </div>
               <div class="sidebar-info-item">
@@ -80,30 +93,39 @@
                   <i class="fas fa-tools"></i>
                 </div>
                 <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Skills</div>
-                  <div style="font-size:0.82rem;color:var(--dark);font-weight:500;line-height:1.4;"><%= profile.skills || 'Not set' %></div>
+                  <div
+                    style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                    Skills</div>
+                  <div style="font-size:0.82rem;color:var(--dark);font-weight:500;line-height:1.4;">
+                    <%= profile.skills || 'Not set' %>
+                  </div>
                 </div>
               </div>
 
               <% if (profile.bio) { %>
-              <div class="sidebar-info-item">
-                <div class="sidebar-info-icon icon-emerald">
-                  <i class="fas fa-align-left"></i>
+                <div class="sidebar-info-item">
+                  <div class="sidebar-info-icon icon-emerald">
+                    <i class="fas fa-align-left"></i>
+                  </div>
+                  <div>
+                    <div
+                      style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                      About</div>
+                    <div style="font-size:0.82rem;color:var(--dark);font-weight:400;line-height:1.4;">
+                      <%= profile.bio.substring(0, 80) %>
+                        <%= profile.bio.length> 80 ? '...' : '' %>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">About</div>
-                  <div style="font-size:0.82rem;color:var(--dark);font-weight:400;line-height:1.4;"><%= profile.bio.substring(0, 80) %><%= profile.bio.length > 80 ? '...' : '' %></div>
-                </div>
-              </div>
-              <% } %>
+                <% } %>
             </div>
 
             <div class="mt-4 d-grid gap-2">
               <a href="/jobs" class="btn btn-primary w-100 fw-bold" style="border-radius:10px;font-size:0.875rem;">
                 <i class="fas fa-search me-2"></i>Browse Jobs
               </a>
-              <a href="/api/seeker/resume" target="_blank"
-                class="btn btn-outline-secondary w-100 fw-bold" style="border-radius:10px;font-size:0.875rem;border-color:var(--border);color:var(--gray);">
+              <a href="/api/seeker/resume" target="_blank" class="btn btn-outline-secondary w-100 fw-bold"
+                style="border-radius:10px;font-size:0.875rem;border-color:var(--border);color:var(--gray);">
                 <i class="fas fa-file-pdf me-2"></i>View My Resume
               </a>
             </div>
@@ -116,27 +138,39 @@
         <!-- Stats Row -->
         <div class="row g-3 mb-4" id="statsRow">
           <div class="col-6 col-md-3">
-            <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
+            <div
+              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
               <div style="font-size:1.75rem;font-weight:800;color:var(--dark);" id="statTotal">—</div>
-              <div style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Total Applied</div>
+              <div
+                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Total Applied</div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
+            <div
+              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
               <div style="font-size:1.75rem;font-weight:800;color:#059669;" id="statShortlisted">—</div>
-              <div style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Shortlisted</div>
+              <div
+                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Shortlisted</div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
+            <div
+              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
               <div style="font-size:1.75rem;font-weight:800;color:#2563eb;" id="statProcessing">—</div>
-              <div style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">In Process</div>
+              <div
+                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                In Process</div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
+            <div
+              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
               <div style="font-size:1.75rem;font-weight:800;color:#b45309;" id="statPending">—</div>
-              <div style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Pending</div>
+              <div
+                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Pending</div>
             </div>
           </div>
         </div>
@@ -183,7 +217,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body text-center py-4">
-          <div style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
+          <div
+            style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
           <h5 class="fw-bold mb-2">Are you sure?</h5>
@@ -203,7 +238,7 @@
   <script src="/js/apiService.js"></script>
   <script>
     // Logout
-    document.getElementById('logoutLink').addEventListener('click', function(e) {
+    document.getElementById('logoutLink').addEventListener('click', function (e) {
       e.preventDefault();
       new bootstrap.Modal(document.getElementById('logoutModal')).show();
     });
@@ -258,7 +293,7 @@
                 <span style="font-size:0.875rem;">${app.company_name}</span>
               </div>
             </td>
-            <td style="font-size:0.85rem;color:var(--gray);">${new Date(app.applied_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</td>
+            <td style="font-size:0.85rem;color:var(--gray);">${new Date(app.applied_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
             <td><span class="${getStatusPill(app.status)}">${getStatusDot(app.status)}${capitalize(app.status)}</span></td>
           </tr>
         `).join('');
@@ -282,4 +317,5 @@
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   </script>
 </body>
+
 </html>

@@ -30,10 +30,12 @@ const pageRoutes = require('./routes/pages');
 const recruiterRoutes = require('./routes/recruiter');
 const seekerRoutes = require('./routes/seeker');
 const resumeRoutes = require('./routes/resume');
+const atsRoutes = require('./routes/ats');
 
 // Basic Routes
 app.use('/', pageRoutes);
 app.use('/', resumeRoutes);
+app.use('/', atsRoutes);
 app.use('/admin', adminRoutes);
 
 // API Routes
