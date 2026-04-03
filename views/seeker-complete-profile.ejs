@@ -9,6 +9,77 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .complete-profile-container {
+      max-width: 850px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .setup-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .setup-step-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: var(--transition);
+    }
+    .step-dot.active {
+      background: var(--primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .form-section {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+    .form-section:hover {
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow);
+    }
+    .section-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg);
+    }
+    .upload-zone:hover {
+      border-color: var(--primary);
+      background: rgba(79, 70, 229, 0.04);
+      transform: translateY(-2px);
+    }
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+  </style>
 </head>
 <body class="dashboard-page">
 
@@ -26,136 +97,150 @@
     </div>
   </nav>
 
-  <div class="dashboard-container" style="max-width:740px;">
+  <div class="complete-profile-container">
     <!-- Header -->
-    <div class="text-center mb-5">
-      <div class="section-label mx-auto" style="display:inline-flex;">
-        <i class="fas fa-user-check me-1"></i> Profile Setup
+    <div class="setup-header">
+      <div class="section-label mx-auto">
+        <i class="fas fa-sparkles me-1 text-warning"></i> Onboarding
       </div>
-      <h1 class="page-title mt-2" style="font-size:2rem;">Complete Your Profile</h1>
-      <p style="color:var(--gray);font-size:0.9rem;margin-top:0.5rem;">
-        Just a few more details and you're ready to apply to top jobs!
+      <h1 class="page-title mt-3" style="font-size: 2.5rem;">Let's finish your profile</h1>
+      <p class="text-muted mt-2" style="font-size: 1.1rem;">
+        Complete these details to unlock curated job matches and start applying.
       </p>
+      
+      <div class="setup-step-dots">
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot active"></div>
+      </div>
     </div>
 
-    <!-- Onboarding Card -->
-    <div class="main-card">
-      <div style="background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);padding:1.75rem 2rem;border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
-        <div class="d-flex align-items-center gap-3">
-          <div style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;flex-shrink:0;">
+    <!-- Main Form -->
+    <form id="profileForm" enctype="multipart/form-data">
+      
+      <!-- Personal Info Section -->
+      <div class="form-section">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="section-icon-box" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">
             <i class="fas fa-user-circle"></i>
           </div>
           <div>
-            <div style="color:#fff;font-weight:700;font-size:1.05rem;">You're almost there!</div>
-            <div style="color:rgba(255,255,255,0.7);font-size:0.85rem;">Complete your profile to start applying to jobs</div>
+            <h4 class="mb-0" style="font-weight: 700; font-size: 1.1rem;">Personal Information</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Help recruiters get in touch with you</p>
           </div>
-          <div class="ms-auto d-flex gap-2">
-            <div style="width:8px;height:8px;background:rgba(255,255,255,0.4);border-radius:50%;"></div>
-            <div style="width:8px;height:8px;background:rgba(255,255,255,0.4);border-radius:50%;"></div>
-            <div style="width:8px;height:8px;background:#fff;border-radius:50%;"></div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label for="phone_number" class="form-label-premium">Phone Number <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" class="form-control-premium" id="phone_number" name="phone_number"
+                placeholder="+91 9876543210" required>
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="bio" class="form-label-premium">Professional Bio <span class="text-danger">*</span></label>
+            <textarea class="form-control-premium" id="bio" name="bio" rows="4" required 
+              placeholder="Tell us about yourself, your career goals, and what makes you unique..."></textarea>
+            <div class="form-text mt-2" style="font-size: 0.8rem; color: var(--gray-light);">
+              <i class="fas fa-info-circle me-1"></i> This is the first thing recruiters will read about you.
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="main-card-body">
-        <form id="profileForm" enctype="multipart/form-data">
+      <!-- Professional Details Section -->
+      <div class="form-section">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="section-icon-box" style="background: rgba(6, 182, 212, 0.1); color: var(--secondary);">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h4 class="mb-0" style="font-weight: 700; font-size: 1.1rem;">Professional Background</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Showcase your skills and experience</p>
+          </div>
+        </div>
 
-          <!-- Personal Information -->
-          <div class="mb-5">
-            <div class="d-flex align-items-center gap-2 mb-4">
-              <div style="width:32px;height:32px;background:rgba(79,70,229,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);">
-                <i class="fas fa-user" style="font-size:0.85rem;"></i>
-              </div>
-              <h4 style="font-size:1rem;font-weight:700;color:var(--dark);margin:0;">Personal Information</h4>
-            </div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="phone_number" class="form-label fw-bold" style="font-size:0.85rem;">Phone Number <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control" id="phone_number" name="phone_number"
-                  placeholder="+91 9876543210" required style="padding:0.8rem;">
-              </div>
-              <div class="col-12">
-                <label for="bio" class="form-label fw-bold" style="font-size:0.85rem;">Professional Bio <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="bio" name="bio" rows="3" required style="padding:0.8rem;"
-                  placeholder="Briefly describe your career goals and unique strengths..."></textarea>
-                <div style="font-size:0.78rem;color:var(--gray);margin-top:0.3rem;">This is what recruiters will see about you.</div>
-              </div>
+        <div class="row g-4">
+          <div class="col-12">
+            <label for="education" class="form-label-premium">Education <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-university input-icon"></i>
+              <input type="text" class="form-control-premium" id="education" name="education" required 
+                placeholder="e.g. Master in Data Science, Stanford University (2023)">
             </div>
           </div>
-
-          <!-- Professional Details -->
-          <div class="mb-5">
-            <div class="d-flex align-items-center gap-2 mb-4">
-              <div style="width:32px;height:32px;background:rgba(6,182,212,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#06b6d4;">
-                <i class="fas fa-briefcase" style="font-size:0.85rem;"></i>
-              </div>
-              <h4 style="font-size:1rem;font-weight:700;color:var(--dark);margin:0;">Professional Details</h4>
-            </div>
-            <div class="row g-3">
-              <div class="col-12">
-                <label for="education" class="form-label fw-bold" style="font-size:0.85rem;">Education <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="education" name="education" required style="padding:0.8rem;"
-                  placeholder="e.g. B.Tech in Computer Science, Mumbai University (2022)">
-              </div>
-              <div class="col-md-6">
-                <label for="experience_years" class="form-label fw-bold" style="font-size:0.85rem;">Years of Experience <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="experience_years" name="experience_years"
-                  value="0" min="0" required style="padding:0.8rem;">
-              </div>
-              <div class="col-12">
-                <label for="skills" class="form-label fw-bold" style="font-size:0.85rem;">Key Skills <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="skills" name="skills" required style="padding:0.8rem;"
-                  placeholder="e.g. Node.js, React, Python, SQL">
-                <div style="font-size:0.78rem;color:var(--gray);margin-top:0.3rem;">Separate with commas. This is used for job matching.</div>
-              </div>
+          <div class="col-md-6">
+            <label for="experience_years" class="form-label-premium">Years of Experience <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-history input-icon"></i>
+              <input type="number" class="form-control-premium" id="experience_years" name="experience_years"
+                value="0" min="0" required>
             </div>
           </div>
-
-          <!-- Resume Upload -->
-          <div class="mb-5">
-            <div class="d-flex align-items-center gap-2 mb-4">
-              <div style="width:32px;height:32px;background:rgba(245,158,11,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#f59e0b;">
-                <i class="fas fa-file-upload" style="font-size:0.85rem;"></i>
-              </div>
-              <h4 style="font-size:1rem;font-weight:700;color:var(--dark);margin:0;">Resume Upload</h4>
+          <div class="col-12">
+            <label for="skills" class="form-label-premium">Key Skills <span class="text-danger">*</span></label>
+            <div class="input-group-premium">
+              <i class="fas fa-tags input-icon"></i>
+              <input type="text" class="form-control-premium" id="skills" name="skills" required 
+                placeholder="e.g. JavaScript, AWS, UI Design, Project Management">
             </div>
-            <div id="dropZone"
-              style="background:var(--bg);border:2px dashed var(--border);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;cursor:pointer;transition:var(--transition);"
-              onclick="document.getElementById('resume').click()"
-              onmouseover="this.style.borderColor='var(--primary)';this.style.background='rgba(79,70,229,0.03)'"
-              onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg)'">
-              <div style="width:56px;height:56px;background:rgba(79,70,229,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.4rem;color:var(--primary);">
-                <i class="fas fa-cloud-upload-alt"></i>
-              </div>
-              <h6 class="fw-bold mb-1">Click to upload your resume</h6>
-              <p style="color:var(--gray);font-size:0.82rem;margin:0;">PDF only. Maximum file size: 5MB</p>
-              <input type="file" id="resume" name="resume" class="visually-hidden" accept=".pdf" required>
-            </div>
-            <div id="file-name" style="margin-top:0.75rem;font-size:0.875rem;font-weight:600;color:#059669;display:none;">
-              <i class="fas fa-check-circle me-2"></i><span id="fileName"></span>
+            <div class="form-text mt-2" style="font-size: 0.8rem; color: var(--gray-light);">
+              <i class="fas fa-lightbulb me-1"></i> Separate skills with commas.
             </div>
           </div>
-
-          <!-- Submit -->
-          <div class="d-grid">
-            <button type="submit" class="btn-submit-premium" id="submitBtn">
-              Finalize Profile <i class="fas fa-arrow-right ms-2"></i>
-            </button>
-          </div>
-
-        </form>
+        </div>
       </div>
-    </div>
+
+      <!-- Resume Section -->
+      <div class="form-section">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="section-icon-box" style="background: rgba(245, 158, 11, 0.1); color: var(--accent);">
+            <i class="fas fa-file-invoice"></i>
+          </div>
+          <div>
+            <h4 class="mb-0" style="font-weight: 700; font-size: 1.1rem;">Resume / CV</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">Upload your latest resume (PDF only)</p>
+          </div>
+        </div>
+
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('resume').click()">
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <h5 class="fw-bold mb-2">Click or drag to upload</h5>
+          <p class="text-muted mb-0" style="font-size: 0.9rem;">Maximum file size: 5MB (PDF only)</p>
+          <input type="file" id="resume" name="resume" class="visually-hidden" accept=".pdf" required>
+        </div>
+        
+        <div id="file-name" class="mt-3 p-3 rounded" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); display: none;">
+          <div class="d-flex align-items-center gap-2" style="color: #059669; font-weight: 600;">
+            <i class="fas fa-check-circle" style="font-size: 1.1rem;"></i>
+            <span id="fileName"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="text-center mt-5">
+        <button type="submit" class="btn-submit-premium" id="submitBtn" style="padding: 1.1rem 3rem; font-size: 1.1rem; width: auto;">
+          Finalize My Profile <i class="fas fa-rocket ms-2"></i>
+        </button>
+        <p class="text-muted mt-3" style="font-size: 0.85rem;">
+          By finalizing, you agree to our <a href="#" class="text-decoration-none">Terms of Service</a>.
+        </p>
+      </div>
+
+    </form>
   </div>
 
   <!-- Status Modal -->
   <div class="modal fade modal-premium" id="statusModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
+      <div class="modal-content" style="border: none; border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xl);">
         <div class="modal-body text-center py-5">
           <div id="modalIcon" class="mb-4"></div>
-          <h3 id="modalTitle" class="fw-bold mb-3"></h3>
-          <p id="modalMessage" class="text-muted" style="font-size:0.95rem;"></p>
+          <h3 id="modalTitle" class="fw-bold mb-3" style="color: var(--dark);"></h3>
+          <p id="modalMessage" class="text-muted" style="font-size:1rem;"></p>
         </div>
       </div>
     </div>
@@ -185,25 +270,25 @@
         const res = await fetch('/api/seeker/complete-profile', { method: 'POST', body: formData });
         const result = await res.json();
         if (result.success) {
-          showStatus('Profile Complete!', 'Your profile is set up. Redirecting to dashboard...', 'success');
+          showStatus('Great Job!', 'Your profile is ready. Bringing you to your dashboard...', 'success');
           setTimeout(() => window.location.href = result.redirectTo, 2000);
         } else {
-          showStatus('Error', result.message || 'Something went wrong.', 'error');
+          showStatus('Update Failed', result.message || 'Something went wrong.', 'error');
           btn.disabled = false;
-          btn.innerHTML = 'Finalize Profile <i class="fas fa-arrow-right ms-2"></i>';
+          btn.innerHTML = 'Finalize My Profile <i class="fas fa-rocket ms-2"></i>';
         }
       } catch (err) {
-        showStatus('Error', 'Failed to submit profile. Please try again.', 'error');
+        showStatus('Error', 'Failed to connect. Please try again.', 'error');
         btn.disabled = false;
-        btn.innerHTML = 'Finalize Profile <i class="fas fa-arrow-right ms-2"></i>';
+        btn.innerHTML = 'Finalize My Profile <i class="fas fa-rocket ms-2"></i>';
       }
     };
 
     function showStatus(title, message, type) {
       const modalEl = document.getElementById('statusModal');
       document.getElementById('modalIcon').innerHTML = type === 'success'
-        ? '<div style="width:80px;height:80px;background:rgba(16,185,129,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2.5rem;color:#10b981;"><i class="fas fa-check-circle"></i></div>'
-        : '<div style="width:80px;height:80px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2.5rem;color:#ef4444;"><i class="fas fa-times-circle"></i></div>';
+        ? '<div style="width:80px;height:80px;background:rgba(16,185,129,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2.5rem;color:#10b981;box-shadow: 0 0 20px rgba(16,185,129,0.2);"><i class="fas fa-check-circle pulse"></i></div>'
+        : '<div style="width:80px;height:80px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2.5rem;color:#ef4444;box-shadow: 0 0 20px rgba(239,68,68,0.2);"><i class="fas fa-times-circle"></i></div>';
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalMessage').textContent = message;
       new bootstrap.Modal(modalEl).show();

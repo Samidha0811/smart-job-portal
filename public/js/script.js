@@ -31,10 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } else {
                     alert('Registration failed: ' + (result.message || 'Unknown error'));
+                    // Reset button state
+                    const btn = registrationForm.querySelector('[type="submit"]');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+                    }
                 }
             } catch (err) {
                 console.error('Registration Error:', err);
                 alert('An error occurred during registration.');
+                // Reset button state
+                const btn = registrationForm.querySelector('[type="submit"]');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+                }
             }
         });
     }
@@ -80,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const forms = document.querySelectorAll('form[autocomplete="off"]');
             forms.forEach(form => {
-                form.querySelectorAll('input').forEach(input => {
+                // Clear text, email, and password fields, but NOT hidden fields like 'role'
+                form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(input => {
                     input.value = '';
                 });
             });
