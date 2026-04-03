@@ -22,6 +22,18 @@
                 <div class="card shadow border-0 rounded-3">
                     <div class="card-body p-5 text-center">
                         <h2 class="mb-4 fw-bold text-primary">Login</h2>
+                        
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <% if (error === 'invalid_credentials') { %>
+                                    <strong>Error!</strong> Invalid email or password.
+                                <% } else { %>
+                                    <strong>Error!</strong> An error occurred. Please try again.
+                                <% } %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <% } %>
+
                         <form action="/api/auth/login" method="POST" autocomplete="off">
                             <div class="mb-3 text-start">
                                 <label for="email" class="form-label">Email Address</label>

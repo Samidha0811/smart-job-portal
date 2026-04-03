@@ -18,7 +18,7 @@ router.get('/recruiter/register-details', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-    res.render('login', { title: 'Login - Smart Job Portal' });
+    res.render('login', { title: 'Login - Smart Job Portal', error: req.query.error });
 });
 
 router.get('/jobs', (req, res) => {
