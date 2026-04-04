@@ -11,7 +11,18 @@ const seekerController = {
     async getJobs(req, res) {
         try {
             const jobs = await Job.getAllOpen();
-            res.json(jobs);
+            const seekerId = req.user.id;
+
+            // Fetch seeker's applications to mark already applied jobs
+            const myApps = await Application.getBySeeker(seekerId);
+            const appliedJobIds = new Set(myApps.map(app => app.job_id));
+
+            const jobsWithStatus = jobs.map(job => ({
+                ...job,
+                isApplied: appliedJobIds.has(job.id)
+            }));
+
+            res.json(jobsWithStatus);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Error fetching jobs' });
@@ -30,6 +41,12 @@ const seekerController = {
             const profile = await Seeker.getFullProfile(seekerId);
             if (!profile) {
                 return res.status(403).json({ success: false, message: 'Please complete your profile first.' });
+            }
+
+            // Check if already applied
+            const existing = await Application.findByJobAndSeeker(jobId, seekerId);
+            if (existing) {
+                return res.status(400).json({ success: false, message: 'You have already applied for this job.' });
             }
 
             // Simple match score for demo

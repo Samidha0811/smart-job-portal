@@ -66,6 +66,51 @@
       color: var(--gray);
       margin-bottom: 1.5rem;
     }
+    .job-desc-container {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .job-desc {
+      font-size: 0.875rem;
+      color: var(--dark-3);
+      line-height: 1.6;
+      word-break: break-word;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      transition: all 0.3s ease;
+    }
+    .job-desc.expanded {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+      display: block;
+    }
+    .desc-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+    .desc-toggle-btn:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+    .desc-toggle-btn i {
+      transition: transform 0.3s ease;
+    }
+    .desc-toggle-btn.expanded i {
+      transform: rotate(180deg);
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -378,12 +423,23 @@
               ${job.salary ? `<span class="job-meta-item"><i class="fas fa-money-bill-wave"></i>₹${job.salary}</span>` : ''}
               <span class="job-meta-item"><i class="fas fa-calendar"></i>${new Date(job.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'})}</span>
             </div>
-            <p class="job-desc">${job.description.substring(0, 120)}${job.description.length > 120 ? '...' : ''}</p>
+            <div class="job-desc-container">
+              <p class="job-desc" id="desc-${job.id}">${job.description}</p>
+              ${job.description.length > 150 ? `
+                <button class="desc-toggle-btn" onclick="toggleDesc(${job.id}, this)">
+                  <span class="btn-text">Read More</span> <i class="fas fa-chevron-down"></i>
+                </button>
+              ` : ''}
+            </div>
             <div class="mt-auto">
               ${currentUser && currentUser.role === 'seeker'
-                ? `<button onclick="applyToJob(${job.id})" id="applyBtn-${job.id}" class="btn-primary-premium w-100 justify-content-center" style="padding:0.65rem;">
-                    <i class="fas fa-paper-plane"></i> Apply Now
-                  </button>`
+                ? job.isApplied 
+                   ? `<button class="btn-primary-premium w-100 justify-content-center" style="padding:0.65rem; background:rgba(16,185,129,0.1); color:#059669; border:1.5px solid rgba(16,185,129,0.2); cursor:default;" disabled>
+                        <i class="fas fa-check me-2"></i>Applied Successfully!
+                      </button>`
+                   : `<button onclick="applyToJob(${job.id})" id="applyBtn-${job.id}" class="btn-primary-premium w-100 justify-content-center" style="padding:0.65rem;">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                      </button>`
                 : currentUser
                   ? `<button class="btn w-100 fw-bold py-2" style="background:var(--bg);border:1px solid var(--border);color:var(--gray);border-radius:10px;cursor:default;" disabled>Seekers Only</button>`
                   : `<a href="/login" class="btn w-100 fw-bold py-2" style="background:rgba(79,70,229,0.08);color:var(--primary);border:1.5px solid rgba(79,70,229,0.2);border-radius:10px;">Login to Apply</a>`
@@ -423,6 +479,13 @@
         btn.innerHTML = orig;
         alert('An error occurred.');
       }
+    }
+
+    function toggleDesc(jobId, btn) {
+      const desc = document.getElementById(`desc-${jobId}`);
+      const isExpanded = desc.classList.toggle('expanded');
+      btn.classList.toggle('expanded', isExpanded);
+      btn.querySelector('.btn-text').textContent = isExpanded ? 'Read Less' : 'Read More';
     }
   </script>
 </body>
