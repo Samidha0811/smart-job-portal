@@ -372,9 +372,13 @@
       try {
         const res = await fetch(`/api/seeker/apply/${jobId}`, { method: 'POST' });
         const data = await res.json();
-        if(data.statusCount > 0 || data.success) { // match_score is returned but success is standard
+        if(data.success) {
           alert('Applied successfully!');
-          window.location.reload();
+          if (data.redirectTo) {
+              window.location.href = data.redirectTo;
+          } else {
+              window.location.reload();
+          }
         } else {
           alert(data.message || 'Error applying');
         }

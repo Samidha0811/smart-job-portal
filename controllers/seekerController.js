@@ -59,7 +59,12 @@ const seekerController = {
                 match_score: matchScore
             });
 
-            res.json({ success: true, message: 'Applied successfully!', match_score: matchScore });
+            res.json({ 
+                success: true, 
+                message: 'Applied successfully!', 
+                match_score: matchScore,
+                redirectTo: `/seeker/interview-prep/${jobId}`
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({ success: false, message: 'Error applying for job' });
@@ -321,6 +326,118 @@ const seekerController = {
         } catch (err) {
             console.error('Error in getRecommendations:', err);
             res.status(500).json({ message: 'Error fetching recommendations' });
+        }
+    },
+
+    /**
+     * Render Interview Prep Page
+     */
+    async renderInterviewPrep(req, res) {
+        try {
+            const jobId = req.params.jobId;
+            const job = await Job.getById(jobId);
+            if (!job) {
+                return res.status(404).send('Job not found');
+            }
+
+            res.render('seeker-interview-prep', {
+                title: 'Interview Preparation',
+                user: req.user,
+                job: job
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Error loading interview preparation page');
+        }
+    },
+
+    /**
+     * API to generate/fetch interview prep content (AI powered with fallback)
+     */
+    async getInterviewPrepData(req, res) {
+        const jobId = req.params.jobId;
+        try {
+            const job = await Job.getById(jobId);
+            if (!job) {
+                return res.status(404).json({ success: false, message: 'Job not found' });
+            }
+
+            const role = job.title;
+            const company = job.company_name;
+            const skills = job.keywords || 'general skills';
+
+            // Approach 1 (Fallback Content)
+            const fallbackContent = {
+                technical: [
+                    `Can you explain your experience with ${skills}?`,
+                    `What is the most complex project you handled related to ${role}?`,
+                    `How do you stay updated with the latest trends in ${skills}?`,
+                    `Describe a scenario where you solved a difficult problem using ${skills}.`,
+                    `What are the best practices you follow for ${role} tasks?`
+                ],
+                hr: [
+                    `Tell me about yourself and your background.`,
+                    `Where do you see yourself in 5 years?`,
+                    `Describe a time when you overcame a challenge at work.`
+                ],
+                company: [
+                    `Why do you want to join ${company}?`,
+                    `What do you know about ${company}'s products or services?`
+                ],
+                tips: [
+                    `Research ${company} thoroughly before the interview.`,
+                    `Practice explaining your projects that map to ${skills}.`,
+                    `Be ready with examples using the STAR method (Situation, Task, Action, Result).`
+                ]
+            };
+
+            // Attempt Approach 2 (AI Powered)
+            if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
+                const { GoogleGenerativeAI } = require('@google/generative-ai');
+                const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+                const prompt = `Generate interview preparation content for:
+Role: ${role}
+Company: ${company}
+Skills: ${skills}
+
+Provide:
+5 technical interview questions
+3 HR questions
+2 company-specific questions
+Preparation tips to crack the interview
+
+Return the response STRICTLY as a JSON object with the following keys:
+{
+  "technical": ["q1", "q2", "q3", "q4", "q5"],
+  "hr": ["q1", "q2", "q3"],
+  "company": ["q1", "q2"],
+  "tips": ["tip1", "tip2", "tip3"]
+}`;
+
+                try {
+                    const result = await model.generateContent(prompt);
+                    const textResponse = result.response.text();
+                    
+                    // Basic cleanup to extract JSON if markdown wrapping is used
+                    const jsonStrMatch = textResponse.match(/\{[\s\S]*\}/);
+                    if (jsonStrMatch) {
+                        const parsedContent = JSON.parse(jsonStrMatch[0]);
+                        return res.json({ success: true, isAI: true, data: parsedContent });
+                    }
+                } catch (aiError) {
+                    console.error("AI Generation failed, falling back to static content:", aiError);
+                    // Fall through to fallback content response
+                }
+            }
+
+            // Return fallback if AI failed or API key missing
+            res.json({ success: true, isAI: false, data: fallbackContent });
+            
+        } catch (err) {
+            console.error('Error fetching interview prep:', err);
+            res.status(500).json({ success: false, message: 'Server error' });
         }
     }
 };

@@ -553,6 +553,9 @@
           btn.style.color = '#059669';
           btn.style.border = '1.5px solid rgba(16,185,129,0.2)';
           btn.innerHTML = '<i class="fas fa-check me-2"></i>Applied Successfully!';
+          if (result.redirectTo) {
+              window.location.href = result.redirectTo;
+          }
         } else {
           btn.disabled = false;
           btn.innerHTML = orig;

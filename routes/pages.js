@@ -3,6 +3,7 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 const Seeker = require('../models/seekerModel');
+const seekerController = require('../controllers/seekerController');
 
 // General Page Routes
 router.get('/', (req, res) => {
@@ -81,6 +82,8 @@ router.get('/seeker/profile-setup', auth(['seeker']), async (req, res) => {
 router.get('/seeker/complete-profile', auth(['seeker']), (req, res) => {
     res.redirect('/seeker/profile-setup');
 });
+
+router.get('/seeker/interview-prep/:jobId', auth(['seeker']), seekerController.renderInterviewPrep);
 
 
 module.exports = router;

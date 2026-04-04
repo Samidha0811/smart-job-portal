@@ -41,6 +41,19 @@ const Job = {
             [recruiterId]
         );
         return rows;
+    },
+
+    /**
+     * Get a specific job by its primary ID
+     */
+    async getById(id) {
+        const [rows] = await db.query(`
+            SELECT j.*, rd.company_name, rd.company_description 
+            FROM jobs j
+            LEFT JOIN recruiter_details rd ON j.recruiter_id = rd.user_id
+            WHERE j.id = ?
+        `, [id]);
+        return rows[0];
     }
 };
 
