@@ -10,6 +10,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chatbot.css?v=1.1">
   <style>
     .filter-sidebar {
       background: #fff;
@@ -396,6 +397,7 @@
           document.getElementById('navLogin').style.display = 'none';
           document.getElementById('navLogout').style.display = 'block';
           const dash = document.getElementById('navDashboard');
+          if(dash) dash.style.display = 'block';
           const link = document.getElementById('dashLink');
           if(link) {
             if (currentUser.role === 'recruiter') { link.href = '/recruiter/dashboard'; link.textContent = 'Dashboard'; }
@@ -403,6 +405,8 @@
               link.href = '/seeker/dashboard'; 
               link.textContent = 'My Applications'; 
               loadRecommendations();
+              const chatBtn = document.getElementById('chatbot-toggle-btn');
+              if (chatBtn) chatBtn.style.display = 'flex';
             }
             else if (currentUser.role === 'admin') { link.href = '/admin'; link.textContent = 'Admin Panel'; }
           }
@@ -574,5 +578,42 @@
       btn.querySelector('.btn-text').textContent = isExpanded ? 'Read Less' : 'Read More';
     }
   </script>
+
+  <!-- ===== AI CAREER MENTOR CHATBOT ===== -->
+  <button id="chatbot-toggle-btn" class="chatbot-toggle-btn" style="display:none;">
+    <i class="fas fa-robot"></i> Ask Career Mentor
+  </button>
+
+  <div id="chatbot-container" class="chatbot-container d-none">
+    <div class="chatbot-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+          <h5 class="mb-0 text-white" style="font-size:1rem;font-weight:600;">AI Mentor</h5>
+          <small style="color:rgba(255,255,255,0.8);font-size:0.75rem;">Online</small>
+        </div>
+      </div>
+      <button id="chatbot-close-btn" class="btn-close btn-close-white"></button>
+    </div>
+    
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="message bot-message">
+        Hi there! I'm your AI Career Mentor. I've reviewed your profile and I'm ready to help. What would you like to know?
+      </div>
+    </div>
+
+    <div class="chatbot-suggestions">
+      <button class="chat-suggestion-btn">What skills should I learn?</button>
+      <button class="chat-suggestion-btn">Am I ready for my desired role?</button>
+      <button class="chat-suggestion-btn">Improve my resume</button>
+    </div>
+
+    <div class="chatbot-input-area">
+      <input type="text" id="chatbot-input" placeholder="Type your message..." autocomplete="off">
+      <button id="chatbot-send-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  
+  <script src="/js/chatbot.js?v=1.1"></script>
 </body>
 </html>
