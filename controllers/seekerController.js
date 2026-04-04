@@ -340,10 +340,13 @@ const seekerController = {
                 return res.status(404).send('Job not found');
             }
 
+            const profile = await Seeker.getFullProfile(req.user.id);
+
             res.render('seeker-interview-prep', {
                 title: 'Interview Preparation',
                 user: req.user,
-                job: job
+                job: job,
+                profile: profile || {}
             });
         } catch (err) {
             console.error(err);

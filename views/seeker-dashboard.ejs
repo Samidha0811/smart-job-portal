@@ -28,6 +28,7 @@
           <li class="nav-item"><a class="nav-link" href="/jobs"><i class="fas fa-search me-1"></i>Browse Jobs</a></li>
           <li class="nav-item"><a class="nav-link active" href="/seeker/dashboard"><i
                 class="fas fa-th-large me-1"></i>My Applications</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas"><i class="fas fa-user-circle me-1"></i>Profile</a></li>
           <li class="nav-item ms-2">
             <a class="btn-nav-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
           </li>
@@ -42,77 +43,8 @@
     </div>
 
     <div class="row g-4">
-      <!-- ===== SIDEBAR ===== -->
-      <div class="col-lg-3">
-        <div class="sidebar-card">
-          <div class="sidebar-header">
-            <div class="avatar-circle">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="sidebar-name">
-              <%= profile.full_name || user.fullname %>
-            </div>
-            <div class="sidebar-email">
-              <%= profile.email || user.email %>
-            </div>
-            <div class="mt-2">
-              <span class="status-badge status-approved">
-                <i class="fas fa-check-circle" style="font-size:0.7rem;"></i> Verified Seeker
-              </span>
-            </div>
-          </div>
-          <div class="sidebar-body">
-            <div class="sidebar-info-row">
-              <div class="sidebar-info-item">
-                <div class="sidebar-info-icon icon-purple">
-                  <i class="fas fa-briefcase"></i>
-                </div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Current Role</div>
-                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;">
-                    <%= profile.current_job_title || 'N/A' %>
-                  </div>
-                </div>
-              </div>
-              <div class="sidebar-info-item">
-                <div class="sidebar-info-icon icon-cyan">
-                  <i class="fas fa-history"></i>
-                </div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Experience</div>
-                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;">
-                    <%= profile.total_experience_years || '0' %>y <%= profile.total_experience_months || '0' %>m
-                  </div>
-                </div>
-              </div>
-              <div class="sidebar-info-item">
-                <div class="sidebar-info-icon icon-amber">
-                  <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Location</div>
-                  <div style="font-size:0.85rem;color:var(--dark);font-weight:500;">
-                    <%= profile.location || 'Not set' %>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 d-grid gap-2">
-              <a href="/seeker/profile-setup" class="btn btn-primary w-100 fw-bold" style="border-radius:10px;font-size:0.875rem;">
-                <i class="fas fa-user-edit me-2"></i>Edit My Profile
-              </a>
-              <a href="/jobs" class="btn btn-outline-primary w-100 fw-bold" style="border-radius:10px;font-size:0.875rem;">
-                <i class="fas fa-search me-2"></i>Browse Jobs
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
       <!-- ===== APPLICATIONS ===== -->
-      <div class="col-lg-9">
+      <div class="col-lg-12">
         <!-- Stats Row -->
         <div class="row g-3 mb-4" id="statsRow">
           <div class="col-6 col-md-3">
@@ -191,6 +123,77 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROFILE OFFCANVAS ===== -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas" aria-labelledby="profileOffcanvasLabel" style="width: 350px;">
+    <div class="offcanvas-header bg-light border-bottom p-3">
+      <h5 class="offcanvas-title fw-bold" id="profileOffcanvasLabel" style="font-size:1.15rem;"><i class="fas fa-user-circle me-2 text-primary"></i>My Profile</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-4 bg-light">
+      <div class="sidebar-card m-0 w-100 shadow-none border-0" style="background:transparent;">
+        <div class="sidebar-header pb-3 mb-3 border-bottom">
+          <div class="avatar-circle mx-auto mb-3" style="width:70px;height:70px;font-size:2rem;">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="sidebar-name fs-5">
+            <%= profile.full_name || user.fullname %>
+          </div>
+          <div class="sidebar-email text-muted">
+            <%= profile.email || user.email %>
+          </div>
+          <div class="mt-3">
+            <span class="status-badge status-approved px-3 py-2">
+              <i class="fas fa-check-circle" style="font-size:0.8rem;"></i> Verified Seeker
+            </span>
+          </div>
+        </div>
+        <div class="sidebar-body px-0">
+          <div class="sidebar-info-row flex-column gap-3 mb-4">
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-purple">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Current Role</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.current_job_title || 'N/A' %>
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-cyan">
+                <i class="fas fa-history"></i>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Experience</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.total_experience_years || '0' %>y <%= profile.total_experience_months || '0' %>m
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-amber">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">Location</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.location || 'Not set' %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 d-grid gap-2">
+            <a href="/seeker/profile-setup" class="btn btn-primary w-100 fw-bold py-2 btn-lg" style="border-radius:10px;font-size:0.95rem;">
+              <i class="fas fa-user-edit me-2"></i>Edit My Profile
+            </a>
           </div>
         </div>
       </div>
