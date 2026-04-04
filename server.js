@@ -44,6 +44,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/recruiter', recruiterRoutes);
 app.use('/api/seeker', seekerRoutes);
 
+// Direct Recommendation API (Job Seeker only)
+const auth = require('./middleware/auth');
+const seekerController = require('./controllers/seekerController');
+app.get('/api/recommendations', auth(['seeker']), seekerController.getRecommendations);
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

@@ -22,6 +22,7 @@ router.get('/profile', seekerController.getMyApplications); // Compatibility/App
 
 // Job Routes
 router.get('/jobs', seekerController.getJobs);
+router.get('/recommendations', seekerController.getRecommendations);
 
 // Application Routes
 router.post('/apply/:jobId', seekerController.applyToJob);
