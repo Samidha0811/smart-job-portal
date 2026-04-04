@@ -213,6 +213,115 @@ const seekerController = {
             console.error(err);
             res.status(500).json({ success: false, message: 'Error fetching certificate.' });
         }
+    },
+
+    /**
+     * Recommendation System Logic: GET /api/recommendations
+     */
+    async getRecommendations(req, res) {
+        const seekerId = req.user.id;
+        try {
+            // 1. Fetch seeker's profile
+            const profile = await Seeker.getFullProfile(seekerId);
+            if (!profile) {
+                return res.json([]); // Return empty if no profile setup
+            }
+
+            // 2. Fetch seeker's applied jobs to build interest profile
+            const appliedApps = await Application.getBySeeker(seekerId);
+            const appliedJobIds = new Set(appliedApps.map(a => a.job_id));
+
+            // Extract skills from profile
+            const userSkills = profile.skills.map(s => s.skill_name.toLowerCase());
+            
+            // Build keyword frequency map from profile and applied jobs
+            const interestProfile = {};
+            userSkills.forEach(s => interestProfile[s] = (interestProfile[s] || 0) + 5); // Profile skills have high weight
+
+            // Add keywords from applied jobs
+            appliedApps.forEach(app => {
+                if (app.keywords) {
+                    const kws = app.keywords.split(',').map(k => k.trim().toLowerCase());
+                    kws.forEach(kw => {
+                        interestProfile[kw] = (interestProfile[kw] || 0) + 2; // Keywords from applied jobs have moderate weight
+                    });
+                }
+                // Optional: Extract from title too
+                const titleWords = app.job_title.toLowerCase().split(/\s+/);
+                titleWords.forEach(w => {
+                    if (w.length > 3) interestProfile[w] = (interestProfile[w] || 0) + 1;
+                });
+            });
+
+            // 3. Fetch all open candidate jobs from verified recruiters
+            const allJobs = await Job.getAllOpen();
+            const candidates = allJobs.filter(j => !appliedJobIds.has(j.id));
+
+            // 4. Score each candidate
+            const recommended = candidates.map(job => {
+                let score = 0;
+                let matchedSkills = [];
+                
+                const jobKeywords = job.keywords ? job.keywords.split(',').map(k => k.trim().toLowerCase()) : [];
+                const jobTitle = job.title.toLowerCase();
+                const jobDesc = job.description.toLowerCase();
+
+                // Skill Match Scoring
+                jobKeywords.forEach(kw => {
+                    if (interestProfile[kw]) {
+                        score += 2;
+                        matchedSkills.push(kw);
+                    } else {
+                        // Check partial matches
+                        for (let profSkill in interestProfile) {
+                            if (kw.includes(profSkill) || profSkill.includes(kw)) {
+                                score += 1;
+                                if (!matchedSkills.includes(kw)) matchedSkills.push(kw);
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                // Location Match (+1)
+                if (profile.preferred_location && job.location) {
+                    if (job.location.toLowerCase().includes(profile.preferred_location.toLowerCase())) {
+                        score += 1;
+                    }
+                }
+
+                // Experience Match (+1)
+                const jobExp = job.experience_required || 0;
+                const userExp = profile.total_experience_years || 0;
+                if (userExp >= jobExp) {
+                    score += 1;
+                }
+
+                // Normalize score to percentage (Max assumed 10 for demo)
+                const matchPercentage = Math.min(Math.round((score / 10) * 100), 100);
+
+                return {
+                    job_id: job.id,
+                    title: job.title,
+                    company: job.company_name,
+                    location: job.location,
+                    match_score: matchPercentage,
+                    matched_skills: matchedSkills.slice(0, 5), // Return top 5 matched
+                    salary: job.salary
+                };
+            });
+
+            // 5. Rank and return top 10
+            const topRecommendations = recommended
+                .filter(r => r.match_score > 0)
+                .sort((a, b) => b.match_score - a.match_score)
+                .slice(0, 10);
+
+            res.json(topRecommendations);
+        } catch (err) {
+            console.error('Error in getRecommendations:', err);
+            res.status(500).json({ message: 'Error fetching recommendations' });
+        }
     }
 };
 

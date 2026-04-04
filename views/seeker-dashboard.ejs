@@ -12,6 +12,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chatbot.css?v=1.1">
 </head>
 
 <body class="dashboard-page">
@@ -152,6 +153,17 @@
           </div>
         </div>
 
+        <!-- ===== RECOMMENDED JOBS ===== -->
+        <div class="mb-5" id="recommendationSection" style="display:none;">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="page-title" style="font-size:1.25rem;margin:0;">🔥 Recommended Jobs For You</h2>
+            <a href="/jobs" class="text-primary fw-bold" style="font-size:0.85rem;text-decoration:none;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+          </div>
+          <div id="recommendationList" class="row g-3 flex-nowrap overflow-auto pb-2" style="scrollbar-width: thin;">
+            <!-- Recommended jobs will be injected here -->
+          </div>
+        </div>
+
         <!-- Applications Table -->
         <div class="main-card">
           <div class="main-card-header">
@@ -185,6 +197,41 @@
     </div>
   </div>
 
+  <!-- ===== AI CAREER MENTOR CHATBOT ===== -->
+  <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
+    <i class="fas fa-robot"></i> Ask Career Mentor
+  </button>
+
+  <div id="chatbot-container" class="chatbot-container d-none">
+    <div class="chatbot-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+          <h5 class="mb-0 text-white" style="font-size:1rem;font-weight:600;">AI Mentor</h5>
+          <small style="color:rgba(255,255,255,0.8);font-size:0.75rem;">Online</small>
+        </div>
+      </div>
+      <button id="chatbot-close-btn" class="btn-close btn-close-white"></button>
+    </div>
+    
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="message bot-message">
+        Hi there! I'm your AI Career Mentor. I've reviewed your profile and I'm ready to help. What would you like to know?
+      </div>
+    </div>
+
+    <div class="chatbot-suggestions">
+      <button class="chat-suggestion-btn">What skills should I learn?</button>
+      <button class="chat-suggestion-btn">Am I ready for my desired role?</button>
+      <button class="chat-suggestion-btn">Improve my resume</button>
+    </div>
+
+    <div class="chatbot-input-area">
+      <input type="text" id="chatbot-input" placeholder="Type your message..." autocomplete="off">
+      <button id="chatbot-send-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
   <!-- ===== LOGOUT MODAL ===== -->
   <div class="modal fade modal-premium" id="logoutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -213,6 +260,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/apiService.js"></script>
+  <script src="/js/chatbot.js?v=1.1"></script>
   <script>
     // Logout
     document.getElementById('logoutLink').addEventListener('click', function (e) {
@@ -280,7 +328,61 @@
         document.getElementById('applicationList').innerHTML = `
           <tr><td colspan="4" class="text-center text-danger py-4">Error loading applications.</td></tr>`;
       }
+
+      // Fetch Recommendations
+      try {
+        const recResponse = await fetch('/api/recommendations');
+        const recs = await recResponse.json();
+        
+        const recSection = document.getElementById('recommendationSection');
+        const recList = document.getElementById('recommendationList');
+
+        if (recs && recs.length > 0) {
+          recSection.style.display = 'block';
+          recList.innerHTML = recs.map(job => `
+            <div class="col-12 col-md-6 col-lg-4" style="flex: 0 0 auto;">
+              <div class="job-card-premium h-100 p-3" style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); transition:all 0.3s ease; position:relative; overflow:hidden;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div class="match-badge" style="background:rgba(129,140,248,0.1); color:var(--primary); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:700;">
+                    <i class="fas fa-bolt me-1"></i> ${job.match_score}% Match
+                  </div>
+                  <div style="font-size:0.85rem; font-weight:600; color:var(--dark);">${job.salary || 'Competitive'}</div>
+                </div>
+                <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</h3>
+                <div class="d-flex align-items-center gap-2 mb-3" style="font-size:0.85rem; color:var(--gray);">
+                   <i class="fas fa-building" style="font-size:0.75rem;"></i> ${job.company}
+                   <span class="mx-1">•</span>
+                   <i class="fas fa-map-marker-alt" style="font-size:0.75rem;"></i> ${job.location}
+                </div>
+                <div class="matched-skills mb-3 d-flex flex-wrap gap-1">
+                  ${job.matched_skills.map(skill => `<span style="font-size:0.65rem; background:#f3f4f6; color:#4b5563; padding:2px 8px; border-radius:4px; font-weight:500;">${skill}</span>`).join('')}
+                </div>
+                <button onclick="applyNow(${job.job_id})" class="btn btn-primary w-100 py-2 fw-bold" style="border-radius:10px; font-size:0.85rem;">Apply Now</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Error fetching recommendations:', err);
+      }
     });
+
+    async function applyNow(jobId) {
+      if(!confirm('Apply for this job?')) return;
+      try {
+        const res = await fetch(`/api/seeker/apply/${jobId}`, { method: 'POST' });
+        const data = await res.json();
+        if(data.statusCount > 0 || data.success) { // match_score is returned but success is standard
+          alert('Applied successfully!');
+          window.location.reload();
+        } else {
+          alert(data.message || 'Error applying');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to apply.');
+      }
+    }
 
     function getStatusPill(status) {
       const map = { shortlisted: 'pill pill-success', rejected: 'pill pill-danger', hold: 'pill pill-secondary', 'under process': 'pill pill-info' };

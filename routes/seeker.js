@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const seekerController = require('../controllers/seekerController');
+const chatController = require('../controllers/chatController');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 
@@ -22,13 +23,18 @@ router.get('/profile', seekerController.getMyApplications); // Compatibility/App
 
 // Job Routes
 router.get('/jobs', seekerController.getJobs);
+router.get('/recommendations', seekerController.getRecommendations);
 
 // Application Routes
 router.post('/apply/:jobId', seekerController.applyToJob);
 router.get('/my-applications', seekerController.getMyApplications);
 
+// Chatbot Route
+router.post('/chat', chatController.chat);
+
 // Certification Document Route (accessible via recruiter link)
 router.get('/cert-document/:certId', seekerController.getCertDocument);
 
 module.exports = router;
+// Model bump Gemini 2.5
 

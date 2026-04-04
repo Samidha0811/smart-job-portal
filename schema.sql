@@ -27,11 +27,13 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- Jobs Table
 CREATE TABLE IF NOT EXISTS jobs (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    job_id VARCHAR(50) UNIQUE,
     recruiter_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     keywords TEXT,
     location VARCHAR(255),
+    experience_required INT DEFAULT 0,
     salary VARCHAR(100),
     status ENUM('open', 'closed') DEFAULT 'open',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

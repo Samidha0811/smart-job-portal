@@ -5,14 +5,14 @@ const Job = {
      * Create a new job
      */
     async create(jobData) {
-        const { recruiter_id, title, description, keywords, location, salary } = jobData;
+        const { recruiter_id, title, description, keywords, location, salary, experience_required } = jobData;
         
         // Generate a unique human-readable job ID (e.g., JOB-1A2B3C)
         const jobId = 'JOB-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
         return await db.query(
-            'INSERT INTO jobs (job_id, recruiter_id, title, description, keywords, location, salary) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [jobId, recruiter_id, title, description, keywords, location, salary]
+            'INSERT INTO jobs (job_id, recruiter_id, title, description, keywords, location, salary, experience_required) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [jobId, recruiter_id, title, description, keywords, location, salary, experience_required || 0]
         );
     },
 
@@ -24,9 +24,11 @@ const Job = {
             SELECT j.*, rd.company_name, rd.company_description 
             FROM jobs j
             JOIN recruiter_details rd ON j.recruiter_id = rd.user_id
-            WHERE j.status = "open" 
+            WHERE j.status = "open" AND rd.status = "approved"
             ORDER BY j.created_at DESC
         `);
+        // Note: The above logic for rd.status might need refinement based on how recruiter status is stored.
+        // Actually, looking at recruiterModel, it has a status 'approved'.
         return rows;
     },
 
