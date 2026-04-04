@@ -35,5 +35,7 @@ router.get('/my-jobs', recruiterController.getMyJobs);
 router.get('/applicants/:jobId', recruiterController.getJobApplicants);
 router.patch('/applications/:applicationId/status', recruiterController.updateApplicationStatus);
 router.get('/all-applications', recruiterController.getAllApplications);
+router.get('/seeker-profile/:seekerId', recruiterController.getSeekerProfile);
+
 
 module.exports = router;

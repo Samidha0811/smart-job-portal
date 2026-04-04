@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> — Smart Job Portal
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile-setup.css">
+</head>
+
+<body class="bg-dark-premium">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-premium">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
+            </a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <a href="/seeker/dashboard" class="btn-nav-light"><i class="fas fa-arrow-left me-1"></i> Back to
+                    Dashboard</a>
+                <a href="/api/auth/logout" class="btn-nav-danger" id="logoutLink"><i
+                        class="fas fa-sign-out-alt me-1"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-setup-container">
+
+        <!-- Progress Stepper -->
+        <div class="stepper">
+            <div class="step active" data-step="0">
+                <div class="step-icon">1</div>
+                <div class="step-label">Basic</div>
+            </div>
+            <div class="step" data-step="1">
+                <div class="step-icon">2</div>
+                <div class="step-label">Professional</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-icon">3</div>
+                <div class="step-label">Education</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-icon">4</div>
+                <div class="step-label">Experience</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-icon">5</div>
+                <div class="step-label">Skills</div>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-icon">6</div>
+                <div class="step-label">Projects</div>
+            </div>
+            <div class="step" data-step="6">
+                <div class="step-icon">7</div>
+                <div class="step-label">Certifications</div>
+            </div>
+            <div class="step" data-step="7">
+                <div class="step-icon">8</div>
+                <div class="step-label">Settings</div>
+            </div>
+        </div>
+
+
+        <form id="profileSetupForm" enctype="multipart/form-data">
+            <!-- 1. BASIC INFORMATION -->
+            <div class="form-section active" id="step-0">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 1 of 8</span>
+                            <i class="fas fa-id-card text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Basic Information</h2>
+                        <p class="section-subtitle">Let's start with your essential contact details</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="premium-label">Full Name *</label>
+                            <input type="text" name="full_name" class="premium-input"
+                                value="<%= profile.full_name || user.fullname %>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Email Address *</label>
+                            <input type="email" name="email" class="premium-input"
+                                value="<%= profile.email || user.email %>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Phone Number *</label>
+                            <input type="tel" name="phone" class="premium-input" value="<%= profile.phone || '' %>"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Location *</label>
+                            <select name="location" class="premium-select" required>
+                                <option value="">Select Location</option>
+                                <option value="Mumbai" <%=profile.location=='Mumbai' ? 'selected' : '' %>>Mumbai
+                                </option>
+                                <option value="Bangalore" <%=profile.location=='Bangalore' ? 'selected' : '' %>
+                                    >Bangalore</option>
+                                <option value="Delhi" <%=profile.location=='Delhi' ? 'selected' : '' %>>Delhi</option>
+                                <option value="Remote" <%=profile.location=='Remote' ? 'selected' : '' %>>Remote
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="premium-label">Profile Summary</label>
+                            <textarea name="profile_summary" class="premium-textarea" rows="4"
+                                placeholder="Brief professional summary..."><%= profile.profile_summary || '' %></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PROFESSIONAL DETAILS -->
+            <div class="form-section" id="step-1">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 2 of 8</span>
+                            <i class="fas fa-briefcase text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Professional Details</h2>
+                        <p class="section-subtitle">Your current role, industry, and total experience</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="premium-label">Current Job Title</label>
+                            <input type="text" name="current_job_title" class="premium-input"
+                                value="<%= profile.current_job_title || '' %>"
+                                placeholder="e.g. Senior Software Engineer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Current Company</label>
+                            <input type="text" name="current_company" class="premium-input"
+                                value="<%= profile.current_company || '' %>" placeholder="e.g. Google">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Total Experience (Years)</label>
+                            <input type="number" name="total_experience_years" class="premium-input"
+                                value="<%= profile.total_experience_years || 0 %>" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Total Experience (Months)</label>
+                            <input type="number" name="total_experience_months" class="premium-input"
+                                value="<%= profile.total_experience_months || 0 %>" min="0" max="11">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Industry</label>
+                            <input type="text" name="industry" class="premium-input"
+                                value="<%= profile.industry || '' %>" placeholder="e.g. Information Technology">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Functional Area</label>
+                            <input type="text" name="functional_area" class="premium-input"
+                                value="<%= profile.functional_area || '' %>" placeholder="e.g. Backend Development">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. EDUCATION -->
+            <div class="form-section" id="step-2">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 3 of 8</span>
+                            <i class="fas fa-graduation-cap text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Education Details</h2>
+                        <p class="section-subtitle">Add your academic qualifications and degrees</p>
+                    </div>
+                    <div id="edu-container">
+                        <% if (profile.education && profile.education.length> 0) { %>
+                            <% profile.education.forEach(edu=> { %>
+                                <div class="dynamic-entry">
+                                    <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+                                    <div class="row g-3">
+                                        <div class="col-md-6"><label class="premium-label">Degree</label><input
+                                                type="text" name="degree" class="premium-input"
+                                                value="<%= edu.degree %>"></div>
+                                        <div class="col-md-6"><label
+                                                class="premium-label">College/University</label><input type="text"
+                                                name="college" class="premium-input" value="<%= edu.college %>"></div>
+                                        <div class="col-md-6"><label class="premium-label">Graduation Year</label><input
+                                                type="number" name="graduation_year" class="premium-input"
+                                                value="<%= edu.graduation_year %>"></div>
+                                        <div class="col-md-6"><label class="premium-label">Specialization</label><input
+                                                type="text" name="specialization" class="premium-input"
+                                                value="<%= edu.specialization %>"></div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                    </div>
+                    <button type="button" class="add-entry-btn" data-target="edu-container">+ Add Education</button>
+                </div>
+            </div>
+
+            <!-- 4. WORK EXPERIENCE -->
+            <div class="form-section" id="step-3">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 4 of 8</span>
+                            <i class="fas fa-history text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Work Experience</h2>
+                        <p class="section-subtitle">Showcase your professional career highlights</p>
+                    </div>
+                    <div id="exp-container">
+                        <% if (profile.experience && profile.experience.length> 0) { %>
+                            <% profile.experience.forEach(exp=> { %>
+                                <div class="dynamic-entry">
+                                    <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+                                    <div class="row g-3">
+                                        <div class="col-md-6"><label class="premium-label">Company Name</label><input
+                                                type="text" name="company_name" class="premium-input"
+                                                value="<%= exp.company_name %>"></div>
+                                        <div class="col-md-6"><label class="premium-label">Role</label><input
+                                                type="text" name="role" class="premium-input" value="<%= exp.role %>">
+                                        </div>
+                                        <div class="col-md-4"><label class="premium-label">Start Date</label><input
+                                                type="date" name="start_date" class="premium-input"
+                                                value="<%= exp.start_date ? exp.start_date.toISOString().split('T')[0] : '' %>">
+                                        </div>
+                                        <div class="col-md-4"><label class="premium-label">End Date</label><input
+                                                type="date" name="end_date" class="premium-input"
+                                                value="<%= exp.end_date ? exp.end_date.toISOString().split('T')[0] : '' %>">
+                                        </div>
+                                        <div class="col-12"><label
+                                                class="premium-label">Responsibilities</label><textarea
+                                                name="responsibilities" class="premium-textarea"
+                                                rows="3"><%= exp.responsibilities %></textarea></div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                    </div>
+                    <button type="button" class="add-entry-btn" data-target="exp-container">+ Add Experience</button>
+                </div>
+            </div>
+
+            <!-- 5. KEY SKILLS -->
+            <div class="form-section" id="step-4">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 5 of 8</span>
+                            <i class="fas fa-tools text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Key Skills</h2>
+                        <p class="section-subtitle">Highlight your core competencies and expert areas</p>
+                    </div>
+                    <div id="skills-container" class="row">
+                        <% if (profile.skills && profile.skills.length> 0) { %>
+                            <% profile.skills.forEach(skill=> { %>
+                                <div class="col-md-6 dynamic-entry">
+                                    <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+                                    <div class="row g-3">
+                                        <div class="col-7"><label class="premium-label">Skill</label><input type="text"
+                                                name="skill_name" class="premium-input" value="<%= skill.skill_name %>">
+                                        </div>
+                                        <div class="col-5"><label class="premium-label">Level</label><select
+                                                name="proficiency_level" class="premium-select">
+                                                <option value="Beginner" <%=skill.proficiency_level=='Beginner'
+                                                    ? 'selected' : '' %>>Beginner</option>
+                                                <option value="Intermediate" <%=skill.proficiency_level=='Intermediate'
+                                                    ? 'selected' : '' %>>Intermediate</option>
+                                                <option value="Expert" <%=skill.proficiency_level=='Expert' ? 'selected'
+                                                    : '' %>>Expert</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                    </div>
+                    <button type="button" class="add-entry-btn" data-target="skills-container">+ Add Skill</button>
+                </div>
+            </div>
+
+            <!-- 6. PROJECTS -->
+            <div class="form-section" id="step-5">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 6 of 8</span>
+                            <i class="fas fa-project-diagram text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Featured Projects</h2>
+                        <p class="section-subtitle">Showcase your best technical or business projects</p>
+                    </div>
+                    <div id="proj-container">
+                        <% if (profile.projects && profile.projects.length> 0) { %>
+                            <% profile.projects.forEach(proj=> { %>
+                                <div class="dynamic-entry">
+                                    <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+                                    <div class="row g-3">
+                                        <div class="col-md-6"><label class="premium-label">Project Title</label><input
+                                                type="text" name="title" class="premium-input"
+                                                value="<%= proj.title %>"></div>
+                                        <div class="col-md-6"><label class="premium-label">Technologies
+                                                Used</label><input type="text" name="technologies_used"
+                                                class="premium-input" value="<%= proj.technologies_used %>"></div>
+                                        <div class="col-12"><label class="premium-label">Description</label><textarea
+                                                name="description" class="premium-textarea"
+                                                rows="3"><%= proj.description %></textarea></div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                    </div>
+                    <button type="button" class="add-entry-btn" data-target="proj-container">+ Add Project</button>
+                </div>
+            </div>
+
+            <!-- 7. CERTIFICATIONS -->
+            <div class="form-section" id="step-6">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 7 of 8</span>
+                            <i class="fas fa-certificate text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Certifications</h2>
+                        <p class="section-subtitle">Add your professional certifications and licenses</p>
+                    </div>
+                    <div id="cert-container">
+                        <% if (profile.certifications && profile.certifications.length > 0) { %>
+                            <% profile.certifications.forEach(cert => { %>
+                                <div class="dynamic-entry">
+                                    <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+                                    <div class="row g-3">
+                                        <div class="col-md-6"><label class="premium-label">Certification Name</label><input type="text" name="certification_name" class="premium-input" value="<%= cert.certification_name %>"></div>
+                                        <div class="col-md-6"><label class="premium-label">Issuing Organization</label><input type="text" name="issuing_organization" class="premium-input" value="<%= cert.issuing_organization %>"></div>
+                                        <div class="col-12">
+                                            <label class="premium-label">Certificate Document (PDF/JPG/PNG)</label>
+                                            <input type="file" class="premium-input cert-file-input" accept=".pdf,.jpg,.jpeg,.png">
+                                            <% if (cert.certificate_path) { %>
+                                                <div class="mt-2" style="font-size:0.82rem;color:#10b981;">
+                                                    <i class="fas fa-check-circle me-1"></i> Current: <%= cert.certificate_path %>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <button type="button" class="add-entry-btn" data-target="cert-container">+ Add Certification</button>
+                </div>
+            </div>
+
+            <!-- 8. PREFERENCES & SETTINGS -->
+            <div class="form-section" id="step-7">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="status-badge status-checking">Step 8 of 8</span>
+                            <i class="fas fa-cog text-primary fs-4"></i>
+                        </div>
+                        <h2 class="section-title">Job Preferences & Settings</h2>
+                        <p class="section-subtitle">Finalize your profile visibility and preferences</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="premium-label">Preferred Location</label>
+                            <input type="text" name="preferred_location" class="premium-input"
+                                value="<%= profile.preferred_location || '' %>" placeholder="e.g. Bangalore, Remote">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Expected Salary</label>
+                            <input type="text" name="expected_salary" class="premium-input"
+                                value="<%= profile.expected_salary || '' %>" placeholder="e.g. 15-20 LPA">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Job Type</label>
+                            <select name="job_type" class="premium-select">
+                                <option value="Full-time" <%=profile.job_type=='Full-time' ? 'selected' : '' %>
+                                    >Full-time</option>
+                                <option value="Remote" <%=profile.job_type=='Remote' ? 'selected' : '' %>>Remote
+                                </option>
+                                <option value="Internship" <%=profile.job_type=='Internship' ? 'selected' : '' %>
+                                    >Internship</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Shift Preference</label>
+                            <select name="shift_preference" class="premium-select">
+                                <option value="Day" <%=profile.shift_preference=='Day' ? 'selected' : '' %>>Day Shift
+                                </option>
+                                <option value="Night" <%=profile.shift_preference=='Night' ? 'selected' : '' %>>Night
+                                    Shift</option>
+                                <option value="Flexible" <%=profile.shift_preference=='Flexible' ? 'selected' : '' %>
+                                    >Flexible</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-switch">
+                                <input type="checkbox" name="actively_looking" value="true" <%=profile.actively_looking
+                                    ? 'checked' : '' %>>
+                                <span class="switch-slider"></span>
+                                <span class="premium-label mb-0">Actively looking for jobs</span>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="premium-label">Profile Visibility</label>
+                            <select name="profile_visibility" class="premium-select">
+                                <option value="Public" <%=profile.profile_visibility=='Public' ? 'selected' : '' %>
+                                    >Public (Recruiters can see)</option>
+                                <option value="Private" <%=profile.profile_visibility=='Private' ? 'selected' : '' %>
+                                    >Private</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <label class="premium-label">Upload Resume (PDF/DOC)</label>
+                            <input type="file" name="resume" class="premium-input" accept=".pdf,.doc,.docx">
+                            <% if (profile.resume_path) { %>
+                                <div class="mt-2 text-success" style="font-size: 0.9rem;">
+                                    <i class="fas fa-check-circle me-1"></i> Current: <%= profile.resume_path %>
+                                </div>
+                                <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <button type="button" id="btnPrev" class="btn-prev">Previous</button>
+                <div class="ms-auto d-flex gap-2">
+                    <button type="button" id="btnNext" class="btn-next">Next Step <i
+                            class="fas fa-arrow-right ms-2"></i></button>
+                    <button type="submit" id="btnSubmit" class="btn-submit" style="display:none;">Save & Finish <i
+                            class="fas fa-rocket ms-2"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Templates for Dynamic Entries -->
+    <template id="edu-container-template">
+        <div class="dynamic-entry">
+            <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="premium-label">Degree</label><input type="text" name="degree"
+                        class="premium-input" placeholder="e.g. B.Tech"></div>
+                <div class="col-md-6"><label class="premium-label">College/University</label><input type="text"
+                        name="college" class="premium-input" placeholder="e.g. IIT Bombay"></div>
+                <div class="col-md-6"><label class="premium-label">Graduation Year</label><input type="number"
+                        name="graduation_year" class="premium-input" placeholder="2023"></div>
+                <div class="col-md-6"><label class="premium-label">Specialization</label><input type="text"
+                        name="specialization" class="premium-input" placeholder="e.g. Computer Science"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="exp-container-template">
+        <div class="dynamic-entry">
+            <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="premium-label">Company Name</label><input type="text"
+                        name="company_name" class="premium-input" placeholder="e.g. Microsoft"></div>
+                <div class="col-md-6"><label class="premium-label">Role</label><input type="text" name="role"
+                        class="premium-input" placeholder="e.g. Software Engineer"></div>
+                <div class="col-md-4"><label class="premium-label">Start Date</label><input type="date"
+                        name="start_date" class="premium-input"></div>
+                <div class="col-md-4"><label class="premium-label">End Date</label><input type="date" name="end_date"
+                        class="premium-input"></div>
+                <div class="col-12"><label class="premium-label">Responsibilities</label><textarea
+                        name="responsibilities" class="premium-textarea" rows="3"
+                        placeholder="Describe your key achievements..."></textarea></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="skills-container-template">
+        <div class="col-md-6 dynamic-entry">
+            <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+            <div class="row g-3">
+                <div class="col-7"><label class="premium-label">Skill</label><input type="text" name="skill_name"
+                        class="premium-input" placeholder="e.g. React"></div>
+                <div class="col-5">
+                    <label class="premium-label">Level</label>
+                    <select name="proficiency_level" class="premium-select">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate" selected>Intermediate</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="proj-container-template">
+        <div class="dynamic-entry">
+            <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="premium-label">Project Title</label><input type="text" name="title"
+                        class="premium-input" placeholder="e.g. E-commerce App"></div>
+                <div class="col-md-6"><label class="premium-label">Technologies Used</label><input type="text"
+                        name="technologies_used" class="premium-input" placeholder="e.g. Node, React, MySQL"></div>
+                <div class="col-12"><label class="premium-label">Description</label><textarea name="description"
+                        class="premium-textarea" rows="3" placeholder="Brief project description..."></textarea></div>
+            </div>
+        </div>
+    </template>
+    <template id="cert-container-template">
+        <div class="dynamic-entry">
+            <button type="button" class="remove-entry"><i class="fas fa-times"></i></button>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="premium-label">Certification Name</label><input type="text" name="certification_name" class="premium-input" placeholder="e.g. AWS Certified Solutions Architect"></div>
+                <div class="col-md-6"><label class="premium-label">Issuing Organization</label><input type="text" name="issuing_organization" class="premium-input" placeholder="e.g. Amazon Web Services"></div>
+                <div class="col-12">
+                    <label class="premium-label">Certificate Document (PDF/JPG/PNG)</label>
+                    <input type="file" class="premium-input cert-file-input" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/profile-setup.js"></script>
+</body>
+
+</html>

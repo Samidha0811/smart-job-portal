@@ -236,7 +236,35 @@
     }
     .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
     .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Profile Modal Enhancement Styles */
+    .section-label-sm {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gray);
+      margin-bottom: 0.6rem;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 4px;
+      display: inline-block;
+    }
+    .skill-pill-premium {
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--primary);
+      border: 1px solid rgba(79, 70, 229, 0.15);
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .skill-pill-premium:hover {
+      background: var(--primary);
+      color: #fff;
+    }
   </style>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/apiService.js"></script>
@@ -349,38 +377,157 @@
       `).join('');
     }
 
-    function viewProfile(appId) {
+    async function viewProfile(appId) {
       const app = allApplications.find(a => a.id === appId);
       if (!app) return;
-      document.getElementById('profName').textContent = app.seeker_name;
-      document.getElementById('profEmail').textContent = app.seeker_email;
-      document.getElementById('profBio').textContent = app.bio || 'No bio provided.';
-      document.getElementById('profEdu').textContent = app.education || 'N/A';
-      document.getElementById('profExp').textContent = app.experience_years || '0';
+      
+      const modalEl = document.getElementById('profileModal');
+      const modalBody = modalEl.querySelector('.modal-body');
+      
+      // Clear previous info or show loading
+      modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Fetching full profile...</p></div>';
+      new bootstrap.Modal(modalEl).show();
 
-      const skillsEl = document.getElementById('profSkills');
-      skillsEl.innerHTML = '';
-      if (app.skills) {
-        app.skills.split(',').forEach(s => {
-          const span = document.createElement('span');
-          span.style.cssText = 'background:rgba(79,70,229,0.08);color:var(--primary);border:1px solid rgba(79,70,229,0.15);padding:0.25rem 0.6rem;border-radius:50px;font-size:0.78rem;font-weight:600;';
-          span.textContent = s.trim();
-          skillsEl.appendChild(span);
-        });
-      } else {
-        skillsEl.innerHTML = '<span style="color:var(--gray);font-size:0.85rem;">No skills listed.</span>';
-      }
+      try {
+        // Fetch full profile from the new API
+        const response = await fetch(`/api/seeker/profile/${app.seeker_id}`);
+        const data = await response.json();
+        
+        if (!data.success || !data.profile) {
+          modalBody.innerHTML = '<div class="alert alert-warning">Could not fetch full profile details.</div>';
+          return;
+        }
 
-      const resumeLink = document.getElementById('profResumeLink');
-      if (app.resume_filename) {
-        resumeLink.style.display = 'inline-flex';
-        resumeLink.href = `/api/recruiter/resume/${app.seeker_id}`;
-        resumeLink.innerHTML = `<i class="fas fa-file-pdf me-2"></i>Download Resume`;
-      } else {
-        resumeLink.style.display = 'none';
+        const p = data.profile;
+
+        // Construct Rich Modal Content
+        let html = `
+          <div class="row g-4">
+            <!-- Left Sidebar: Basic Info -->
+            <div class="col-md-4 border-end">
+              <div class="text-center mb-4">
+                <div style="width:100px;height:100px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:3rem;color:var(--primary);">
+                  <i class="fas fa-user"></i>
+                </div>
+                <h4 class="fw-bold mb-1">${p.full_name || app.seeker_name}</h4>
+                <p class="text-muted mb-3">${p.current_job_title || 'Job Seeker'}</p>
+                <div class="d-flex flex-column gap-2 text-start px-3">
+                  <div style="font-size:0.85rem;"><i class="fas fa-envelope me-2 text-primary"></i>${p.email}</div>
+                  <div style="font-size:0.85rem;"><i class="fas fa-phone me-2 text-primary"></i>${p.phone || 'N/A'}</div>
+                  <div style="font-size:0.85rem;"><i class="fas fa-map-marker-alt me-2 text-primary"></i>${p.location || 'N/A'}</div>
+                </div>
+              </div>
+
+              <div class="px-3">
+                <h6 class="fw-bold mb-2" style="font-size:0.8rem; text-transform:uppercase; color:var(--gray);">Preferences</h6>
+                <div style="font-size:0.85rem;" class="mb-2"><strong>Role:</strong> ${p.desired_role || 'N/A'}</div>
+                <div style="font-size:0.85rem;" class="mb-2"><strong>Location:</strong> ${p.preferred_location || 'N/A'}</div>
+                <div style="font-size:0.85rem;" class="mb-2"><strong>Type:</strong> ${p.job_type}</div>
+                <div style="font-size:0.85rem;"><strong>Salary:</strong> ${p.expected_salary || 'N/A'}</div>
+              </div>
+            </div>
+
+            <!-- Right Content: Details -->
+            <div class="col-md-8" style="max-height: 600px; overflow-y: auto;">
+              <!-- Summary -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-2">Professional Summary</h6>
+                <p style="font-size:0.9rem; line-height:1.6; color:var(--dark-2);">${p.profile_summary || 'No summary provided.'}</p>
+              </div>
+
+              <!-- Experience -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-3">Work Experience</h6>
+                ${p.experience && p.experience.length > 0 ? p.experience.map(exp => `
+                  <div class="mb-3 pb-3 border-bottom">
+                    <div class="fw-bold" style="font-size:0.95rem;">${exp.role}</div>
+                    <div class="text-primary mb-1" style="font-size:0.85rem; font-weight:600;">${exp.company_name}</div>
+                    <div class="text-muted mb-2" style="font-size:0.75rem;">
+                      ${new Date(exp.start_date).toLocaleDateString()} - ${exp.is_current ? 'Present' : (exp.end_date ? new Date(exp.end_date).toLocaleDateString() : '')}
+                    </div>
+                    <p style="font-size:0.85rem; margin:0; line-height:1.4;">${exp.responsibilities || ''}</p>
+                  </div>
+                `).join('') : '<p class="text-muted small">No experience listed.</p>'}
+              </div>
+
+              <!-- Education -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-3">Education</h6>
+                ${p.education && p.education.length > 0 ? p.education.map(edu => `
+                  <div class="mb-2">
+                    <div class="fw-bold" style="font-size:0.9rem;">${edu.degree}</div>
+                    <div class="text-muted" style="font-size:0.8rem;">${edu.college} | Class of ${edu.graduation_year}</div>
+                  </div>
+                `).join('') : '<p class="text-muted small">No education listed.</p>'}
+              </div>
+
+              <!-- Skills -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-3">Skills</h6>
+                <div class="d-flex flex-wrap gap-2">
+                  ${p.skills && p.skills.length > 0 ? p.skills.map(s => `
+                    <span class="skill-pill-premium">
+                      ${s.skill_name} <small class="ms-1" style="opacity:0.7;">(${s.proficiency_level})</small>
+                    </span>
+                  `).join('') : '<p class="text-muted small">No skills listed.</p>'}
+                </div>
+              </div>
+
+              <!-- Projects -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-3">Key Projects</h6>
+                ${p.projects && p.projects.length > 0 ? p.projects.map(proj => `
+                  <div class="mb-3 p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                    <div class="fw-bold" style="font-size:0.9rem;">${proj.title}</div>
+                    <div class="text-primary mb-2" style="font-size:0.75rem; font-weight:600;">Tech: ${proj.technologies_used}</div>
+                    <p style="font-size:0.85rem; margin:0; line-height:1.4;">${proj.description}</p>
+                  </div>
+                `).join('') : '<p class="text-muted small">No projects listed.</p>'}
+              </div>
+
+              <!-- Certifications -->
+              <div class="mb-4">
+                <h6 class="fw-bold section-label-sm mb-3">Certifications & Licenses</h6>
+                <div class="row g-3">
+                  ${p.certifications && p.certifications.length > 0 ? p.certifications.map(cert => `
+                    <div class="col-md-6">
+                      <div class="p-3 rounded" style="background:#f0f9ff; border:1px solid #bae6fd;">
+                        <div class="fw-bold text-dark" style="font-size:0.85rem;"><i class="fas fa-certificate text-info me-2"></i>${cert.certification_name}</div>
+                        <div class="text-muted mt-1" style="font-size:0.75rem;">${cert.issuing_organization}</div>
+                        ${cert.certificate_path ? `
+                          <a href="/api/seeker/cert-document/${cert.id}" target="_blank"
+                             style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:0.75rem;font-weight:600;color:#0ea5e9;text-decoration:none;">
+                            <i class="fas fa-file-download"></i> View Document
+                          </a>
+                        ` : '<div style="font-size:0.72rem;color:#94a3b8;margin-top:6px;"><i class="fas fa-paperclip me-1"></i>No document uploaded</div>'}
+                      </div>
+                    </div>
+                  `).join('') : '<div class="col-12"><p class="text-muted small">No certifications listed.</p></div>'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        `;
+
+        modalBody.innerHTML = html;
+        
+        // Update Footer Resume Link
+        const resumeLink = document.getElementById('profResumeLink');
+        if (p.resume_path) {
+          resumeLink.style.display = 'inline-flex';
+          resumeLink.href = `/api/recruiter/resume/${p.user_id}`;
+          resumeLink.innerHTML = `<i class="fas fa-file-pdf me-2"></i>Download Resume`;
+        } else {
+          resumeLink.style.display = 'none';
+        }
+
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+        modalBody.innerHTML = '<div class="alert alert-danger">Error loading profile data.</div>';
       }
-      new bootstrap.Modal(document.getElementById('profileModal')).show();
     }
+
 
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase().trim();

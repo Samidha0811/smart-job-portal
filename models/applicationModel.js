@@ -84,6 +84,17 @@ const Application = {
             [applicationId, recruiterId]
         );
         return rows[0];
+    },
+
+    /**
+     * Find application by Job ID and Seeker ID (to prevent duplicates)
+     */
+    async findByJobAndSeeker(jobId, seekerId) {
+        const [rows] = await db.query(
+            'SELECT * FROM applications WHERE job_id = ? AND seeker_id = ?',
+            [jobId, seekerId]
+        );
+        return rows[0];
     }
 };
 
