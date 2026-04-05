@@ -1,5 +1,6 @@
 const Recruiter = require('../models/recruiterModel');
 const User = require('../models/userModel');
+const sendMail = require('../utils/sendMail');
 
 const adminController = {
     /**
@@ -37,19 +38,41 @@ const adminController = {
      * Approve recruiter
      */
     async approveRecruiter(req, res) {
-        const { userId } = req.body;
+        const userId = req.params.userId || req.body.userId;
         try {
             const user = await User.findById(userId);
-            if (!user || user.status !== 'pending') {
-                return res.status(400).send('Invalid request: Recruiter is not in pending status');
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'User not found' });
             }
 
+            // Update Status in both tables
             await User.updateStatus(userId, 'approved');
+            await User.updateVerificationStatus(userId, 1); // 1 = Approved
             await Recruiter.updateStatus(userId, 'approved');
-            res.redirect('/admin');
+
+            // Send Approval Email
+            try {
+                await sendMail(
+                    user.email,
+                    'Profile Approved',
+                    `
+                    <p>Hello <strong>${user.fullname}</strong>,</p>
+                    <p>Congratulations! Your recruiter profile has been <strong>approved</strong>.</p>
+                    <p>You can now login to your dashboard and start posting jobs to find the best talent.</p>
+                    <br>
+                    <a href="${process.env.APP_URL || ''}/login" style="background:#4a90e2;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;">Login to Dashboard</a>
+                    <br><br>
+                    <p>Best Regards,<br>Smart Job Portal Team</p>
+                    `
+                );
+            } catch (emailErr) {
+                console.error('Approval email failed:', emailErr.message);
+            }
+
+            return res.json({ success: true, message: 'Recruiter approved successfully!' });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Error approving user');
+            res.status(500).json({ success: false, message: 'Error approving recruiter' });
         }
     },
 
@@ -57,19 +80,40 @@ const adminController = {
      * Reject recruiter
      */
     async rejectRecruiter(req, res) {
-        const { userId } = req.body;
+        const userId = req.params.userId || req.body.userId;
         try {
             const user = await User.findById(userId);
-            if (!user || user.status !== 'pending') {
-                return res.status(400).send('Invalid request: Recruiter is not in pending status');
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'User not found' });
             }
 
+            // Update Status in both tables
             await User.updateStatus(userId, 'rejected');
+            await User.updateVerificationStatus(userId, 2); // 2 = Rejected
             await Recruiter.updateStatus(userId, 'rejected');
-            res.redirect('/admin');
+
+            // Send Rejection Email
+            try {
+                await sendMail(
+                    user.email,
+                    'Profile Rejected',
+                    `
+                    <p>Hello <strong>${user.fullname}</strong>,</p>
+                    <p>We regret to inform you that your recruiter profile was not approved at this time.</p>
+                    <p>Please ensure all your documents are correct and contact our support team for further clarification.</p>
+                    <p>Message: <strong>Your profile was not approved. Please contact support.</strong></p>
+                    <br>
+                    <p>Best Regards,<br>Smart Job Portal Team</p>
+                    `
+                );
+            } catch (emailErr) {
+                console.error('Rejection email failed:', emailErr.message);
+            }
+
+            return res.json({ success: true, message: 'Recruiter rejected successfully!' });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Error rejecting user');
+            res.status(500).json({ success: false, message: 'Error rejecting recruiter' });
         }
     }
 };

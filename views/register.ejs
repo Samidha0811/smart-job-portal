@@ -608,12 +608,21 @@
           const result = await response.json();
           if (response.ok) {
               if (result.redirectTo) {
-                  if (result.role === 'recruiter') {
-                      sessionStorage.setItem('pendingRecruiterId', result.userId);
+              if (result.role === 'recruiter') {
+                  sessionStorage.setItem('pendingRecruiterId', result.userId);
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Registration Successful!',
+                      text: result.message || 'Your profile is under review. Check your email for updates.',
+                      confirmButtonText: 'Fill Profile Details',
+                      confirmButtonColor: '#4f46e5',
+                      allowOutsideClick: false
+                  }).then(() => {
                       window.location.href = result.redirectTo;
-                  } else {
-                      window.location.href = result.redirectTo;
-                  }
+                  });
+              } else {
+                  window.location.href = result.redirectTo;
+              }
               } else {
                   document.body.innerHTML = `<div class="container py-5 text-center"><h1>Success!</h1><p>${result.message}</p><a href="/login" class="btn btn-primary">Go to Login</a></div>`;
               }

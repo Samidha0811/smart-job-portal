@@ -1,6 +1,7 @@
 const Job = require('../models/jobModel');
 const Application = require('../models/applicationModel');
 const Seeker = require('../models/seekerModel');
+const sendMail = require('../utils/sendMail');
 const path = require('path');
 const fs = require('fs');
 
@@ -63,6 +64,26 @@ const seekerController = {
                 resume_path: profile.resume_path,
                 match_score: matchScore
             });
+
+            // Send Confirmation Email to Seeker
+            try {
+                const job = await Job.getById(jobId);
+                if (job) {
+                    await sendMail(
+                        req.user.email,
+                        `Job Application Received: ${job.title}`,
+                        `
+                        <p>Hello <strong>${profile.full_name || req.user.email}</strong>,</p>
+                        <p>Congratulations! Your application for the position of <strong>${job.title}</strong> at <strong>${job.company_name}</strong> has been successfully submitted.</p>
+                        <p>The recruiter will review your profile and get in touch with you if there is a match.</p>
+                        <br>
+                        <p>Best Regards,<br>Smart Job Portal Team</p>
+                        `
+                    );
+                }
+            } catch (emailErr) {
+                console.error('Application confirmation email failed:', emailErr.message);
+            }
 
             res.json({ 
                 success: true, 

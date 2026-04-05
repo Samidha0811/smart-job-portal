@@ -95,6 +95,25 @@ const Application = {
             [jobId, seekerId]
         );
         return rows[0];
+    },
+
+    /**
+     * Get application details for email notification
+     */
+    async getDetailsForEmail(applicationId) {
+        const [rows] = await db.query(
+            `SELECT a.status, u.email as seeker_email, 
+                    COALESCE(jsp.full_name, u.fullname, u.email) as seeker_name, 
+                    j.title as job_title, rd.company_name 
+             FROM applications a 
+             JOIN users u ON a.seeker_id = u.id 
+             JOIN jobs j ON a.job_id = j.id 
+             JOIN recruiter_details rd ON j.recruiter_id = rd.user_id 
+             LEFT JOIN job_seeker_profiles jsp ON u.id = jsp.user_id
+             WHERE a.id = ?`,
+            [applicationId]
+        );
+        return rows[0];
     }
 };
 
