@@ -111,6 +111,17 @@ const apiService = {
     },
 
     /**
+     * Delete a job listing (Recruiter)
+     * @param {number} jobId 
+     */
+    async deleteJob(jobId) {
+        const response = await fetch(`/api/recruiter/jobs/${jobId}`, {
+            method: 'DELETE'
+        });
+        return await response.json();
+    },
+
+    /**
      * Update application status (Recruiter)
      * @param {number} applicationId 
      * @param {string} status 'shortlisted' | 'rejected' | 'pending'

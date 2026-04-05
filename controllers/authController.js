@@ -70,7 +70,7 @@ const authController = {
                 } else if (user.role === 'recruiter') {
                     return res.redirect('/recruiter/dashboard');
                 } else if (user.role === 'seeker') {
-                    return res.redirect('/seeker/dashboard');
+                    return res.redirect('/jobs');
                 } else {
                     return res.redirect('/');
                 }

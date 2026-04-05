@@ -28,6 +28,7 @@ router.get('/recommendations', seekerController.getRecommendations);
 // Application Routes
 router.post('/apply/:jobId', seekerController.applyToJob);
 router.get('/my-applications', seekerController.getMyApplications);
+router.get('/interview-prep-data/:jobId', seekerController.getInterviewPrepData);
 
 // Chatbot Route
 router.post('/chat', chatController.chat);

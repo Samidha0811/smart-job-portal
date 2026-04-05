@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %> — Smart Job Portal
+  </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .prep-header {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      padding: 3rem 0;
+      color: white;
+      border-radius: 0 0 2rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .prep-job-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .prep-job-company {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .prep-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .prep-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prep-card-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .prep-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-tech {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .icon-hr {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .icon-company {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .icon-tips {
+      background: rgba(139, 92, 246, 0.1);
+      color: #8b5cf6;
+    }
+
+    .question-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .question-item {
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      border-left: 4px solid var(--primary);
+      font-weight: 500;
+      color: var(--dark-2);
+    }
+
+    .question-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .tip-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .tip-item i {
+      color: #8b5cf6;
+      margin-top: 0.25rem;
+    }
+
+    #loadingOverlay {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .ai-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(5px);
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-premium">
+    <div class="container-fluid px-4">
+      <span class="navbar-brand">
+        <i class="fas fa-briefcase me-2" style="color:#818cf8;"></i>SmartJobPortal
+      </span>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="/jobs"><i class="fas fa-search me-1"></i>Browse Jobs</a></li>
+          <li class="nav-item"><a class="nav-link" href="/seeker/dashboard"><i class="fas fa-th-large me-1"></i>My
+              Applications</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="offcanvas"
+              data-bs-target="#profileOffcanvas"><i class="fas fa-user-circle me-1"></i>Profile</a></li>
+          <li class="nav-item ms-2">
+            <a class="btn-nav-danger" href="/api/auth/logout"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="prep-header">
+    <div class="container text-center">
+      <div class="ai-badge mb-3"><i class="fas fa-magic"></i> AI Powered Preparation</div>
+      <h1 class="prep-job-title">
+        <%= job.title %>
+      </h1>
+      <div class="prep-job-company"><i class="fas fa-building me-2"></i>
+        <%= job.company_name %>
+      </div>
+      <p style="opacity: 0.8; max-width: 600px; margin: 0 auto;">Personalized interview preparation guide based on the
+        job role, company profile, and required skills.</p>
+    </div>
+  </div>
+
+  <div class="container pb-5">
+
+    <div id="loadingOverlay">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+      <h4 class="fw-bold">Generating your personalized interview guide...</h4>
+      <p class="text-muted">Our AI is analyzing the job requirements and company profile.</p>
+    </div>
+
+    <div id="contentOverview" style="display: none;">
+      <div class="row">
+        <!-- Technical Questions -->
+        <div class="col-md-6">
+          <div class="prep-card">
+            <div class="prep-card-header">
+              <div class="prep-icon icon-tech"><i class="fas fa-laptop-code"></i></div>
+              <h3 class="prep-card-title">Technical Questions</h3>
+            </div>
+            <ul class="question-list" id="listTech">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- HR Questions -->
+        <div class="col-md-6">
+          <div class="prep-card">
+            <div class="prep-card-header">
+              <div class="prep-icon icon-hr"><i class="fas fa-users"></i></div>
+              <h3 class="prep-card-title">HR/Behavioral Questions</h3>
+            </div>
+            <ul class="question-list" id="listHR">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Company Questions -->
+        <div class="col-md-6">
+          <div class="prep-card">
+            <div class="prep-card-header">
+              <div class="prep-icon icon-company"><i class="fas fa-building"></i></div>
+              <h3 class="prep-card-title">Company-Specific</h3>
+            </div>
+            <ul class="question-list" id="listCompany">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Preparation Tips -->
+        <div class="col-md-6">
+          <div class="prep-card" style="height: 100%;">
+            <div class="prep-card-header">
+              <div class="prep-icon icon-tips"><i class="fas fa-lightbulb"></i></div>
+              <h3 class="prep-card-title">Preparation Tips</h3>
+            </div>
+            <div id="listTips">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="/seeker/dashboard" class="btn btn-primary fw-bold"
+          style="padding: 0.75rem 2rem; border-radius: 10px;">Go to Dashboard</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== PROFILE OFFCANVAS ===== -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas" aria-labelledby="profileOffcanvasLabel"
+    style="width: 350px;">
+    <div class="offcanvas-header bg-light border-bottom p-3">
+      <h5 class="offcanvas-title fw-bold" id="profileOffcanvasLabel" style="font-size:1.15rem;"><i
+          class="fas fa-user-circle me-2 text-primary"></i>My Profile</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-4 bg-light">
+      <div class="sidebar-card m-0 w-100 shadow-none border-0" style="background:transparent;">
+        <div class="sidebar-header pb-3 mb-3 border-bottom">
+          <div class="avatar-circle mx-auto mb-3" style="width:70px;height:70px;font-size:2rem;">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="sidebar-name fs-5">
+            <%= profile.full_name || user.fullname %>
+          </div>
+          <div class="sidebar-email text-muted">
+            <%= profile.email || user.email %>
+          </div>
+          <div class="mt-3">
+            <span class="status-badge status-approved px-3 py-2">
+              <i class="fas fa-check-circle" style="font-size:0.8rem;"></i> Verified Seeker
+            </span>
+          </div>
+        </div>
+        <div class="sidebar-body px-0">
+          <div class="sidebar-info-row flex-column gap-3 mb-4">
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-purple">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div>
+                <div
+                  style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                  Current Role</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.current_job_title || 'N/A' %>
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-cyan">
+                <i class="fas fa-history"></i>
+              </div>
+              <div>
+                <div
+                  style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                  Experience</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.total_experience_years || '0' %>y <%= profile.total_experience_months || '0' %>m
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-info-item w-100">
+              <div class="sidebar-info-icon icon-amber">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div>
+                <div
+                  style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.15rem;">
+                  Location</div>
+                <div style="font-size:0.95rem;color:var(--dark);font-weight:600;">
+                  <%= profile.location || 'Not set' %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 d-grid gap-2">
+            <a href="/seeker/profile-setup" class="btn btn-primary w-100 fw-bold py-2 btn-lg"
+              style="border-radius:10px;font-size:0.95rem;">
+              <i class="fas fa-user-edit me-2"></i>Edit My Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const jobId = "<%= job.id %>";
+
+      try {
+        const response = await fetch(`/api/seeker/interview-prep-data/${jobId}`);
+        const result = await response.json();
+
+        if (result.success) {
+          const data = result.data;
+
+          // Populate Tech
+          const listTech = document.getElementById('listTech');
+          listTech.innerHTML = data.technical.map(q => `<li class="question-item">${q}</li>`).join('');
+
+          // Populate HR
+          const listHR = document.getElementById('listHR');
+          listHR.innerHTML = data.hr.map(q => `<li class="question-item">${q}</li>`).join('');
+
+          // Populate Company
+          const listCompany = document.getElementById('listCompany');
+          listCompany.innerHTML = data.company.map(q => `<li class="question-item">${q}</li>`).join('');
+
+          // Populate Tips
+          const listTips = document.getElementById('listTips');
+          listTips.innerHTML = data.tips.map(t => `
+            <div class="tip-item">
+              <i class="fas fa-check-circle"></i>
+              <div style="font-weight: 500; color: var(--dark-2);">${t}</div>
+            </div>
+          `).join('');
+
+          // Hide loading, show content
+          document.getElementById('loadingOverlay').style.display = 'none';
+          document.getElementById('contentOverview').style.display = 'block';
+        } else {
+          showError('Failed to generate interview preparation content.');
+        }
+      } catch (err) {
+        showError('An error occurred while generating content.');
+      }
+    });
+
+    function showError(msg) {
+      document.getElementById('loadingOverlay').innerHTML = `
+        <div class="text-danger mb-3" style="font-size: 3rem;"><i class="fas fa-exclamation-circle"></i></div>
+        <h4 class="text-danger fw-bold">Oops! Something went wrong.</h4>
+        <p class="text-muted">${msg}</p>
+        <a href="/seeker/dashboard" class="btn btn-outline-primary mt-3">Back to Dashboard</a>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoutLinks = document.querySelectorAll('a[href="/api/auth/logout"]');
+      logoutLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          Swal.fire({
+            title: 'Confirm Logout',
+            text: 'Are you sure you want to sign out of your session?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-sign-out-alt me-2"></i>Logout Now'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = '/api/auth/logout';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

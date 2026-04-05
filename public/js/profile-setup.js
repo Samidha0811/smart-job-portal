@@ -65,7 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (!valid) {
-            alert('Please fill in all required fields marked with *');
+            Swal.fire({ 
+                icon: 'warning', 
+                title: 'Missing Information', 
+                text: 'Please fill in all required fields marked with *' 
+            });
         }
 
         return valid;
@@ -176,14 +180,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await res.json();
             if (result.success) {
                 // Success Toast/Modal
-                alert('Profile updated successfully!');
-                window.location.href = result.redirectTo;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated!',
+                    text: 'Your profile has been saved successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = result.redirectTo;
+                });
             } else {
-                alert('Update Failed: ' + (result.message || 'Unknown error'));
+                Swal.fire('Update Failed', result.message || 'Unknown error', 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('An error occurred while saving your profile.');
+            Swal.fire('Error', 'An error occurred while saving your profile.', 'error');
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = 'Save & Finish <i class="fas fa-rocket ms-2"></i>';

@@ -21,7 +21,7 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto align-items-center gap-1">
           <li class="nav-item"><a class="nav-link" href="/recruiter/dashboard"><i class="fas fa-th-large me-1"></i>Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/recruiter/applications"><i class="fas fa-users me-1"></i>Applications</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recruiter/applications"><i class="fas fa-users me-1"></i>All Applications</a></li>
           <li class="nav-item"><a class="nav-link" href="/recruiter/my-jobs"><i class="fas fa-list me-1"></i>Posted Jobs</a></li>
           <li class="nav-item ms-2">
             <a class="btn-nav-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
@@ -32,11 +32,18 @@
   </nav>
 
   <div class="dashboard-container">
+    <!-- Back Button -->
+    <div class="mb-3">
+        <a href="/recruiter/my-jobs" class="text-primary text-decoration-none fw-bold" style="font-size:0.9rem;">
+          <i class="fas fa-arrow-left me-1"></i> Back to Posted Jobs
+        </a>
+    </div>
+
     <!-- Page header + Filters + Search -->
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
       <div>
-        <h1 class="page-title" style="font-size:1.6rem; margin:0;">Applications Received</h1>
-        <p style="color:var(--gray);font-size:0.8rem;margin:0;">Manage and screen applicants</p>
+        <h1 class="page-title" style="font-size:1.6rem; margin:0;">Applicants for <%= job.title %></h1>
+        <p style="color:var(--gray);font-size:0.8rem;margin:0;">Job ID: <%= job.job_id %> | <%= job.location %></p>
       </div>
 
       <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -83,15 +90,14 @@
           <thead>
             <tr>
               <th>Applicant</th>
-              <th>Job Title</th>
-              <th>Applied</th>
+              <th>Applied Date</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="allApplicationsList">
+          <tbody id="jobApplicationsList">
             <tr>
-              <td colspan="5">
+              <td colspan="4">
                 <div class="loading-overlay">
                   <div class="spinner-border spinner-border-sm text-primary"></div>
                   <span>Loading applications...</span>
@@ -113,35 +119,7 @@
           <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <div class="row g-4">
-            <div class="col-md-4 text-center">
-              <div style="width:90px;height:90px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2.5rem;color:var(--primary);">
-                <i class="fas fa-user"></i>
-              </div>
-              <h5 class="fw-bold mb-1" id="profName"></h5>
-              <p class="text-muted" style="font-size:0.85rem;" id="profEmail"></p>
-            </div>
-            <div class="col-md-8">
-              <div class="mb-3">
-                <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray);margin-bottom:0.4rem;">About</div>
-                <p id="profBio" style="font-size:0.9rem;color:var(--dark-2);"></p>
-              </div>
-              <div class="row g-3 mb-3">
-                <div class="col-6">
-                  <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray);margin-bottom:0.4rem;">Education</div>
-                  <div style="font-size:0.875rem;color:var(--dark);" id="profEdu"></div>
-                </div>
-                <div class="col-6">
-                  <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray);margin-bottom:0.4rem;">Experience</div>
-                  <div style="font-size:0.875rem;color:var(--dark);"><span id="profExp"></span> Years</div>
-                </div>
-              </div>
-              <div>
-                <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray);margin-bottom:0.6rem;">Skills</div>
-                <div id="profSkills" class="d-flex flex-wrap gap-2"></div>
-              </div>
-            </div>
-          </div>
+            <!-- Modal content dynamically loaded here -->
         </div>
         <div class="modal-footer border-top d-flex justify-content-between align-items-center bg-white p-3">
           <a id="profResumeLink" href="#" target="_blank" class="btn btn-primary fw-bold px-4" style="border-radius:50px;">
@@ -175,7 +153,6 @@
     .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
     .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    /* Profile Modal Enhancement Styles */
     .section-label-sm {
       font-size: 0.72rem;
       font-weight: 700;
@@ -187,23 +164,11 @@
       padding-bottom: 4px;
       display: inline-block;
     }
-    .skill-pill-premium {
-      background: rgba(79, 70, 229, 0.08);
-      color: var(--primary);
-      border: 1px solid rgba(79, 70, 229, 0.15);
-      padding: 0.3rem 0.8rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-    .skill-pill-premium:hover {
-      background: var(--primary);
-      color: #fff;
-    }
   </style>
 
   <script>
+    const jobId = "<%= job.id %>";
+
     document.getElementById('logoutLink').addEventListener('click', function(e) {
       e.preventDefault();
       Swal.fire({
@@ -223,7 +188,7 @@
 
     window.addEventListener('pageshow', (e) => { if (e.persisted) window.location.reload(); });
 
-    // Filter button active state
+    // Filter logic
     document.querySelectorAll('input[name="statusFilter"]').forEach(radio => {
       radio.addEventListener('change', function() {
         document.querySelectorAll('.filter-btn').forEach(l => l.classList.remove('active'));
@@ -240,9 +205,7 @@
         text: message,
         icon: type,
         confirmButtonColor: '#4f46e5'
-      }).then(() => {
-        if (callback) callback();
-      });
+      }).then(() => { if (callback) callback(); });
     }
 
     function showConfirm(title, message, onConfirm) {
@@ -254,38 +217,34 @@
         confirmButtonColor: '#4f46e5',
         cancelButtonColor: '#64748b',
         confirmButtonText: 'Confirm'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          onConfirm();
-        }
-      });
+      }).then((result) => { if (result.isConfirmed) onConfirm(); });
     }
 
-    let allApplications = [];
+    let allApplicants = [];
 
-    async function loadApplications() {
+    async function loadApplicants() {
       try {
-        allApplications = await window.apiService.getRecruiterApplications();
-        renderApplications(allApplications);
+        allApplicants = await window.apiService.getJobApplicants(jobId);
+        renderApplicants(allApplicants);
       } catch (err) {
         console.error('Error:', err);
-        document.getElementById('allApplicationsList').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Error loading applications.</td></tr>';
+        document.getElementById('jobApplicationsList').innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Error loading applicants.</td></tr>';
       }
     }
 
-    function renderApplications(apps) {
-      const appList = document.getElementById('allApplicationsList');
+    function renderApplicants(apps) {
+      const list = document.getElementById('jobApplicationsList');
       if (!apps || apps.length === 0) {
-        appList.innerHTML = `<tr><td colspan="5">
+        list.innerHTML = `<tr><td colspan="4">
           <div class="empty-state">
             <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
-            <div class="empty-state-title">No Applications Found</div>
-            <div class="empty-state-text">Applications will appear here once job seekers apply to your postings.</div>
+            <div class="empty-state-title">No Applicants Yet</div>
+            <div class="empty-state-text">No one has applied for this job listing yet.</div>
           </div>
         </td></tr>`;
         return;
       }
-      appList.innerHTML = apps.map(app => `
+      list.innerHTML = apps.map(app => `
         <tr>
           <td>
             <div class="d-flex align-items-center gap-3">
@@ -298,7 +257,6 @@
               </div>
             </div>
           </td>
-          <td style="font-size:0.875rem;font-weight:500;">${app.job_title}</td>
           <td style="font-size:0.82rem;color:var(--gray);">${new Date(app.applied_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
           <td><span class="${getStatusPill(app.status)}"><span class="pill-dot"></span>${capitalize(app.status)}</span></td>
           <td>
@@ -330,17 +288,16 @@
     }
 
     async function viewProfile(appId) {
-      const app = allApplications.find(a => a.id === appId);
+      const app = allApplicants.find(a => a.id === appId);
       if (!app) return;
       
       const modalEl = document.getElementById('profileModal');
       const modalBody = modalEl.querySelector('.modal-body');
       
-      // Clear previous info or show loading
       modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Fetching full profile...</p></div>';
       new bootstrap.Modal(modalEl).show();
 
-      try {        // Fetch full profile from the new API
+      try {
         const response = await fetch(`/api/recruiter/seeker-profile/${app.seeker_id}`);
         const data = await response.json();
         
@@ -350,11 +307,8 @@
         }
 
         const p = data.profile;
-
-        // Construct Rich Modal Content
         let html = `
           <div class="row g-4">
-            <!-- Left Sidebar: Basic Info -->
             <div class="col-md-4 border-end">
               <div class="text-center mb-4">
                 <div style="width:100px;height:100px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:3rem;color:var(--primary);">
@@ -368,7 +322,6 @@
                   <div style="font-size:0.85rem;"><i class="fas fa-map-marker-alt me-2 text-primary"></i>${p.location || 'N/A'}</div>
                 </div>
               </div>
-
               <div class="px-3">
                 <h6 class="fw-bold mb-2" style="font-size:0.8rem; text-transform:uppercase; color:var(--gray);">Preferences</h6>
                 <div style="font-size:0.85rem;" class="mb-2"><strong>Role:</strong> ${p.desired_role || 'N/A'}</div>
@@ -377,10 +330,7 @@
                 <div style="font-size:0.85rem;"><strong>Salary:</strong> ${p.expected_salary || 'N/A'}</div>
               </div>
             </div>
-
-            <!-- Right Content: Details -->
             <div class="col-md-8" style="max-height: 600px; overflow-y: auto;">
-              <!-- Experience -->
               <div class="mb-4">
                 <h6 class="fw-bold section-label-sm mb-3">Work Experience</h6>
                 ${p.experience && p.experience.length > 0 ? p.experience.map(exp => `
@@ -394,8 +344,6 @@
                   </div>
                 `).join('') : '<p class="text-muted small">No experience listed.</p>'}
               </div>
-
-              <!-- Education -->
               <div class="mb-4">
                 <h6 class="fw-bold section-label-sm mb-3">Education</h6>
                 ${p.education && p.education.length > 0 ? p.education.map(edu => `
@@ -405,8 +353,6 @@
                   </div>
                 `).join('') : '<p class="text-muted small">No education listed.</p>'}
               </div>
-
-              <!-- Projects -->
               <div class="mb-4">
                 <h6 class="fw-bold section-label-sm mb-3">Key Projects</h6>
                 ${p.projects && p.projects.length > 0 ? p.projects.map(proj => `
@@ -420,10 +366,7 @@
             </div>
           </div>
         `;
-
         modalBody.innerHTML = html;
-        
-        // Update Footer Resume Link
         const resumeLink = document.getElementById('profResumeLink');
         if (p.resume_path) {
           resumeLink.style.display = 'inline-flex';
@@ -432,32 +375,28 @@
         } else {
           resumeLink.style.display = 'none';
         }
-
       } catch (err) {
-        console.error('Error fetching profile:', err);
-        modalBody.innerHTML = '<div class="alert alert-danger">Error loading profile data.</div>';
+        console.error('Error:', err);
+        modalBody.innerHTML = '<div class="alert alert-danger">Error loading profile.</div>';
       }
     }
-
 
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase().trim();
       const statusFilter = document.querySelector('input[name="statusFilter"]:checked').value;
-      const filtered = allApplications.filter(app => {
-        const matchSearch = app.seeker_name.toLowerCase().includes(query) ||
-                            app.seeker_email.toLowerCase().includes(query) ||
-                            app.job_title.toLowerCase().includes(query);
+      const filtered = allApplicants.filter(app => {
+        const matchSearch = app.seeker_name.toLowerCase().includes(query) || app.seeker_email.toLowerCase().includes(query);
         const matchStatus = statusFilter === 'all' || app.status === statusFilter;
         return matchSearch && matchStatus;
       });
-      renderApplications(filtered);
+      renderApplicants(filtered);
     }
 
     async function updateStatus(appId, status) {
       showConfirm('Confirm Action', `Mark this applicant as "${status}"?`, async () => {
         try {
           const result = await window.apiService.updateApplicationStatus(appId, status);
-          if (result.success) { showNotification('Updated!', result.message, 'success'); loadApplications(); }
+          if (result.success) { showNotification('Updated!', result.message, 'success'); loadApplicants(); }
           else { showNotification('Error', result.message, 'error'); }
         } catch (err) { showNotification('Error', 'An error occurred.', 'error'); }
       });
@@ -469,7 +408,7 @@
     }
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-    loadApplications();
+    loadApplicants();
   </script>
 </body>
 </html>
