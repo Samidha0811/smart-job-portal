@@ -3,6 +3,7 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 const Seeker = require('../models/seekerModel');
+const Job = require('../models/jobModel');
 const seekerController = require('../controllers/seekerController');
 
 // General Page Routes
@@ -45,6 +46,23 @@ router.get('/recruiter/applications', auth(['recruiter']), (req, res) => {
 
 router.get('/recruiter/my-jobs', auth(['recruiter']), (req, res) => {
     res.render('recruiter-jobs', { title: 'Posted Jobs' });
+});
+
+router.get('/recruiter/job-applicants/:jobId', auth(['recruiter']), async (req, res) => {
+    try {
+        const jobId = req.params.jobId;
+        const job = await Job.getById(jobId);
+        if (!job) {
+            return res.status(404).send('Job not found');
+        }
+        res.render('recruiter-job-applicants', { 
+            title: `Applicants - ${job.title}`, 
+            job 
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // Seeker Pages (Protected)

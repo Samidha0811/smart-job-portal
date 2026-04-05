@@ -159,7 +159,12 @@
         try {
           const applicants = await window.apiService.getJobApplicants(job.id);
           const el = document.getElementById(`appCount-${job.id}`);
-          if (el) el.innerHTML = `<span class="status-badge ${applicants.length > 0 ? 'status-approved' : 'status-checking'}">${applicants.length} Applicant${applicants.length !== 1 ? 's' : ''}</span>`;
+          if (el) el.innerHTML = `
+            <a href="/recruiter/job-applicants/${job.id}" style="text-decoration:none;">
+              <span class="status-badge ${applicants.length > 0 ? 'status-approved' : 'status-checking'}">
+                ${applicants.length} Applicant${applicants.length !== 1 ? 's' : ''}
+              </span>
+            </a>`;
         } catch (e) {}
       });
     }
