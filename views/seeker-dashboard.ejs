@@ -40,13 +40,16 @@
 
   <div class="dashboard-container px-3 py-3 px-md-4">
     <!-- Welcome Header -->
-    <div class="dashboard-welcome-banner mb-3 p-3 px-4" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%); border-radius: 16px; border: 1px solid rgba(79, 70, 229, 0.15);">
+    <div class="dashboard-welcome-banner mb-3 p-3 px-4"
+      style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%); border-radius: 16px; border: 1px solid rgba(79, 70, 229, 0.15);">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
-          <h1 class="fw-bold mb-1" style="font-size:1.4rem; color: var(--dark-2);">Welcome back, <%= profile.full_name || user.fullname %>! 👋</h1>
+          <h1 class="fw-bold mb-1" style="font-size:1.4rem; color: var(--dark-2);">Welcome back, <%= profile.full_name
+              || user.fullname %>! 👋</h1>
           <p class="mb-0 text-muted" style="font-size:0.85rem;">Here is what's happening with your job search today.</p>
         </div>
-        <a href="/jobs" class="btn btn-primary-premium py-2 px-3" style="font-size: 0.85rem; border-radius: 8px;"><i class="fas fa-search me-2"></i>Find Jobs</a>
+        <a href="/jobs" class="btn btn-primary-premium py-2 px-3" style="font-size: 0.85rem; border-radius: 8px;"><i
+            class="fas fa-search me-2"></i>Find Jobs</a>
       </div>
     </div>
 
@@ -105,7 +108,8 @@
         <!-- Applications Table -->
         <div class="main-card border-0 shadow-sm" style="border-radius: 16px;">
           <div class="main-card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center">
-            <h2 class="page-title" style="font-size:1.1rem; margin:0;"><i class="fas fa-list-ul me-2 text-primary"></i>My Applications</h2>
+            <h2 class="page-title" style="font-size:1.1rem; margin:0;"><i
+                class="fas fa-list-ul me-2 text-primary"></i>My Applications</h2>
             <span class="status-badge status-checking" id="appCount" style="padding: 0.3rem 0.75rem;">Loading...</span>
           </div>
           <div class="table-responsive bg-white" style="border-radius: 0 0 16px 16px;">
@@ -251,40 +255,29 @@
     </div>
   </div>
 
-  <!-- ===== LOGOUT MODAL ===== -->
-  <div class="modal fade modal-premium" id="logoutModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header header-danger border-0">
-          <h5 class="modal-title fw-bold text-white"><i class="fas fa-sign-out-alt me-2"></i>Confirm Logout</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body text-center py-4">
-          <div
-            style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <h5 class="fw-bold mb-2">Are you sure?</h5>
-          <p class="text-muted mb-0" style="font-size:0.9rem;">You will be signed out of your session.</p>
-        </div>
-        <div class="modal-footer justify-content-center border-0 bg-white pb-4">
-          <button class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">Cancel</button>
-          <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout Now
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/js/apiService.js"></script>
   <script src="/js/chatbot.js?v=1.1"></script>
   <script>
     // Logout
     document.getElementById('logoutLink').addEventListener('click', function (e) {
       e.preventDefault();
-      new bootstrap.Modal(document.getElementById('logoutModal')).show();
+      Swal.fire({
+        title: 'Confirm Logout',
+        text: 'Are you sure you want to sign out of your session?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-sign-out-alt me-2"></i>Logout Now'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/api/auth/logout';
+        }
+      });
     });
 
     // BFCache prevention

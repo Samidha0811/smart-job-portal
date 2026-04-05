@@ -43,6 +43,11 @@ const seekerController = {
                 return res.status(403).json({ success: false, message: 'Please complete your profile first.' });
             }
 
+            // Check if resume is uploaded
+            if (!profile.resume_path) {
+                return res.status(400).json({ success: false, message: 'Please upload a resume in your profile before applying.' });
+            }
+
             // Check if already applied
             const existing = await Application.findByJobAndSeeker(jobId, seekerId);
             if (existing) {
@@ -55,7 +60,7 @@ const seekerController = {
             await Application.create({
                 job_id: jobId,
                 seeker_id: seekerId,
-                resume_path: profile.resume_path || 'UploadedResume.pdf',
+                resume_path: profile.resume_path,
                 match_score: matchScore
             });
 
