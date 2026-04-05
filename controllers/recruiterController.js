@@ -3,6 +3,7 @@ const Job = require('../models/jobModel');
 const Application = require('../models/applicationModel');
 const Seeker = require('../models/seekerModel');
 const User = require('../models/userModel');
+const sendMail = require('../utils/sendMail');
 const db = require('../config/db');
 
 const recruiterController = {
@@ -210,6 +211,27 @@ const recruiterController = {
             }
 
             await Application.updateStatus(applicationId, status);
+
+            // Send Email Notification to Seeker
+            try {
+                const appDetails = await Application.getDetailsForEmail(applicationId);
+                if (appDetails) {
+                    await sendMail(
+                        appDetails.seeker_email,
+                        `Application Status Update: ${appDetails.job_title}`,
+                        `
+                        <p>Hello <strong>${appDetails.seeker_name}</strong>,</p>
+                        <p>The status of your application for <strong>${appDetails.job_title}</strong> at <strong>${appDetails.company_name}</strong> has been updated to: <strong>${status.toUpperCase()}</strong>.</p>
+                        <p>Please log in to your dashboard to see more details.</p>
+                        <br>
+                        <p>Best Regards,<br>Smart Job Portal Team</p>
+                        `
+                    );
+                }
+            } catch (emailErr) {
+                console.error('Status update email failed:', emailErr.message);
+            }
+
             res.json({ success: true, message: `Application marked as ${status}!` });
         } catch (err) {
             console.error(err);

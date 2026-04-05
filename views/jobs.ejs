@@ -582,7 +582,7 @@
               <div class="d-flex flex-wrap gap-1 mb-2" style="max-height: 20px; overflow: hidden;">
                 ${job.matched_skills.slice(0,3).map(s => `<span class="matched-skill-tag" style="font-size:0.6rem; padding:1px 5px; border-radius:4px; border:1px solid #e2e8f0;">${s}</span>`).join('')}
               </div>
-              <button onclick="applyToJob(${job.job_id})" id="applyBtn-${job.job_id}" class="btn btn-primary btn-sm w-100 fw-bold py-1" style="font-size:0.8rem; border-radius:6px;">Apply</button>
+              <button onclick="applyToJob(${job.job_id})" id="applyBtn-rec-${job.job_id}" class="btn btn-primary btn-sm w-100 fw-bold py-1" style="font-size:0.8rem; border-radius:6px;">Apply</button>
             </div>
           `).join('');
         }
@@ -672,7 +672,7 @@
             ? `<button class="btn btn-sm w-100 text-center" style="padding:0.35rem 0.6rem; font-size:0.75rem; font-weight:700; border-radius:6px; background:rgba(16,185,129,0.1); color:#059669; border:1px solid rgba(16,185,129,0.2); cursor:default;" disabled>
                          <i class="fas fa-check"></i> Applied
                        </button>`
-            : `<button onclick="applyToJob(${job.id})" id="applyBtn-${job.id}" class="btn btn-primary btn-sm w-100 text-center" style="padding:0.35rem 0.6rem; font-size:0.75rem; font-weight:700; border-radius:6px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); border:none;">
+            : `<button onclick="applyToJob(${job.id})" id="applyBtn-grid-${job.id}" class="btn btn-primary btn-sm w-100 text-center" style="padding:0.35rem 0.6rem; font-size:0.75rem; font-weight:700; border-radius:6px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); border:none;">
                          <i class="fas fa-paper-plane me-1"></i> Apply
                        </button>`
           : currentUser
@@ -687,18 +687,31 @@
     }
 
     async function applyToJob(jobId) {
-      const btn = document.getElementById(`applyBtn-${jobId}`);
-      if (!btn) return;
-      const orig = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+      // Find all apply buttons (in recommendations and main grid)
+      const buttons = [
+        document.getElementById(`applyBtn-rec-${jobId}`),
+        document.getElementById(`applyBtn-grid-${jobId}`)
+      ].filter(btn => btn !== null);
+      
+      if (buttons.length === 0) return;
+      
+      const originalContents = buttons.map(btn => btn.innerHTML);
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>...';
+      });
+
       try {
         const result = await window.apiService.applyToJob(jobId);
         if (result.success) {
-          btn.style.background = 'rgba(16,185,129,0.1)';
-          btn.style.color = '#059669';
-          btn.style.border = '1.5px solid rgba(16,185,129,0.2)';
-          btn.innerHTML = '<i class="fas fa-check me-2"></i>Applied Successfully!';
+          buttons.forEach(btn => {
+            btn.style.background = 'rgba(16,185,129,0.1)';
+            btn.style.color = '#059669';
+            btn.style.border = '1.5px solid rgba(16,185,129,0.2)';
+            btn.innerHTML = '<i class="fas fa-check me-1"></i>Applied';
+            btn.disabled = true;
+            btn.style.cursor = 'default';
+          });
           
           Swal.fire({
             icon: 'success',
@@ -712,8 +725,10 @@
             }
           });
         } else {
-          btn.disabled = false;
-          btn.innerHTML = orig;
+          buttons.forEach((btn, i) => {
+            btn.disabled = false;
+            btn.innerHTML = originalContents[i];
+          });
           if (result.message === 'Please complete your profile first.') {
             Swal.fire({
               icon: 'warning',
@@ -732,8 +747,10 @@
           }
         }
       } catch (err) {
-        btn.disabled = false;
-        btn.innerHTML = orig;
+        buttons.forEach((btn, i) => {
+          btn.disabled = false;
+          btn.innerHTML = originalContents[i];
+        });
         Swal.fire('Error', 'An error occurred.', 'error');
       }
     }
