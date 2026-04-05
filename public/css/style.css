@@ -1,5 +1,5 @@
 /* ========================================
-   SMART JOB PORTAL - PREMIUM DESIGN SYSTEM
+   JOBLIFIES - PREMIUM DESIGN SYSTEM
    ======================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -36,6 +36,59 @@
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.10);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== BRANDING: JOBLIFIES ===== */
+.navbar-brand {
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-circle-brand {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.brand-text-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    line-height: 1;
+}
+
+.brand-main {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.brand-main .text-cyan {
+    color: #22d3ee;
+}
+
+.brand-sub {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+/* Adjustments for footers or other brand usages */
+.footer-brand .brand-main {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* ---- Base ---- */
