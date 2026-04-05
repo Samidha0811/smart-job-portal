@@ -204,11 +204,8 @@
   </nav>
 
   <!-- ===== PAGE HEADER ===== -->
-  <div style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%);padding:3.5rem 0 3rem;">
+  <div style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%);padding:1.5rem 0 1.5rem;">
     <div class="container text-center">
-      <div class="hero-badge mb-3" style="display:inline-flex;margin:0 auto;">
-        <span class="dot"></span> <span id="jobCountBadge">Explore Opportunities</span>
-      </div>
       <h1 style="color:#fff;font-size:2.25rem;font-weight:800;letter-spacing:-1px;margin-bottom:0.75rem;">
         Discover Your <span
           style="background:linear-gradient(135deg,#a5b4fc,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Next
@@ -519,7 +516,6 @@
         }
         allJobs = await res.json();
         const badge = document.getElementById('jobCountBadge');
-        if (badge) badge.textContent = `${allJobs.length} Jobs Available`;
         populateDynamicFilters();
         renderJobs(allJobs);
       } catch (err) {

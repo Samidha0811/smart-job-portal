@@ -38,88 +38,92 @@
     </div>
   </nav>
 
-  <div class="dashboard-container">
-    <!-- Page Header -->
-    <div class="d-flex align-items-center gap-3 mb-4">
+  <div class="dashboard-container px-3 py-3 px-md-4">
+    <!-- Welcome Header -->
+    <div class="dashboard-welcome-banner mb-3 p-3 px-4" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%); border-radius: 16px; border: 1px solid rgba(79, 70, 229, 0.15);">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+          <h1 class="fw-bold mb-1" style="font-size:1.4rem; color: var(--dark-2);">Welcome back, <%= profile.full_name || user.fullname %>! 👋</h1>
+          <p class="mb-0 text-muted" style="font-size:0.85rem;">Here is what's happening with your job search today.</p>
+        </div>
+        <a href="/jobs" class="btn btn-primary-premium py-2 px-3" style="font-size: 0.85rem; border-radius: 8px;"><i class="fas fa-search me-2"></i>Find Jobs</a>
+      </div>
     </div>
 
-    <div class="row g-4">
-      <!-- ===== APPLICATIONS ===== -->
-      <div class="col-lg-12">
+    <div class="row g-3">
+      <div class="col-12">
         <!-- Stats Row -->
-        <div class="row g-3 mb-4" id="statsRow">
+        <div class="row g-2 mb-3" id="statsRow">
           <div class="col-6 col-md-3">
-            <div
-              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
-              <div style="font-size:1.75rem;font-weight:800;color:var(--dark);" id="statTotal">—</div>
-              <div
-                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                Total Applied</div>
+            <div class="stat-card premium-stat-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-value" id="statTotal">—</div>
+                  <div class="stat-label">Total Applied</div>
+                </div>
+                <div class="stat-icon icon-purple"><i class="fas fa-paper-plane"></i></div>
+              </div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div
-              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
-              <div style="font-size:1.75rem;font-weight:800;color:#059669;" id="statShortlisted">—</div>
-              <div
-                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                Shortlisted</div>
+            <div class="stat-card premium-stat-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-value text-success" id="statShortlisted">—</div>
+                  <div class="stat-label">Shortlisted</div>
+                </div>
+                <div class="stat-icon icon-emerald"><i class="fas fa-check-circle"></i></div>
+              </div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div
-              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
-              <div style="font-size:1.75rem;font-weight:800;color:#2563eb;" id="statProcessing">—</div>
-              <div
-                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                In Process</div>
+            <div class="stat-card premium-stat-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-value text-primary" id="statProcessing">—</div>
+                  <div class="stat-label">In Process</div>
+                </div>
+                <div class="stat-icon icon-cyan"><i class="fas fa-hourglass-half"></i></div>
+              </div>
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div
-              style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;">
-              <div style="font-size:1.75rem;font-weight:800;color:#b45309;" id="statPending">—</div>
-              <div
-                style="font-size:0.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                Pending</div>
+            <div class="stat-card premium-stat-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-value text-warning" id="statPending">—</div>
+                  <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-icon icon-amber"><i class="fas fa-clock"></i></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== RECOMMENDED JOBS ===== -->
-        <div class="mb-5" id="recommendationSection" style="display:none;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <h2 class="page-title" style="font-size:1.25rem;margin:0;">🔥 Recommended Jobs For You</h2>
-            <a href="/jobs" class="text-primary fw-bold" style="font-size:0.85rem;text-decoration:none;">View All <i
-                class="fas fa-arrow-right ms-1"></i></a>
-          </div>
-          <div id="recommendationList" class="row g-3 flex-nowrap overflow-auto pb-2" style="scrollbar-width: thin;">
-            <!-- Recommended jobs will be injected here -->
-          </div>
-        </div>
+
 
         <!-- Applications Table -->
-        <div class="main-card">
-          <div class="main-card-header">
-            <h2 class="page-title" style="font-size:1.15rem;">My Applications</h2>
-            <span class="status-badge status-checking" id="appCount">Loading...</span>
+        <div class="main-card border-0 shadow-sm" style="border-radius: 16px;">
+          <div class="main-card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center">
+            <h2 class="page-title" style="font-size:1.1rem; margin:0;"><i class="fas fa-list-ul me-2 text-primary"></i>My Applications</h2>
+            <span class="status-badge status-checking" id="appCount" style="padding: 0.3rem 0.75rem;">Loading...</span>
           </div>
-          <div class="table-responsive">
-            <table class="app-table w-100">
-              <thead>
+          <div class="table-responsive bg-white" style="border-radius: 0 0 16px 16px;">
+            <table class="app-table table-hover mb-0 w-100">
+              <thead class="bg-light">
                 <tr>
-                  <th>Job Title</th>
-                  <th>Company</th>
-                  <th>Applied</th>
-                  <th>Status</th>
+                  <th style="font-size:0.75rem; padding: 0.75rem 1rem;">Job Details</th>
+                  <th style="font-size:0.75rem; padding: 0.75rem 1rem;">Company</th>
+                  <th style="font-size:0.75rem; padding: 0.75rem 1rem;">Applied Date</th>
+                  <th style="font-size:0.75rem; padding: 0.75rem 1rem;">Status</th>
                 </tr>
               </thead>
               <tbody id="applicationList">
                 <tr>
-                  <td colspan="4">
-                    <div class="loading-overlay">
-                      <div class="spinner-border spinner-border-sm text-primary"></div>
-                      <span>Loading applications...</span>
+                  <td colspan="4" class="text-center py-4">
+                    <div class="loading-overlay d-flex flex-column align-items-center justify-content-center">
+                      <div class="spinner-border text-primary mb-2" role="status"></div>
+                      <span class="text-muted" style="font-size:0.85rem;">Loading applications...</span>
                     </div>
                   </td>
                 </tr>
@@ -321,20 +325,20 @@
         }
 
         appList.innerHTML = apps.map(app => `
-          <tr>
-            <td>
+          <tr style="cursor: pointer; transition: background 0.2s;">
+            <td style="padding: 0.85rem 1rem;">
               <div class="fw-bold" style="color:var(--dark);font-size:0.9rem;">${app.job_title}</div>
             </td>
-            <td>
+            <td style="padding: 0.85rem 1rem;">
               <div class="d-flex align-items-center gap-2">
-                <div style="width:28px;height:28px;background:rgba(79,70,229,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:0.75rem;flex-shrink:0;">
+                <div style="width:24px;height:24px;background:rgba(79,70,229,0.08);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:0.65rem;flex-shrink:0;">
                   <i class="fas fa-building"></i>
                 </div>
-                <span style="font-size:0.875rem;">${app.company_name}</span>
+                <span style="font-size:0.85rem;">${app.company_name}</span>
               </div>
             </td>
-            <td style="font-size:0.85rem;color:var(--gray);">${new Date(app.applied_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-            <td><span class="${getStatusPill(app.status)}">${getStatusDot(app.status)}${capitalize(app.status)}</span></td>
+            <td style="font-size:0.8rem;color:var(--gray); padding: 0.85rem 1rem;">${new Date(app.applied_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+            <td style="padding: 0.85rem 1rem;"><span class="${getStatusPill(app.status)} px-2 py-1" style="font-size:0.7rem; border-radius:12px;">${getStatusDot(app.status)}${capitalize(app.status)}</span></td>
           </tr>
         `).join('');
 
@@ -344,42 +348,7 @@
           <tr><td colspan="4" class="text-center text-danger py-4">Error loading applications.</td></tr>`;
       }
 
-      // Fetch Recommendations
-      try {
-        const recResponse = await fetch('/api/recommendations');
-        const recs = await recResponse.json();
 
-        const recSection = document.getElementById('recommendationSection');
-        const recList = document.getElementById('recommendationList');
-
-        if (recs && recs.length > 0) {
-          recSection.style.display = 'block';
-          recList.innerHTML = recs.map(job => `
-            <div class="col-12 col-md-6 col-lg-4" style="flex: 0 0 auto;">
-              <div class="job-card-premium h-100 p-3" style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); transition:all 0.3s ease; position:relative; overflow:hidden;">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <div class="match-badge" style="background:rgba(129,140,248,0.1); color:var(--primary); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:700;">
-                    <i class="fas fa-bolt me-1"></i> ${job.match_score}% Match
-                  </div>
-                  <div style="font-size:0.85rem; font-weight:600; color:var(--dark);">${job.salary || 'Competitive'}</div>
-                </div>
-                <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</h3>
-                <div class="d-flex align-items-center gap-2 mb-3" style="font-size:0.85rem; color:var(--gray);">
-                   <i class="fas fa-building" style="font-size:0.75rem;"></i> ${job.company}
-                   <span class="mx-1">•</span>
-                   <i class="fas fa-map-marker-alt" style="font-size:0.75rem;"></i> ${job.location}
-                </div>
-                <div class="matched-skills mb-3 d-flex flex-wrap gap-1">
-                  ${job.matched_skills.map(skill => `<span style="font-size:0.65rem; background:#f3f4f6; color:#4b5563; padding:2px 8px; border-radius:4px; font-weight:500;">${skill}</span>`).join('')}
-                </div>
-                <button onclick="applyNow(${job.job_id})" class="btn btn-primary w-100 py-2 fw-bold" style="border-radius:10px; font-size:0.85rem;">Apply Now</button>
-              </div>
-            </div>
-          `).join('');
-        }
-      } catch (err) {
-        console.error('Error fetching recommendations:', err);
-      }
     });
 
     async function applyNow(jobId) {
