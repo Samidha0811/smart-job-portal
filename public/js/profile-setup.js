@@ -49,26 +49,70 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
     });
 
-    // Simple validation per step
+    // --- REAL-TIME VALIDATION ---
+    const validationMap = {
+      'full_name': { validate: (val) => Validator.isValidName(val), message: 'Please enter a valid full name' },
+      'email': { validate: (val) => Validator.isValidEmail(val), message: 'Please enter a valid email address' },
+      'phone': { validate: (val) => Validator.isValidMobile(val), message: 'Please enter a valid 10-digit phone number' }
+    };
+
+    /**
+     * Centralized validation for a single field
+     */
+    function validateInput(input) {
+      const name = input.name;
+      const val = input.value;
+      const rule = validationMap[name];
+
+      if (rule) {
+        if (!rule.validate(val)) {
+          Validator.showError(input, rule.message);
+          return false;
+        } else {
+          Validator.clearError(input);
+          return true;
+        }
+      } else if (input.hasAttribute('required')) {
+        if (!val.trim()) {
+          Validator.showError(input, 'This field is required');
+          return false;
+        } else {
+          Validator.clearError(input);
+          return true;
+        }
+      }
+      return true;
+    }
+
+    // Attach listeners to all inputs in the form
+    form.querySelectorAll('input, select, textarea').forEach(input => {
+      input.addEventListener('blur', () => validateInput(input));
+      input.addEventListener('input', () => {
+        if (input.classList.contains('is-invalid')) {
+          validateInput(input);
+        }
+      });
+    });
+
     const validateStep = (step) => {
         const activeSection = sections[step];
-        const requiredInputs = activeSection.querySelectorAll('[required]');
+        const inputs = activeSection.querySelectorAll('input, select, textarea');
         let valid = true;
+        let firstInvalid = null;
 
-        requiredInputs.forEach(input => {
-            if (!input.value.trim()) {
-                input.classList.add('is-invalid');
+        inputs.forEach(input => {
+            if (!validateInput(input)) {
                 valid = false;
-            } else {
-                input.classList.remove('is-invalid');
+                if (!firstInvalid) firstInvalid = input;
             }
         });
 
-        if (!valid) {
+        if (!valid && firstInvalid) {
+            firstInvalid.focus();
             Swal.fire({ 
                 icon: 'warning', 
-                title: 'Missing Information', 
-                text: 'Please fill in all required fields marked with *' 
+                title: 'Validation Error', 
+                text: 'Please correct the highlighed fields before proceeding.' 
             });
         }
 

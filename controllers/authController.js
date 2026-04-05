@@ -14,6 +14,14 @@ const authController = {
         }
 
         try {
+            // Check if email already exists
+            const existingUser = await User.findByEmail(email);
+            if (existingUser) {
+                return res.status(400).json({ 
+                    message: `Email '${email}' is already registered. Please go to login.` 
+                });
+            }
+
             const hashedPassword = await bcrypt.hash(password, 10);
             const status = (role === 'recruiter') ? 'guest' : 'active';
             
@@ -36,9 +44,6 @@ const authController = {
             });
         } catch (err) {
             console.error(err);
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ message: 'Email already registered.' });
-            }
             res.status(500).json({ message: 'Something went wrong with the database.' });
         }
     },

@@ -422,9 +422,92 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/validation.js"></script>
   <script>
+    // --- REAL-TIME VALIDATION MAPPING ---
+    const validationMap = {
+      'company_name': { validate: (val) => Validator.isRequired(val), message: 'Company name is required' },
+      'company_email': { validate: (val) => Validator.isValidEmail(val), message: 'Please enter a valid company email' },
+      'company_website': { validate: (val) => !val || Validator.isValidUrl(val), message: 'Please enter a valid website URL (starting with http/https)' },
+      'address_line': { validate: (val) => Validator.isRequired(val), message: 'Address is required' },
+      'city': { validate: (val) => Validator.isRequired(val), message: 'City is required' },
+      'state': { validate: (val) => Validator.isRequired(val), message: 'State is required' },
+      'country': { validate: (val) => Validator.isRequired(val), message: 'Country is required' },
+      'pincode': { validate: (val) => Validator.isValidPincode(val), message: 'Please enter a valid 6-digit pincode' },
+      'full_name': { validate: (val) => Validator.isValidName(val), message: 'Please enter a valid full name (letters only)' },
+      'contact_number': { validate: (val) => Validator.isValidMobile(val), message: 'Please enter a valid 10-digit mobile number' },
+      'designation': { validate: (val) => Validator.isRequired(val), message: 'Designation is required' },
+      'registration_cert_no': { validate: (val) => Validator.isRequired(val), message: 'Certificate number is required' },
+      'gst_number': { validate: (val) => !val || Validator.isValidGST(val), message: 'Please enter a valid GST number' },
+      'pan_number': { validate: (val) => Validator.isValidPAN(val), message: 'Please enter a valid PAN number' },
+      'linkedin_profile': { validate: (val) => !val || Validator.isValidUrl(val), message: 'Please enter a valid LinkedIn URL' }
+    };
+
+    /**
+     * Centralized function to validate a single field
+     */
+    function validateField(inputElement) {
+      const name = inputElement.name;
+      const val = inputElement.value;
+      const rule = validationMap[name];
+
+      if (rule) {
+        if (!rule.validate(val)) {
+          Validator.showError(inputElement, rule.message);
+          return false;
+        } else {
+          Validator.clearError(inputElement);
+          return true;
+        }
+      }
+      return true;
+    }
+
+    // Attach real-time validation to all mapped fields
+    Object.keys(validationMap).forEach(fieldName => {
+      const input = document.getElementsByName(fieldName)[0];
+      if (input) {
+        // Validate when user tabs out (blur)
+        input.addEventListener('blur', () => validateField(input));
+        
+        // Clear error as user types (input)
+        input.addEventListener('input', () => {
+          if (input.classList.contains('is-invalid')) {
+            validateField(input);
+          }
+        });
+      }
+    });
+
     document.getElementById('recruiterDetailsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Perform full validation check before submission
+      let firstInvalidElement = null;
+      let isFormValid = true;
+
+      Object.keys(validationMap).forEach(fieldName => {
+        const input = document.getElementsByName(fieldName)[0];
+        if (input && !validateField(input)) {
+          isFormValid = false;
+          if (!firstInvalidElement) firstInvalidElement = input;
+        }
+      });
+
+      if (!isFormValid) {
+        if (firstInvalidElement) {
+          firstInvalidElement.focus();
+          firstInvalidElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Please correct the errors in the form before submitting.',
+          confirmButtonColor: '#4f46e5'
+        });
+        return;
+      }
+      
       const userId = sessionStorage.getItem('pendingRecruiterId');
       if (!userId) {
         Swal.fire({

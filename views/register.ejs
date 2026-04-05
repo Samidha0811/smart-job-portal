@@ -500,7 +500,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/js/apiService.js"></script>
+  <script src="/js/validation.js"></script>
   <script src="/js/script.js"></script>
   <script>
     // Role Selection
@@ -523,8 +525,74 @@
       icon.className = pwd.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
     }
 
+    // --- REAL-TIME VALIDATION MAPPING ---
+    const validationMap = {
+      'firstName': { validate: (val) => Validator.isValidName(val), message: 'Please enter a valid first name (letters only)' },
+      'lastName': { validate: (val) => !val || Validator.isValidName(val), message: 'Please enter a valid last name (letters only)' },
+      'email': { validate: (val) => Validator.isValidEmail(val), message: 'Please enter a valid email address' },
+      'password': { validate: (val) => Validator.isValidPassword(val), message: 'Password must be at least 6 characters with letters and numbers' }
+    };
+
+    /**
+     * Validates a single input element
+     */
+    function validateField(inputElement) {
+      const name = inputElement.name;
+      const val = inputElement.value;
+      const rule = validationMap[name];
+
+      if (rule) {
+        if (!rule.validate(val)) {
+          Validator.showError(inputElement, rule.message);
+          return false;
+        } else {
+          Validator.clearError(inputElement);
+          return true;
+        }
+      }
+      return true;
+    }
+
+    // Attach listeners
+    Object.keys(validationMap).forEach(fieldName => {
+      const input = document.getElementsByName(fieldName)[0];
+      if (input) {
+        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('input', () => {
+          if (input.classList.contains('is-invalid')) {
+            validateField(input);
+          }
+        });
+      }
+    });
+
     // Combine first + last name into username
     document.getElementById('registrationForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Perform full validation check
+      let isFormValid = true;
+      let firstInvalid = null;
+
+      Object.keys(validationMap).forEach(fieldName => {
+        const input = document.getElementsByName(fieldName)[0];
+        if (input && !validateField(input)) {
+          isFormValid = false;
+          if (!firstInvalid) firstInvalid = input;
+        }
+      });
+
+      if (!isFormValid) {
+        if (firstInvalid) firstInvalid.focus();
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Please correct the highlighted errors before proceeding.',
+          confirmButtonColor: '#4f46e5'
+        });
+        return;
+      }
+
       const first = document.getElementById('firstName').value.trim();
       const last = document.getElementById('lastName').value.trim();
       document.getElementById('usernameHidden').value = (first + ' ' + last).trim();
@@ -532,6 +600,50 @@
       const btn = document.getElementById('registerBtn');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" style="width:1rem;height:1rem;border-width:2px;"></span> Creating account...';
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      apiService.register(data).then(async (response) => {
+          const result = await response.json();
+          if (response.ok) {
+              if (result.redirectTo) {
+                  if (result.role === 'recruiter') {
+                      sessionStorage.setItem('pendingRecruiterId', result.userId);
+                      window.location.href = result.redirectTo;
+                  } else {
+                      window.location.href = result.redirectTo;
+                  }
+              } else {
+                  document.body.innerHTML = `<div class="container py-5 text-center"><h1>Success!</h1><p>${result.message}</p><a href="/login" class="btn btn-primary">Go to Login</a></div>`;
+              }
+          } else {
+              if (result.message && result.message.toLowerCase().includes('already registered')) {
+                  Swal.fire({
+                      icon: 'info',
+                      title: 'Already Registered',
+                      text: result.message,
+                      showCancelButton: true,
+                      confirmButtonText: 'Go to Login',
+                      cancelButtonText: 'Try another email',
+                      confirmButtonColor: '#4f46e5'
+                  }).then((res) => {
+                      if (res.isConfirmed) {
+                          window.location.href = '/login';
+                      }
+                  });
+              } else {
+                  Swal.fire({ icon: 'error', title: 'Registration Failed', text: result.message || 'Unknown error' });
+              }
+              btn.disabled = false;
+              btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+          }
+      }).catch(err => {
+          console.error('Registration error:', err);
+          Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred during registration.' });
+          btn.disabled = false;
+          btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+      });
     });
   </script>
 </body>
