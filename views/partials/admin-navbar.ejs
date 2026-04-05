@@ -29,38 +29,29 @@
   </div>
 </nav>
 
-<!-- Logout Confirmation Modal -->
-<div class="modal fade modal-premium" id="logoutModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header header-danger border-0">
-        <h5 class="modal-title fw-bold text-white"><i class="fas fa-sign-out-alt me-2"></i>Confirm Logout</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center py-4">
-        <div style="width:70px;height:70px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;color:#ef4444;">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <h5 class="fw-bold mb-2">Are you sure?</h5>
-        <p class="text-muted mb-0" style="font-size:0.9rem;">You will be signed out of the admin session.</p>
-      </div>
-      <div class="modal-footer justify-content-center border-0 bg-white pb-4">
-        <button type="button" class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">Cancel</button>
-        <a href="/api/auth/logout" class="btn btn-danger px-4 fw-bold">
-          <i class="fas fa-sign-out-alt me-2"></i>Logout Now
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const adminLogoutLink = document.getElementById('adminLogoutLink');
     if (adminLogoutLink) {
       adminLogoutLink.addEventListener('click', function(e) {
         e.preventDefault();
-        new bootstrap.Modal(document.getElementById('logoutModal')).show();
+        Swal.fire({
+          title: 'Confirm Logout',
+          text: 'Are you sure you want to sign out of your admin session?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: '<i class="fas fa-sign-out-alt me-2"></i>Logout Now',
+          cancelButtonText: 'Cancel',
+          background: '#ffffff',
+          borderRadius: '16px'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/api/auth/logout';
+          }
+        });
       });
     }
   });

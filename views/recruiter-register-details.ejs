@@ -421,13 +421,20 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     document.getElementById('recruiterDetailsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const userId = sessionStorage.getItem('pendingRecruiterId');
       if (!userId) {
-        alert('Session expired or invalid. Please register again.');
-        window.location.href = '/register';
+        Swal.fire({
+          icon: 'warning',
+          title: 'Session Expired',
+          text: 'Session expired or invalid. Please register again.',
+          confirmButtonColor: '#4f46e5'
+        }).then(() => {
+          window.location.href = '/register';
+        });
         return;
       }
       const formData = new FormData(e.target);
@@ -456,12 +463,22 @@
               </div>
             </div>`;
         } else {
-          alert('Submission failed: ' + (result.message || 'Unknown error'));
+          Swal.fire({
+            icon: 'error',
+            title: 'Submission Failed',
+            text: result.message || 'Unknown error occurred.',
+            confirmButtonColor: '#4f46e5'
+          });
           btn.disabled = false;
           btn.innerHTML = 'Submit for Hub Verification <i class="fas fa-paper-plane ms-2"></i>';
         }
       } catch (err) {
-        alert('An error occurred. Please refresh and try again.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred. Please refresh and try again.',
+          confirmButtonColor: '#ef4444'
+        });
         btn.disabled = false;
         btn.innerHTML = 'Submit for Hub Verification <i class="fas fa-paper-plane ms-2"></i>';
       }
