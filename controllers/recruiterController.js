@@ -125,6 +125,12 @@ const recruiterController = {
         try {
             const user = await User.findById(recruiterId);
             if (!user || user.status !== 'approved') return res.status(403).json({ success: false, message: 'Your account must be approved by an Admin to post jobs.' });
+            
+            const [profileRows] = await db.query('SELECT id FROM profiles WHERE user_id = ?', [recruiterId]);
+            if (profileRows.length === 0) {
+                return res.status(403).json({ success: false, message: 'Please save your Company Profile for Seeker view before posting a job.' });
+            }
+
             await Job.create({ recruiter_id: recruiterId, title, description, keywords, location, salary });
             res.json({ success: true, message: 'Job posted successfully!' });
         } catch (err) {
@@ -139,12 +145,18 @@ const recruiterController = {
     async getMyProfile(req, res) {
         try {
             const [profileRows] = await db.query('SELECT * FROM profiles WHERE user_id = ?', [req.user.id]);
-            if (profileRows.length > 0) return res.json(profileRows[0]);
+            if (profileRows.length > 0) {
+                const profile = profileRows[0];
+                profile.profile_exists = true;
+                return res.json(profile);
+            }
             const [recruiterRows] = await db.query(
                 `SELECT company_name, company_website as website, company_description as bio, industry, address_line, city, state, country, pincode, contact_number, designation, company_size, linkedin_profile, years_in_business
                 FROM recruiter_details WHERE user_id = ?`, [req.user.id]
             );
-            res.json(recruiterRows[0] || null);
+            const recruiter = recruiterRows[0] || {};
+            recruiter.profile_exists = false;
+            res.json(recruiter);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal Server Error' });
