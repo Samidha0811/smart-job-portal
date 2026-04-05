@@ -19,18 +19,7 @@
   <%- include('partials/admin-navbar') %>
 
     <div class="dashboard-container">
-      <!-- Breadcrumb + Back -->
-      <div class="d-flex align-items-center gap-3 mb-4">
-        <a href="/admin"
-          style="color:var(--gray);font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;background:var(--white);border:1px solid var(--border);border-radius:8px;font-weight:600;transition:var(--transition);"
-          onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'"
-          onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gray)'">
-          <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </a>
-        <div>
-          <span style="color:var(--gray);font-size:0.82rem;">Admin Panel → Recruiter Review</span>
-        </div>
-      </div>
+
 
       <!-- Hero Row: Recruiter identity + Status -->
       <div class="main-card mb-4">
@@ -299,98 +288,107 @@
 
         <!-- Right Column -->
         <div class="col-lg-4">
-          <!-- Address -->
-          <div class="sidebar-card mb-4">
-            <div class="sidebar-header">
-              <div
-                style="color:rgba(255,255,255,0.6);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;font-weight:700;">
-                <i class="fas fa-map-marker-alt me-1"></i> Address
-              </div>
-              <div style="color:#fff;font-size:1rem;font-weight:700;">
-                <%= recruiter.address_line %>
-              </div>
-              <div style="color:rgba(255,255,255,0.65);font-size:0.875rem;margin-top:0.35rem;">
-                <%= recruiter.city %>, <%= recruiter.state %>
-              </div>
-              <div style="color:rgba(255,255,255,0.5);font-size:0.83rem;margin-top:0.2rem;">
-                <%= recruiter.country %> — <%= recruiter.pincode %>
-              </div>
-            </div>
-            <div class="sidebar-body">
-              <div class="sidebar-info-item">
-                <div class="sidebar-info-icon icon-cyan"><i class="fas fa-phone-alt"></i></div>
-                <div>
-                  <div
-                    style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.15rem;">
-                    Contact</div>
-                  <div style="font-size:0.875rem;font-weight:600;color:var(--dark);">
-                    <%= recruiter.contact_number %>
-                  </div>
-                </div>
-              </div>
-              <div class="sidebar-info-item mt-2">
-                <div class="sidebar-info-icon icon-purple"><i class="fas fa-id-badge"></i></div>
-                <div>
-                  <div
-                    style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.15rem;">
-                    Designation</div>
-                  <div style="font-size:0.875rem;font-weight:600;color:var(--dark);">
-                    <%= recruiter.designation %>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Decision Card -->
-          <% if (recruiter.status==='pending' ) { %>
-            <div
-              style="background:var(--dark);border-radius:var(--radius-lg);padding:1.75rem;box-shadow:var(--shadow-lg);">
-              <div
-                style="color:rgba(255,255,255,0.5);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;text-align:center;font-weight:700;margin-bottom:1.25rem;">
-                <i class="fas fa-gavel me-1"></i> Admin Decision
-              </div>
-              <div class="d-grid gap-3">
-                <form action="/api/admin/approve" method="POST"
-                  onsubmit="return confirm('APPROVE this recruiter? They will gain full access to post jobs.');">
-                  <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
-                  <button type="submit" class="btn w-100 fw-bold py-3"
-                    style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:12px;font-family:var(--font);font-size:0.95rem;box-shadow:0 4px 15px rgba(16,185,129,0.3);transition:var(--transition);"
-                    onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-                    <i class="fas fa-check-circle me-2"></i>Approve Recruiter
-                  </button>
-                </form>
-                <form action="/api/admin/reject" method="POST"
-                  onsubmit="return confirm('REJECT this recruiter? They will be denied access.');">
-                  <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
-                  <button type="submit" class="btn w-100 fw-bold py-3"
-                    style="background:transparent;color:#f87171;border:2px solid rgba(239,68,68,0.4);border-radius:12px;font-family:var(--font);font-size:0.95rem;transition:var(--transition);"
-                    onmouseover="this.style.background='rgba(239,68,68,0.1)'"
-                    onmouseout="this.style.background='transparent'">
-                    <i class="fas fa-times-circle me-2"></i>Reject Request
-                  </button>
-                </form>
-              </div>
-              <p
-                style="color:rgba(255,255,255,0.3);font-size:0.75rem;text-align:center;margin-top:1rem;margin-bottom:0;">
-                This decision will notify the recruiter via email.
-              </p>
-            </div>
-            <% } else { %>
-              <div
-                style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;box-shadow:var(--shadow);">
+          <div style="position: sticky; top: 1.5rem;">
+            <!-- Address -->
+            <div class="sidebar-card mb-4" style="position: static !important;">
+              <div class="sidebar-header">
                 <div
-                  style="width:64px;height:64px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.75rem;color:var(--primary);">
-                  <i class="fas fa-info-circle"></i>
+                  style="color:rgba(255,255,255,0.6);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;font-weight:700;">
+                  <i class="fas fa-map-marker-alt me-1"></i> Address
                 </div>
-                <h6 class="fw-bold mb-2">Decision Completed</h6>
-                <p style="color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem;">This recruiter's profile has
-                  already been processed.</p>
-                <a href="/admin" class="btn btn-primary fw-bold w-100 py-3" style="border-radius:12px;">
-                  <i class="fas fa-arrow-left me-2"></i>Back to Panel
-                </a>
+                <div style="color:#fff;font-size:1rem;font-weight:700;">
+                  <%= recruiter.address_line %>
+                </div>
+                <div style="color:rgba(255,255,255,0.65);font-size:0.875rem;margin-top:0.35rem;">
+                  <%= recruiter.city %>, <%= recruiter.state %>
+                </div>
+                <div style="color:rgba(255,255,255,0.5);font-size:0.83rem;margin-top:0.2rem;">
+                  <%= recruiter.country %> — <%= recruiter.pincode %>
+                </div>
               </div>
-              <% } %>
+              <div class="sidebar-body">
+                <div class="sidebar-info-item">
+                  <div class="sidebar-info-icon icon-cyan"><i class="fas fa-phone-alt"></i></div>
+                  <div>
+                    <div
+                      style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.15rem;">
+                      Contact</div>
+                    <div style="font-size:0.875rem;font-weight:600;color:var(--dark);">
+                      <%= recruiter.contact_number %>
+                    </div>
+                  </div>
+                </div>
+                <div class="sidebar-info-item mt-2">
+                  <div class="sidebar-info-icon icon-purple"><i class="fas fa-id-badge"></i></div>
+                  <div>
+                    <div
+                      style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.15rem;">
+                      Designation</div>
+                    <div style="font-size:0.875rem;font-weight:600;color:var(--dark);">
+                      <%= recruiter.designation %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Decision Card -->
+            <% if (recruiter.status==='pending' ) { %>
+              <div
+                style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;box-shadow:var(--shadow-lg);">
+                <div
+                  style="color:var(--primary);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;text-align:center;font-weight:800;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                  <span
+                    style="height:1px;flex:1;background:linear-gradient(to right, transparent, var(--border));"></span>
+                  <span><i class="fas fa-gavel me-1"></i> Admin Decision</span>
+                  <span
+                    style="height:1px;flex:1;background:linear-gradient(to left, transparent, var(--border));"></span>
+                </div>
+                <div class="d-grid gap-3">
+                  <form action="/api/admin/approve" method="POST"
+                    onsubmit="return confirm('APPROVE this recruiter? They will gain full access to post jobs.');">
+                    <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
+                    <button type="submit" class="btn w-100 fw-bold py-3"
+                      style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:14px;font-family:var(--font);font-size:0.95rem;box-shadow:0 4px 15px rgba(16,185,129,0.25);transition:var(--transition);"
+                      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.35)'"
+                      onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 15px rgba(16,185,129,0.25)'">
+                      <i class="fas fa-check-circle me-2"></i>Approve Recruiter
+                    </button>
+                  </form>
+                  <form action="/api/admin/reject" method="POST"
+                    onsubmit="return confirm('REJECT this recruiter? They will be denied access.');">
+                    <input type="hidden" name="userId" value="<%= recruiter.user_id %>">
+                    <button type="submit" class="btn w-100 fw-bold py-3"
+                      style="background:rgba(239, 68, 68, 0.05);color:#dc2626;border:2px solid rgba(239, 68, 68, 0.2);border-radius:14px;font-family:var(--font);font-size:0.95rem;transition:var(--transition);"
+                      onmouseover="this.style.background='rgba(239, 68, 68, 0.1)';this.style.borderColor='rgba(239, 68, 68, 0.4)'"
+                      onmouseout="this.style.background='rgba(239, 68, 68, 0.05)';this.style.borderColor='rgba(239, 68, 68, 0.2)'">
+                      <i class="fas fa-times-circle me-2"></i>Reject Request
+                    </button>
+                  </form>
+                </div>
+                <div
+                  style="background:var(--bg);margin-top:1.5rem;padding:0.75rem;border-radius:10px;text-align:center;border:1px dashed var(--border);">
+                  <p style="color:var(--gray);font-size:0.75rem;margin-bottom:0;font-weight:500;">
+                    <i class="fas fa-info-circle me-1" style="color:var(--primary);"></i> Notifies recruiter via email.
+                  </p>
+                </div>
+              </div>
+              <% } else { %>
+                <div
+                  style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;box-shadow:var(--shadow);">
+                  <div
+                    style="width:64px;height:64px;background:rgba(79,70,229,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.75rem;color:var(--primary);">
+                    <i class="fas fa-info-circle"></i>
+                  </div>
+                  <h6 class="fw-bold mb-2">Decision Completed</h6>
+                  <p style="color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem;">This recruiter's profile has
+                    already been processed.</p>
+                  <a href="/admin" class="btn btn-primary fw-bold w-100 py-3" style="border-radius:12px;">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Panel
+                  </a>
+                </div>
+                <% } %>
+          </div>
         </div>
       </div>
     </div>
