@@ -29,7 +29,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
-      padding: 3.5rem 1.5rem;
+      padding: 3rem 10%;
       position: sticky;
       top: 0;
       overflow: hidden;
@@ -64,7 +64,7 @@
       color: #fff;
       font-weight: 800;
       font-size: 1.15rem;
-      margin-bottom: 3.5rem;
+      margin-bottom: 2rem;
       position: relative;
       z-index: 1;
     }
@@ -97,7 +97,7 @@
       font-size: 0.95rem;
       max-width: 340px;
       line-height: 1.65;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
       position: relative;
       z-index: 1;
     }
@@ -105,7 +105,7 @@
     .auth-feature-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.7rem;
       position: relative;
       z-index: 1;
     }
@@ -140,7 +140,7 @@
       align-items: center;
       justify-content: center;
       background: #fff;
-      overflow-y: auto;
+      overflow-y: hidden;
     }
 
     .auth-form-box {
@@ -149,7 +149,7 @@
     }
 
     .auth-form-title {
-      font-size: 2.25rem;
+      font-size: 1.9rem;
       font-weight: 900;
       color: #0f172a;
       letter-spacing: -1.5px;
@@ -178,20 +178,20 @@
       color: #64748b;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.4rem;
     }
 
     .role-cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.85rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1rem;
     }
 
     .role-card {
       border: 2px solid #e2e8f0;
       border-radius: 14px;
-      padding: 1.1rem;
+      padding: 0.75rem;
       cursor: pointer;
       transition: all 0.2s ease;
       background: #fff;
@@ -220,8 +220,8 @@
     }
 
     .role-card-icon {
-      font-size: 1.75rem;
-      margin-bottom: 0.55rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
       display: block;
     }
 
@@ -242,13 +242,13 @@
       font-size: 0.82rem;
       font-weight: 600;
       color: #334155;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
       display: block;
     }
 
     .field-input {
       width: 100%;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 1rem;
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
       font-family: 'Inter', sans-serif;
@@ -269,7 +269,7 @@
     }
 
     .field-group {
-      margin-bottom: 1.1rem;
+      margin-bottom: 0.75rem;
     }
 
     .field-row {
@@ -302,7 +302,7 @@
     /* ---- Submit Button ---- */
     .btn-auth-submit {
       width: 100%;
-      padding: 0.95rem;
+      padding: 0.85rem;
       background: #4f46e5;
       color: #fff;
       border: none;
@@ -316,7 +316,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
     }
 
     .btn-auth-submit:hover {
@@ -335,7 +335,7 @@
       text-align: center;
       color: #94a3b8;
       font-size: 0.78rem;
-      margin-top: 1.1rem;
+      margin-top: 0.6rem;
       line-height: 1.6;
     }
 
@@ -417,7 +417,7 @@
         <div class="auth-form-box">
 
           <!-- Back link -->
-          <a href="/" class="mb-4 d-inline-flex align-items-center gap-2"
+          <a href="/" class="d-inline-flex align-items-center gap-2"
             style="color:#64748b;font-size:0.85rem;font-weight:600;text-decoration:none;">
             <i class="fas fa-arrow-left" style="font-size:0.8rem;"></i> Back to Home
           </a>
@@ -476,8 +476,20 @@
               <div class="pwd-wrap">
                 <input type="password" class="field-input" id="password" name="password" placeholder="Min. 8 characters"
                   required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
-                <button type="button" class="pwd-toggle" onclick="togglePassword()">
+                <button type="button" class="pwd-toggle" onclick="togglePassword('password', 'eyeIcon')">
                   <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="field-group">
+              <label class="field-label" for="confirmPassword">Confirm Password</label>
+              <div class="pwd-wrap">
+                <input type="password" class="field-input" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password"
+                  required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                <button type="button" class="pwd-toggle" onclick="togglePassword('confirmPassword', 'eyeIconConfirm')">
+                  <i class="fas fa-eye" id="eyeIconConfirm"></i>
                 </button>
               </div>
             </div>
@@ -518,9 +530,9 @@
     if (params.get('role') === 'recruiter') selectRole('recruiter');
 
     // Password toggle
-    function togglePassword() {
-      const pwd = document.getElementById('password');
-      const icon = document.getElementById('eyeIcon');
+    function togglePassword(inputId, iconId) {
+      const pwd = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
       pwd.type = pwd.type === 'password' ? 'text' : 'password';
       icon.className = pwd.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
     }
@@ -530,7 +542,11 @@
       'firstName': { validate: (val) => Validator.isValidName(val), message: 'Please enter a valid first name (letters only)' },
       'lastName': { validate: (val) => !val || Validator.isValidName(val), message: 'Please enter a valid last name (letters only)' },
       'email': { validate: (val) => Validator.isValidEmail(val), message: 'Please enter a valid email address' },
-      'password': { validate: (val) => Validator.isValidPassword(val), message: 'Password must be at least 6 characters with letters and numbers' }
+      'password': { validate: (val) => Validator.isValidPassword(val), message: 'Password must be at least 6 characters with letters and numbers' },
+      'confirmPassword': { 
+        validate: (val) => val === document.getElementById('password').value, 
+        message: 'Passwords do not match' 
+      }
     };
 
     /**
@@ -561,6 +577,13 @@
         input.addEventListener('input', () => {
           if (input.classList.contains('is-invalid')) {
             validateField(input);
+          }
+          // Special case: if password changes, re-validate confirmPassword if it has a value
+          if (fieldName === 'password') {
+            const confirmInput = document.getElementsByName('confirmPassword')[0];
+            if (confirmInput && confirmInput.value) {
+              validateField(confirmInput);
+            }
           }
         });
       }
@@ -605,53 +628,53 @@
       const data = Object.fromEntries(formData.entries());
 
       apiService.register(data).then(async (response) => {
-          const result = await response.json();
-          if (response.ok) {
-              if (result.redirectTo) {
-              if (result.role === 'recruiter') {
-                  sessionStorage.setItem('pendingRecruiterId', result.userId);
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Registration Successful!',
-                      text: result.message || 'Your profile is under review. Check your email for updates.',
-                      confirmButtonText: 'Fill Profile Details',
-                      confirmButtonColor: '#4f46e5',
-                      allowOutsideClick: false
-                  }).then(() => {
-                      window.location.href = result.redirectTo;
-                  });
-              } else {
-                  window.location.href = result.redirectTo;
-              }
-              } else {
-                  document.body.innerHTML = `<div class="container py-5 text-center"><h1>Success!</h1><p>${result.message}</p><a href="/login" class="btn btn-primary">Go to Login</a></div>`;
-              }
+        const result = await response.json();
+        if (response.ok) {
+          if (result.redirectTo) {
+            if (result.role === 'recruiter') {
+              sessionStorage.setItem('pendingRecruiterId', result.userId);
+              Swal.fire({
+                icon: 'success',
+                title: 'Registration Successful!',
+                text: result.message || 'Your profile is under review. Check your email for updates.',
+                confirmButtonText: 'Fill Profile Details',
+                confirmButtonColor: '#4f46e5',
+                allowOutsideClick: false
+              }).then(() => {
+                window.location.href = result.redirectTo;
+              });
+            } else {
+              window.location.href = result.redirectTo;
+            }
           } else {
-              if (result.message && result.message.toLowerCase().includes('already registered')) {
-                  Swal.fire({
-                      icon: 'info',
-                      title: 'Already Registered',
-                      text: result.message,
-                      showCancelButton: true,
-                      confirmButtonText: 'Go to Login',
-                      cancelButtonText: 'Try another email',
-                      confirmButtonColor: '#4f46e5'
-                  }).then((res) => {
-                      if (res.isConfirmed) {
-                          window.location.href = '/login';
-                      }
-                  });
-              } else {
-                  Swal.fire({ icon: 'error', title: 'Registration Failed', text: result.message || 'Unknown error' });
-              }
-              btn.disabled = false;
-              btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+            document.body.innerHTML = `<div class="container py-5 text-center"><h1>Success!</h1><p>${result.message}</p><a href="/login" class="btn btn-primary">Go to Login</a></div>`;
           }
-      }).catch(err => {
-          console.error('Registration error:', err);
-          Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred during registration.' });
+        } else {
+          if (result.message && result.message.toLowerCase().includes('already registered')) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Already Registered',
+              text: result.message,
+              showCancelButton: true,
+              confirmButtonText: 'Go to Login',
+              cancelButtonText: 'Try another email',
+              confirmButtonColor: '#4f46e5'
+            }).then((res) => {
+              if (res.isConfirmed) {
+                window.location.href = '/login';
+              }
+            });
+          } else {
+            Swal.fire({ icon: 'error', title: 'Registration Failed', text: result.message || 'Unknown error' });
+          }
           btn.disabled = false;
           btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
+        }
+      }).catch(err => {
+        console.error('Registration error:', err);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred during registration.' });
+        btn.disabled = false;
+        btn.innerHTML = 'Create Account <i class="fas fa-arrow-right"></i>';
       });
     });
   </script>
