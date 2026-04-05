@@ -54,6 +54,16 @@ const Job = {
             WHERE j.id = ?
         `, [id]);
         return rows[0];
+    },
+
+    /**
+     * Delete a job by ID (ensuring recruiter ownership)
+     */
+    async delete(id, recruiterId) {
+        return await db.query(
+            'DELETE FROM jobs WHERE id = ? AND recruiter_id = ?',
+            [id, recruiterId]
+        );
     }
 };
 

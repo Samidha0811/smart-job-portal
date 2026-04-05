@@ -200,6 +200,15 @@ const recruiterController = {
         try {
             const app = await Application.findByIdAndRecruiter(applicationId, req.user.id);
             if (!app) return res.status(403).json({ success: false, message: 'Unauthorized to update this application' });
+            
+            // Check if application is already in a final state
+            if (app.status === 'shortlisted' || app.status === 'rejected') {
+                return res.status(403).json({ 
+                    success: false, 
+                    message: `This application is already ${app.status} and cannot be modified further.` 
+                });
+            }
+
             await Application.updateStatus(applicationId, status);
             res.json({ success: true, message: `Application marked as ${status}!` });
         } catch (err) {
@@ -238,6 +247,25 @@ const recruiterController = {
             res.json({ success: true, profile });
         } catch (err) {
             console.error('Error fetching seeker profile:', err);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+    /**
+     * Delete a job listing
+     */
+    async deleteJob(req, res) {
+        const jobId = req.params.jobId;
+        const recruiterId = req.user.id;
+        try {
+            const [result] = await Job.delete(jobId, recruiterId);
+            if (result.affectedRows > 0) {
+                res.json({ success: true, message: 'Job deleted successfully!' });
+            } else {
+                res.status(404).json({ success: false, message: 'Job not found or unauthorized.' });
+            }
+        } catch (err) {
+            console.error('Error deleting job:', err);
             res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
     }
