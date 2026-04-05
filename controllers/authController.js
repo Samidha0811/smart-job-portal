@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const sendMail = require('../utils/sendMail');
 
 const authController = {
     /**
@@ -8,7 +9,7 @@ const authController = {
      */
     async register(req, res) {
         const { username, email, password, role } = req.body;
-        
+
         if (!username || !email || !password || !role) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
@@ -17,26 +18,49 @@ const authController = {
             // Check if email already exists
             const existingUser = await User.findByEmail(email);
             if (existingUser) {
-                return res.status(400).json({ 
-                    message: `Email '${email}' is already registered. Please go to login.` 
+                return res.status(400).json({
+                    message: `Email '${email}' is already registered. Please go to login.`
                 });
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
             const status = (role === 'recruiter') ? 'guest' : 'active';
-            
+            const is_verified = (role === 'recruiter') ? 0 : 1; // 0 for recruiters, 1 (active) for others
+
             const userId = await User.create({
                 fullname: username,
                 email: email,
                 password: hashedPassword,
                 role: role,
-                status: status
+                status: status,
+                is_verified: is_verified
             });
 
             console.log('New User Registered:', { id: userId, username, role, status });
-            
+
+            // Send Email for Recruiters
+            if (role === 'recruiter') {
+                try {
+                    await sendMail(
+                        email,
+                        'Profile Under Review',
+                        `
+                        <p>Hello <strong>${username}</strong>,</p>
+                        <p>Thank you for registering as a recruiter on Smart Job Portal.</p>
+                        <p>Your recruiter profile is under review. You will be able to login after admin approval.</p>
+                        <p>We will notify you once your account is approved.</p>
+                        <br>
+                        <p>Best Regards,<br>Smart Job Portal Team</p>
+                        `
+                    );
+                } catch (emailErr) {
+                    console.error('Registration email failed to send:', emailErr.message);
+                    // We don't fail the registration if email fails, but we log it
+                }
+            }
+
             res.status(201).json({
-                message: 'Registration Successful!',
+                message: (role === 'recruiter') ? 'Registration Successful! Your profile is under review. Check your email for updates.' : 'Registration Successful!',
                 userId: userId,
                 role: role,
                 status: status,
@@ -53,7 +77,7 @@ const authController = {
      */
     async login(req, res) {
         const { email, password } = req.body;
-        
+
         try {
             const user = await User.findByEmail(email);
 

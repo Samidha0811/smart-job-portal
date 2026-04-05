@@ -44,7 +44,7 @@ const recruiterController = {
                 company_size, linkedin_profile, years_in_business
             });
             await User.updateStatus(user_id, 'pending');
-            res.json({ success: true, message: 'Recruiter details submitted! Please wait for Admin approval.' });
+            res.json({ success: true, message: 'Your profile is under review. Check your email for updates.' });
         } catch (err) {
             console.error('Error saving recruiter details:', err);
             res.status(500).json({ success: false, message: 'Database error while saving details.' });

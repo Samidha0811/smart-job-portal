@@ -13,9 +13,9 @@ router.get('/', adminController.getDashboard);
 router.get('/recruiter/:id', adminController.getRecruiterDetails);
 
 // Admin Approve API
-router.post('/approve', adminController.approveRecruiter);
+router.put('/approve/:userId', adminController.approveRecruiter);
 
 // Admin Reject API
-router.post('/reject', adminController.rejectRecruiter);
+router.put('/reject/:userId', adminController.rejectRecruiter);
 
 module.exports = router;

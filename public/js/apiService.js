@@ -10,9 +10,27 @@ const apiService = {
         return await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
             },
             body: body.toString()
+        });
+    },
+
+    /**
+     * Helper to make PUT requests
+     * @param {string} url 
+     * @param {Object} data 
+     * @returns {Promise<Response>}
+     */
+    async put(url, data = {}) {
+        return await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
         });
     },
 
@@ -39,7 +57,7 @@ const apiService = {
      * @param {number} userId 
      */
     async approveRecruiter(userId) {
-        const response = await this.post('/api/admin/approve', { userId });
+        const response = await this.put(`/api/admin/approve/${userId}`);
         return response;
     },
 
@@ -48,7 +66,7 @@ const apiService = {
      * @param {number} userId 
      */
     async rejectRecruiter(userId) {
-        const response = await this.post('/api/admin/reject', { userId });
+        const response = await this.put(`/api/admin/reject/${userId}`);
         return response;
     },
     /**
