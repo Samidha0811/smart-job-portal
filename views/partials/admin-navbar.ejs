@@ -7,21 +7,20 @@
 <nav class="navbar navbar-expand-lg navbar-premium">
   <div class="container-fluid px-4">
     <a class="navbar-brand d-flex align-items-center" href="/admin">
-  <div class="logo-circle-brand me-2" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
-    <i class="fas fa-shield-alt"></i>
-  </div>
-  <div class="brand-text-container">
-    <div class="brand-main">Joblifies - Smart Job Portal <span class="text-cyan">Admin</span></div>
-    <div class="brand-sub" style="color: rgba(255,255,255,0.5);">PANEL CONTROL</div>
-  </div>
-</a>
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbarContent" style="color:rgba(255,255,255,0.7);">
+      <div class="brand-text-container">
+        <div class="brand-main">Joblifies - Smart Job Portal <span class="text-cyan">Admin</span></div>
+        <div class="brand-sub" style="color: rgba(255,255,255,0.5);">PANEL CONTROL</div>
+      </div>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbarContent"
+      style="color:rgba(255,255,255,0.7);">
       <i class="fas fa-bars"></i>
     </button>
     <div class="collapse navbar-collapse" id="adminNavbarContent">
       <ul class="navbar-nav ms-auto align-items-center gap-1">
         <li class="nav-item">
-          <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>" href="/admin">
+          <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>"
+            href="/admin">
             <i class="fas fa-chart-line me-1"></i>Dashboard
           </a>
         </li>
@@ -40,7 +39,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const adminLogoutLink = document.getElementById('adminLogoutLink');
     if (adminLogoutLink) {
-      adminLogoutLink.addEventListener('click', function(e) {
+      adminLogoutLink.addEventListener('click', function (e) {
         e.preventDefault();
         Swal.fire({
           title: 'Confirm Logout',
@@ -62,4 +61,3 @@
     }
   });
 </script>
-
